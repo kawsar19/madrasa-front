@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Madrasa</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div id="app" class="container mt-5">
+  <h2>Create Madrasa</h2>
+
+  <!-- Nav Tabs -->
+  <ul class="nav nav-tabs" id="myTabs">
+    <li class="nav-item">
+      <a class="nav-link active" id="create-tab" data-bs-toggle="tab" href="#create">Create Madrasa</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="list-tab" data-bs-toggle="tab" href="#list">List Madrasas</a>
+    </li>
+    <!-- Add more tabs if needed -->
+  </ul>
+
+  <!-- Tab Content -->
+  <div class="tab-content mt-3">
+    <!-- Create Madrasa Tab -->
+    <div class="tab-pane fade show active" id="create">
+      <!-- Madrasa Form -->
+      <form @submit.prevent="createMadrasa">
+        <div class="mb-3">
+          <label for="name" class="form-label">Madrasa Name</label>
+          <input type="text" v-model="madrasaData.name" class="form-control" id="name" required>
+        </div>
+        <div class="mb-3">
+          <label for="location" class="form-label">Location</label>
+          <input type="text" v-model="madrasaData.location" class="form-control" id="location" required>
+        </div>
+        <div class="mb-3">
+          <label for="contactInformation" class="form-label">Contact Information</label>
+          <input type="text" v-model="madrasaData.contactInformation" class="form-control" id="contactInformation">
+        </div>
+        <div class="mb-3">
+          <label for="foundingDate" class="form-label">Founding Date</label>
+          <input type="date" v-model="madrasaData.foundingDate" class="form-control" id="foundingDate">
+        </div>
+        <div class="mb-3">
+          <label for="headTeacher" class="form-label">Head Teacher</label>
+          <input type="text" v-model="madrasaData.headTeacher" class="form-control" id="headTeacher">
+        </div>
+        <!-- Add more form fields as needed -->
+
+        <button type="submit" class="btn btn-primary">Create Madrasa</button>
+      </form>
+    </div>
+    <!-- Add more tab content if needed -->
+    <div class="tab-pane fade" id="list">
+      <!-- Display list of Madrasas -->
+      <h3>List of Madrasas</h3>
+      <ul class="list-group">
+        <li class="list-group-item d-flex justify-content-between" v-for="madrasa in madrasaList" :key="madrasa._id">
+            <span>          {{ madrasa.name }} - {{ madrasa.location }}</span>
+          <button @click="deleteMadrasa(madrasa._id)" class="btn btn-danger btn-sm">Delete</button>
+        </li>
+      </ul>
+    </div>
+  </div>
+  
+</div>
+
+<!-- Vue.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+
+<!-- Bootstrap 5 JS and Popper.js -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  new Vue({
+    el: '#app',
+    data: {
+      madrasaData: {
+        name: 'খাতুনে জান্নাত',
+        location: 'ভাটিরা ',
+        contactInformation: '01766542278',
+        foundingDate: '1-2-1998',
+        headTeacher: 'কাওছার',
+        // Add more fields as needed
+      },
+      madrasaList: [],
+    },
+    methods: {
+      createMadrasa() {
+        // Replace with your actual API endpoint
+        const apiUrl = 'http://localhost:3000/api/madrasa/create';
+
+        fetch(apiUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(this.madrasaData),
+        })
+        .then(response => response.json())
+       
+        .then(data => {
+          console.log('Madrasa created:', data);
+          // Reset form data after successful creation
+          this.madrasaData = {
+            name: ' ',
+            location: '',
+            contactInformation: '',
+            foundingDate: '',
+            headTeacher: '',
+            // Reset other fields as needed
+          };
+          this.fetchMadrasaList();
+        })
+        .catch(error => {
+          console.error('Error creating Madrasa:', error);
+        });
+      },
+      fetchMadrasaList() {
+        // Replace with your actual API endpoint for listing Madrasas
+        const apiUrl = 'http://localhost:3000/api/madrasa/list';
+      
+        fetch(apiUrl)
+          .then(response => response.json())
+          .then(data => {
+            this.madrasaList = data;
+          })
+          .catch(error => {
+            console.error('Error fetching Madrasa list:', error);
+          });
+      },
+      deleteMadrasa(madrasaId) {
+        // Replace with your actual API endpoint for deleting a Madrasa
+        const apiUrl = `http://localhost:3000/api/madrasa/delete/${madrasaId}`;
+      
+        fetch(apiUrl, {
+            method: 'DELETE',
+          })
+          .then(response => response.json())
+          .then(data => {
+            console.log('Madrasa deleted:', data);
+            // Fetch the updated list of Madrasas after deletion
+            this.fetchMadrasaList();
+          })
+          .catch(error => {
+            console.error('Error deleting Madrasa:', error);
+          });
+      },
+    },
+    mounted() {
+      // Fetch the initial list of Madrasas when the component is mounted
+      this.fetchMadrasaList();
+    },
+  });
+</script>
+
+</body>
+</html>

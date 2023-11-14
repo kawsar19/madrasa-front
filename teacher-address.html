@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vue.js 2 with Bootstrap 5</title>
+
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Vue.js 2 CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+  <style>
+    body {
+      font-size: 12px;
+    }
+    select,option {
+      font-size: 12px !important;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="app">
+    <div style="height: 700px">
+      <div v-if="isLoading" class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <div v-else class="container mt-5">
+
+        <div class="row g-3">
+          <div class="col-6 col-md-3">
+            <div class="input-group">
+              <label for="divisionSelect" class="input-group-text">বিভাগ</label>
+              <select id="divisionSelect" v-model="selectedDivision" @change="handleDivisionChange" class="form-select shadow-none">
+                <option value="" disabled>বিভাগ নির্বাচন করুন</option>
+                <option v-for="division in divisions" :value="division" class="h1">{{ division.bn_name }}</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="input-group">
+              <label for="districtSelect" class="input-group-text">District</label>
+              <select id="districtSelect" v-model="selectedDistrict" @change="handleDistrictChange" class="form-select shadow-none" :disabled="!selectedDivision">
+                <option value="" disabled>Select District</option>
+                <option v-for="district in filteredDistricts" :value="district">{{ district.bn_name }}</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="input-group">
+              <label for="upazilaSelect" class="input-group-text">Upazila</label>
+              <select id="upazilaSelect" v-model="selectedUpazila" class="form-select shadow-none" :disabled="!selectedDistrict">
+                <option value="" disabled>Select Upazila</option>
+                <option v-for="upazila in filteredUpazilas" :value="upazila">{{ upazila.bn_name }}</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="input-group">
+              <label for="unionSelect" class="input-group-text">Union</label>
+              <select id="unionSelect" v-model="selectedUnion" class="form-select shadow-none" :disabled="!selectedUpazila">
+                <option value="" disabled>Select Union</option>
+                <option v-for="union in filteredUnions" :value="union">{{ union.bn_name }}</option>
+              </select>
+            </div>
+          </div>
+          <div class="col">
+            <div class="input-group">
+              <button @click="handleShowSelectedValues" class="btn btn-primary">
+                Show Selected Values
+              </button>
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap 5 JS (Optional: Popper.js for Bootstrap's JavaScript plugins) -->
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
+  <script>
+    new Vue({
+      el: '#app',
+      data: {
+        divisions: [],
+        districts: [],
+        upazilas: [],
+        unions: [],
+        selectedDivision: null,
+        selectedDistrict: null,
+        selectedUpazila: null,
+        selectedUnion: null,
+        isLoading: true,
+        
+      },
+      computed: {
+        filteredDistricts() {
+          if (!this.selectedDivision) {
+            return [];
+          }
+          return this.districts.filter(district => district.division_id === this.selectedDivision.id);
+        },
+        filteredUpazilas() {
+          if (!this.selectedDistrict) {
+            return [];
+          }
+          return this.upazilas.filter(upazila => upazila.district_id === this.selectedDistrict.id);
+        },
+        filteredUnions() {
+          if (!this.selectedUpazila) {
+            return [];
+          }
+          return this.unions.filter(union => union.upazilla_id === this.selectedUpazila.id);
+        },
+      },
+      methods: {
+        handleDivisionChange() {
+          this.selectedDistrict = null;
+          this.selectedUpazila = null;
+          this.selectedUnion = null;
+        },
+        handleDistrictChange() {
+          this.selectedUpazila = null;
+          this.selectedUnion = null;
+        },
+        handleShowSelectedValues() {
+          const selectedValues = {
+            Division: this.selectedDivision ? this.selectedDivision.bn_name : 'Not selected',
+            District: this.selectedDistrict ? this.selectedDistrict.bn_name : 'Not selected',
+            Upazila: this.selectedUpazila ? this.selectedUpazila.bn_name : 'Not selected',
+            Union: this.selectedUnion ? this.selectedUnion.bn_name : 'Not selected',
+          };
+
+          alert(JSON.stringify(selectedValues, null, 2));
+        },
+        fetchData() {
+          // Fetch data from JSON files
+          fetch('/data/divisions.json')
+              .then(response => response.json())
+              .then(data => {
+                this.divisions = data;
+                this.isLoading = false; // Set isLoading to false after data is loaded
+              });
+
+          fetch('/data/districts.json')
+            .then(response => response.json())
+            .then(data => this.districts = data);
+
+          fetch('/data/upazilas.json')
+            .then(response => response.json())
+            .then(data => this.upazilas = data);
+
+          fetch('/data/unions.json')
+            .then(response => response.json())
+            .then(data => this.unions = data);
+        },
+      },
+      created() {
+        this.fetchData();
+      },
+    });
+  </script>
+
+</body>
+
+</html>
