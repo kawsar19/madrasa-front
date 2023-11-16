@@ -1,128 +1,148 @@
 <!DOCTYPE html>
 <html lang="en">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+
 <head>
   <!-- Add your meta tags and title here -->
 
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
 </head>
+
 <body>
 
-<div id="app" class="container mt-4">
-  <h2>List of Teachers</h2>
-  <ul class="list-group">
-    <li class="list-group-item" v-for="teacher in teachers" :key="teacher._id">
-      {{ teacher.name }} - {{ teacher.phone }}
-    </li>
-  </ul>
+  <div id="app" class="container mt-4">
+   <div class="d-flex">
+    <div>
+          <label for="filterMadrasa">Filter </label>
+          <select v-model="selectedMadrasa" @change="filterTeachers" class="form-control">
+            <option value="">All Madrasas</option>
+            <option v-for="madrasa in madrasas" :key="madrasa._id" :value="madrasa.name">
+              {{ madrasa.name }}
+            </option>
+          </select>
+    </div>
+        <div>
+      <label for="searchTeachers">Search Teachers: {{ searchQuery }}</label>
+      <input type="text" v-model="searchQuery" class="form-control">
 
-  <!-- Button trigger modal -->
-  <button type="button" class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#createTeacherModal">
-    Create Teacher
-  </button>
 
-  <!-- Modal -->
-<!-- Modal -->
-<div class="modal fade" id="createTeacherModal" tabindex="-1" aria-labelledby="createTeacherModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="createTeacherModalLabel">Create Teacher</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form @submit.prevent="createTeacher">
-          <div class="mb-3">
-            <label for="name">Name:</label>
-            <input type="text" v-model="newTeacher.name" class="form-control" required>
+    </div>
+
+     
+     
+   </div>
+
+
+
+
+
+
+
+    <h2>শিক্ষকদের তালিকা</h2>
+    <button type="button" class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#createTeacherModal">
+      Create Teacher
+    </button> <br> <br>
+
+    <div class="teacher-cards">
+      <div class="teacher-card" v-for="teacher in filteredTeachers" :key="teacher._id">
+        <div class="card-left">
+          <img src="https://placehold.co/400" alt="">
+        </div>
+        <div class="card-right">
+          <h2>{{teacher.name}}</h2>
+          <div>
+            <div class="part">
+              <span>গ্রাম:{{teacher.village}}</span>
+              <span>ইউনিয়ন: {{teacher.village}}</span>
+            </div>
+            <div class="part">
+              <span>থানা:{{teacher.upazila}}</span>
+              <span>জেলা: {{teacher.district}}</span>
+            </div>
+            <div class="part">
+              <span>রক্তের গ্রুপ:কাপাসিয়া</span>
+              <a class="tel-btn" :href="'tel:' + teacher.phone">কল</a>
+            </div>
           </div>
-          <div class="mb-3">
-            <label for="phone">Phone:</label>
-            <input type="text" v-model="newTeacher.phone" class="form-control" required>
-          </div>
-          <div class="mb-3">
-            <label for="village">Village:</label>
-            <input type="text" v-model="newTeacher.village" class="form-control">
-          </div>
-          <div class="mb-3">
-            <label for="upazila">Upazila:</label>
-            <input type="text" v-model="newTeacher.upazila" class="form-control">
-          </div>
-          <div class="mb-3">
-            <label for="district">District:</label>
-            <input type="text" v-model="newTeacher.district" class="form-control">
-          </div>
-          <div class="mb-3">
-            <label for="division">Division:</label>
-            <input type="text" v-model="newTeacher.division" class="form-control">
-          </div>
-          <div class="mb-3">
-            <label for="nidImage">NID Image:</label>
-            <input type="text" v-model="newTeacher.nidImage" class="form-control">
-          </div>
-          <div class="mb-3">
-            <label for="emergencyPhoneNumber">Emergency Phone Number:</label>
-            <input type="text" v-model="newTeacher.emergencyPhoneNumber" class="form-control">
-          </div>
-          <div class="mb-3">
-            <label for="madrasa">Madrasa:</label>
-            <select v-model="newTeacher.madrasa" class="form-control">
-              <option v-for="madrasa in madrasas" :key="madrasa._id" :value="madrasa._id">
-                {{ madrasa.name }}
-              </option>
-            </select>
-          </div>
-          <button type="submit" class="btn btn-primary">Create Teacher</button>
-        </form>
+        </div>
       </div>
     </div>
+
+
+
+    <!-- Modal -->
+    <!-- Modal -->
+    <div class="modal fade" id="createTeacherModal" tabindex="-1" aria-labelledby="createTeacherModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="createTeacherModalLabel">Create Teacher</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form @submit.prevent="createTeacher">
+              <div class="mb-3">
+                <label for="name">Name:</label>
+                <input type="text" v-model="newTeacher.name" class="form-control" required>
+              </div>
+              <div class="mb-3">
+                <label for="phone">Phone:</label>
+                <input type="text" v-model="newTeacher.phone" class="form-control" required>
+              </div>
+              <div class="mb-3">
+                <label for="village">Village:</label>
+                <input type="text" v-model="newTeacher.village" class="form-control">
+              </div>
+              <div class="mb-3">
+                <label for="upazila">Upazila:</label>
+                <input type="text" v-model="newTeacher.upazila" class="form-control">
+              </div>
+              <div class="mb-3">
+                <label for="district">District:</label>
+                <input type="text" v-model="newTeacher.district" class="form-control">
+              </div>
+              <div class="mb-3">
+                <label for="division">Division:</label>
+                <input type="text" v-model="newTeacher.division" class="form-control">
+              </div>
+              <div class="mb-3">
+                <label for="nidImage">NID Image:</label>
+                <input type="text" v-model="newTeacher.nidImage" class="form-control">
+              </div>
+              <div class="mb-3">
+                <label for="emergencyPhoneNumber">Emergency Phone Number:</label>
+                <input type="text" v-model="newTeacher.emergencyPhoneNumber" class="form-control">
+              </div>
+              <div class="mb-3">
+                <label for="madrasa">Madrasa:</label>
+                <select v-model="newTeacher.madrasa" class="form-control">
+                  <option v-for="madrasa in madrasas" :key="madrasa._id" :value="madrasa._id">
+                    {{ madrasa.name }}
+                  </option>
+                </select>
+              </div>
+              <button type="submit" class="btn btn-primary">Create Teacher</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
-</div>
 
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-<script>
-new Vue({
-  el: '#app',
-  data: {
-    newTeacher: {
-      name: '',
-      phone: '',
-      village: '',
-      upazila: '',
-      district: '',
-      division: '',
-      nidImage: '',
-      emergencyPhoneNumber: '',
-      madrasa: '',
-    },
-    madrasas: [],
-    teachers: [],
-  },
-  mounted() {
-    this.fetchMadrasas();
-    this.fetchTeachers();
-  },
-  methods: {
-    async fetchMadrasas() {
-      try {
-        const response = await axios.get('http://localhost:3000/api/madrasa/list');
-        this.madrasas = response.data;
-      } catch (error) {
-        console.error('Error fetching madrasas:', error.response.data);
-        // Handle error as needed
-      }
-    },
-    async createTeacher() {
-      try {
-        const response = await axios.post('http://localhost:3000/api/teacher/create', this.newTeacher);
-        console.log(response.data);
-        // Clear the form fields after successful creation
-        this.newTeacher = {
+  <script>
+    new Vue({
+      el: '#app',
+      data: {
+        newTeacher: {
           name: '',
           phone: '',
           village: '',
@@ -132,28 +152,106 @@ new Vue({
           nidImage: '',
           emergencyPhoneNumber: '',
           madrasa: '',
-        };
-        // Fetch updated list of teachers
+
+        },
+        madrasas: [],
+        teachers: [],
+        allTeachers: [],
+        selectedMadrasa: '',
+        searchQuery: '',
+      },
+      mounted() {
+        this.fetchMadrasas();
         this.fetchTeachers();
-        // Close the modal
-        $('#createTeacherModal').modal('hide');
-      } catch (error) {
-        console.error('Error creating teacher:', error.response.data);
-        // Handle error as needed
-      }
-    },
-    async fetchTeachers() {
-      try {
-        const response = await axios.get('http://localhost:3000/api/teacher/list');
-        this.teachers = response.data;
-      } catch (error) {
-        console.error('Error fetching teachers:', error.response.data);
-        // Handle error as needed
-      }
-    },
-  },
-});
-</script>
+      },
+      methods: {
+        searchTeachers() {
+          if (this.searchQuery.trim() !== '') {
+            this.teachers = this.allTeachers.filter(teacher => {
+              return teacher.name.toLowerCase().includes(this.searchQuery.toLowerCase());
+            });
+          } else {
+            this.teachers = this.allTeachers.slice();
+          }
+        },
+        filterTeachers() {
+          this.teachers = this.allTeachers
+          if (this.selectedMadrasa) {
+            console.log(this.selectedMadrasa)
+            for (single of this.teachers) {
+              console.log(single.madrasa.name)
+            }
+            // If a Madrasa is selected, filter teachers based on Madrasa ID
+            this.teachers = this.teachers.filter(teacher => teacher.madrasa.name === this.selectedMadrasa);
+          } else {
+            // If no Madrasa is selected, show all teachers
+            this.fetchTeachers();
+          }
+        },
+        async fetchMadrasas() {
+          try {
+            const response = await axios.get('http://localhost:3000/api/madrasa/list');
+            this.madrasas = response.data;
+          } catch (error) {
+            console.error('Error fetching madrasas:', error.response.data);
+            // Handle error as needed
+          }
+        },
+        async createTeacher() {
+          try {
+            const response = await axios.post('http://localhost:3000/api/teacher/create', this.newTeacher);
+            console.log(response.data);
+            // Clear the form fields after successful creation
+            this.newTeacher = {
+              name: '',
+              phone: '',
+              village: '',
+              upazila: '',
+              district: '',
+              division: '',
+              nidImage: '',
+              emergencyPhoneNumber: '',
+              madrasa: '',
+            };
+            // Fetch updated list of teachers
+            this.fetchTeachers();
+            // Close the modal
+            $('#createTeacherModal').modal('hide');
+          } catch (error) {
+            console.error('Error creating teacher:', error.response.data);
+            // Handle error as needed
+          }
+        },
+        async fetchTeachers() {
+          try {
+            const response = await axios.get('http://localhost:3000/api/teacher/list');
+            this.teachers = response.data;
+            this.allTeachers = response.data
+          } catch (error) {
+            console.error('Error fetching teachers:', error.response.data);
+            // Handle error as needed
+          }
+        },
+      },
+      computed: {
+        filteredTeachers() {
+          if (!this.searchQuery.trim()) {
+            return this.teachers;
+          }
+          const searchTerm = this.searchQuery.toLowerCase();
+          return this.teachers.filter(teacher =>
+            teacher.name.toLowerCase().includes(searchTerm)
+          );
+        },
+      },
+      watch: {
+        searchQuery(newVal, oldVal) {
+          this.filterTeachers();
+        }
+      },
+    });
+  </script>
 
 </body>
+
 </html>

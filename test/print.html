@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generate Image</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    #pdf-content {
+      background-color: lightblue;
+      padding: 20px;
+    }
+
+    h2 {
+      color: darkblue;
+    }
+
+    img {
+      border-radius: 10px;
+    }
+
+    button {
+      margin-top: 10px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Image Generation Example</h1>
+  <div id="pdf-content">
+    <h2>Colorful Div</h2>
+    <img src="https://via.placeholder.com/150" alt="Placeholder Image">
+  </div>
+  <button onclick="generateImage()">Generate Image</button>
+
+  <script>
+    function generateImage() {
+      var element = document.getElementById('pdf-content');
+
+      // Use html2canvas to capture the content as an image
+      html2canvas(element).then(canvas => {
+        // Convert the canvas to a data URL
+        var imgData = canvas.toDataURL('image/png');
+
+        // Open the image in a new window for printing
+        var windowContent = '<img src="' + imgData + '" style="width:100%;">';
+        var printWindow = window.open('', '_blank');
+        printWindow.document.write('<html><head><title>Print Image</title></head><body>' + windowContent + '</body></html>');
+        printWindow.document.close();
+        printWindow.print();
+      });
+    }
+  </script>
+</body>
+</html>
+q
