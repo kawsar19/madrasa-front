@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Cloudinary Image Upload</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+  <script src="https://unpkg.com/cloudinary-core@3.11.0/cloudinary-core-shrinkwrap.min.js"></script>
+</head>
+<body>
+  <div id="app">
+    <input type="file" @change="uploadImage" />
+    <img v-if="imageUrl" :src="imageUrl" alt="Uploaded Image" />
+  </div>
+
+  <script>
+    new Vue({
+      el: '#app',
+      data: {
+        imageUrl: ''
+      },
+      methods: {
+        uploadImage(event) {
+          const file = event.target.files[0];
+          const formData = new FormData();
+          formData.append('file', file);
+          
+          // Replace 'dexriacng' with your Cloudinary cloud name
+          const cloudName = 'dexriacng'; 
+          const uploadPreset = 'tna2y5hr'; // Replace with your Cloudinary upload preset
+
+          const url = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload?upload_preset=${uploadPreset}`;
+
+          fetch(url, {
+            method: 'POST',
+            body: formData
+          })
+          .then(response => response.json())
+          .then(data => {
+            console.log(data);
+            this.imageUrl = data.secure_url;
+            console.log('Image uploaded:', data);
+          })
+          .catch(error => {
+            console.error('Error uploading image:', error);
+          });
+        }
+      }
+    });
+  </script>
+</body>
+</html>

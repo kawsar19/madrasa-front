@@ -36,7 +36,21 @@
       align-items: flex-start;
       font-size: 12px;
       border: 1px solid #eee;
+      position: relative;
     }
+   .teacher-card .delete {
+     position: absolute;
+     padding: 10px;
+     top: 0;
+     right: 0;
+   }
+  .teacher-card .edit {
+    position: absolute;
+    padding: 10px;
+    top: 20px;
+    right: 0;
+    display: inline-block;
+  }
 
     .teacher-card h2 {
       font-size: 18px;
@@ -57,6 +71,7 @@
       color: #111;
       font-size: 13px;
       color: #000;
+      padding-right: 3px;
 
     }
 
@@ -107,4 +122,6 @@
    font-weight: 500;
    font-size: 14px;
  }
+  
+  
   

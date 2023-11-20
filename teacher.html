@@ -9,48 +9,43 @@
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
 </head>
 
 <body>
 
   <div id="app" class="container mt-4">
-   <div class="d-flex">
-    <div>
-          <label for="filterMadrasa">Filter </label>
-          <select v-model="selectedMadrasa" @change="filterTeachers" class="form-control">
-            <option value="">All Madrasas</option>
-            <option v-for="madrasa in madrasas" :key="madrasa._id" :value="madrasa.name">
-              {{ madrasa.name }}
-            </option>
-          </select>
+    <div class="d-flex justify-content-between gap-2">
+      <div>
+        <label for="filterMadrasa">Filter </label>
+        <select v-model="selectedMadrasa" @change="filterTeachers" class="form-control">
+          <option value="">All Madrasas</option>
+          <option v-for="madrasa in madrasas" :key="madrasa._id" :value="madrasa.name">
+            {{ madrasa.name }}
+          </option>
+        </select>
+      </div>
+      <div>
+        <label for="searchTeachers">Search Teachers: {{ searchQuery }}</label>
+        <input type="text" v-model="searchQuery" class="form-control shadow-none">
+
+
+      </div>
+
+
+
     </div>
-        <div>
-      <label for="searchTeachers">Search Teachers: {{ searchQuery }}</label>
-      <input type="text" v-model="searchQuery" class="form-control">
 
-
-    </div>
-
-     
-     
-   </div>
-
-
-
-
-
-
-
-    <h2>শিক্ষকদের তালিকা</h2>
+    <h2 class="mt-4">শিক্ষকদের তালিকা</h2>
     <button type="button" class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#createTeacherModal">
       Create Teacher
     </button> <br> <br>
 
     <div class="teacher-cards">
       <div class="teacher-card" v-for="teacher in filteredTeachers" :key="teacher._id">
-        <div class="card-left">
-          <img src="https://placehold.co/400" alt="">
+       <div class="card-left">
+          <img v-if="teacher.nidImage" :src="teacher.nidImage" alt="">
+          <img v-else src="https://placehold.co/400" alt="Placeholder Image">
         </div>
         <div class="card-right">
           <h2>{{teacher.name}}</h2>
@@ -69,6 +64,21 @@
             </div>
           </div>
         </div>
+
+        <!-- delete btn  -->
+        <span class="delete" data-bs-toggle="modal" data-bs-target="#deletemodal" @click="selectDelete(teacher)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="crimson" class="bi bi-trash" viewBox="0 0 16 16">
+            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z" />
+            <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z" />
+          </svg>
+        </span>
+
+        <span class="edit" data-bs-toggle="modal" data-bs-target="#EditModal">
+          <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="green" class="bi bi-pencil-square" viewBox="0 0 16 16">
+            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+          </svg>
+        </span>
       </div>
     </div>
 
@@ -111,15 +121,16 @@
               </div>
               <div class="mb-3">
                 <label for="nidImage">NID Image:</label>
-                <input type="text" v-model="newTeacher.nidImage" class="form-control">
+                <input type="file" @change="onFileChange" accept="image/*" class="form-control mt-3">
               </div>
+
               <div class="mb-3">
                 <label for="emergencyPhoneNumber">Emergency Phone Number:</label>
                 <input type="text" v-model="newTeacher.emergencyPhoneNumber" class="form-control">
               </div>
               <div class="mb-3">
                 <label for="madrasa">Madrasa:</label>
-                <select v-model="newTeacher.madrasa" class="form-control">
+                <select v-model="newTeacher.madrasa" class="form-control shadow-none">
                   <option v-for="madrasa in madrasas" :key="madrasa._id" :value="madrasa._id">
                     {{ madrasa.name }}
                   </option>
@@ -131,6 +142,57 @@
         </div>
       </div>
     </div>
+
+
+    <!-- delete modal -->
+    <div class="modal fade" id="deletemodal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="deleteModalLabel">Delete Confirmation</h5>
+            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            Are you sure you want to delete this item?
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-danger" @click="confirmDelete(selectedTeacher._id)">Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- edit modal -->
+    <div class="modal fade" id="EditModal" tabindex="-1" aria-labelledby="EditModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h5 class="modal-title" id="EditModalLabel">Edit Content</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <!-- Modal Body -->
+          <div class="modal-body">
+            <!-- Your form or content for editing -->
+            <!-- Example form -->
+            <form>
+              <label for="editInput">Edit Input:</label>
+              <input type="text" id="editInput" name="editInput">
+            </form>
+          </div>
+          <!-- Modal Footer -->
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
 
   </div>
 
@@ -154,17 +216,83 @@
           madrasa: '',
 
         },
+        selectedFile: null,
         madrasas: [],
         teachers: [],
         allTeachers: [],
         selectedMadrasa: '',
         searchQuery: '',
+        selectedTeacher: null
       },
       mounted() {
         this.fetchMadrasas();
         this.fetchTeachers();
       },
       methods: {
+        async onFileChange(e) {
+          this.selectedFile = e.target.files[0]; // Store the selected file in selectedFile property
+
+          try {
+            const formData = new FormData();
+            formData.append('image', this.selectedFile);
+
+            const response = await fetch('https://api.imgbb.com/1/upload?key=6d9e72da0846d4357c13a69737f5ca97', {
+              method: 'POST',
+              body: formData,
+            });
+
+            const data = await response.json();
+            console.log('ImageBB Upload Response:', data.data);
+
+            // Assuming you want to store the uploaded image URL somewhere, you can access it from 'data' and save it to a variable or use it directly
+            this.newTeacher.nidImage = data.data.url;
+            // You can use this 'imageUrl' for further operations or store it in your database
+          } catch (error) {
+            console.error('Error uploading to ImageBB:', error);
+            // Handle error as needed
+          }
+        },
+
+        async createTeacher() {
+          console.log(this.selectedFile);
+          try {
+            const teacherData = {
+              name: this.newTeacher.name,
+              phone: this.newTeacher.phone,
+              village: this.newTeacher.village,
+              upazila: this.newTeacher.upazila,
+              district: this.newTeacher.district,
+              division: this.newTeacher.division,
+              emergencyPhoneNumber: this.newTeacher.emergencyPhoneNumber,
+              madrasa: this.newTeacher.madrasa,
+              nidImage:this.newTeacher.nidImage
+               // Assuming you have the selected file stored in this.selectedFile
+            };
+
+            const response = await axios.post('http://localhost:3000/api/teacher/create', teacherData);
+
+            console.log('Teacher created:', response.data);
+            // Clear the form fields after successful creation
+            this.newTeacher = {
+              name: '',
+              phone: '',
+              village: '',
+              upazila: '',
+              district: '',
+              division: '',
+              emergencyPhoneNumber: '',
+              madrasa: '',
+            };
+            // Fetch updated list of teachers
+            this.fetchTeachers();
+            // Close the modal or perform any other necessary action
+            // ...
+          } catch (error) {
+            console.error('Error creating teacher:', error.response.data);
+            // Handle error as needed
+          }
+        },
+
         searchTeachers() {
           if (this.searchQuery.trim() !== '') {
             this.teachers = this.allTeachers.filter(teacher => {
@@ -197,6 +325,7 @@
             // Handle error as needed
           }
         },
+        /*
         async createTeacher() {
           try {
             const response = await axios.post('http://localhost:3000/api/teacher/create', this.newTeacher);
@@ -221,7 +350,7 @@
             console.error('Error creating teacher:', error.response.data);
             // Handle error as needed
           }
-        },
+        },*/
         async fetchTeachers() {
           try {
             const response = await axios.get('http://localhost:3000/api/teacher/list');
@@ -232,6 +361,22 @@
             // Handle error as needed
           }
         },
+        selectDelete(teacher) {
+          this.selectedTeacher = teacher;
+        },
+
+        async confirmDelete(id) {
+          try {
+            const response = await axios.delete('http://localhost:3000/api/teacher/delete/' + id);
+            fetchTeachers()
+
+
+
+          } catch (error) {
+            console.error('Error deleting teacher  ', error)
+          }
+        }
+
       },
       computed: {
         filteredTeachers() {
