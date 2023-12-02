@@ -38,12 +38,12 @@
 
     <h2 class="mt-4">শিক্ষকদের তালিকা</h2>
     <button type="button" class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#createTeacherModal">
-      Create Teacher
+      শিক্ষক এড
     </button> <br> <br>
 
     <div class="teacher-cards">
       <div class="teacher-card" v-for="teacher in filteredTeachers" :key="teacher._id">
-       <div class="card-left">
+        <div class="card-left">
           <img v-if="teacher.nidImage" :src="teacher.nidImage" alt="">
           <img v-else src="https://placehold.co/400" alt="Placeholder Image">
         </div>
@@ -95,14 +95,8 @@
           </div>
           <div class="modal-body">
             <form @submit.prevent="createTeacher">
-              <div class="mb-3">
-                <label for="name">Name:</label>
-                <input type="text" v-model="newTeacher.name" class="form-control" required>
-              </div>
-              <div class="mb-3">
-                <label for="phone">Phone:</label>
-                <input type="text" v-model="newTeacher.phone" class="form-control" required>
-              </div>
+
+              <!--  
               <div class="mb-3">
                 <label for="village">Village:</label>
                 <input type="text" v-model="newTeacher.village" class="form-control">
@@ -114,84 +108,175 @@
               <div class="mb-3">
                 <label for="district">District:</label>
                 <input type="text" v-model="newTeacher.district" class="form-control">
-              </div>
+              </div> 
               <div class="mb-3">
                 <label for="division">Division:</label>
                 <input type="text" v-model="newTeacher.division" class="form-control">
-              </div>
-              <div class="mb-3">
-                <label for="nidImage">NID Image:</label>
-                <input type="file" @change="onFileChange" accept="image/*" class="form-control mt-3">
+
+                <div class="input-group">
+                  <label for="divisionSelect" class="input-group-text">বিভাগ</label>
+                  <select id="divisionSelect" v-model="selectedDivision" @change="handleDivisionChange" class="form-select shadow-none">
+                    <option value="" disabled>বিভাগ নির্বাচন করুন</option>
+                    <option v-for="division in divisions" :value="division" class="h1">{{ division.bn_name }}</option>
+                  </select>
+                </div>
+
+              </div> -->
+
+              <div class="row g-3">
+                <div class="col-12 col-md-6">
+                  <div class="input-group">
+                    <label for="name" class="input-group-text">নাম:</label>
+                    <input type="text" v-model="newTeacher.name" class="form-control shadow-none" required>
+                  </div>
+                </div>
+                <div class="col-12 col-md-6">
+                  <div class="input-group">
+                    <label for="phone" class="input-group-text">মোবাইল:</label>
+                    <input type="number" v-model="newTeacher.phone" class="form-control shadow-none" required>
+                  </div>
+                </div>
+                <div class="col-6 col-md-3">
+                  <div class="input-group">
+                    <label for="divisionSelect" class="input-group-text">বিভাগ</label>
+                    <select id="divisionSelect" v-model="selectedDivision" @change="handleDivisionChange" class="form-select shadow-none">
+                      <option value="" disabled>বিভাগ নির্বাচন করুন</option>
+                      <option v-for="division in divisions" :value="division" class="h1">{{ division.bn_name }}</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="col-6 col-md-3">
+                  <div class="input-group">
+                    <label for="districtSelect" class="input-group-text">জেলা</label>
+                    <select id="districtSelect" v-model="selectedDistrict" @change="handleDistrictChange" class="form-select shadow-none" :disabled="!selectedDivision">
+                      <option value="" disabled>Select District</option>
+                      <option v-for="district in filteredDistricts" :value="district">{{ district.bn_name }}</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-6 col-md-3">
+                  <div class="input-group">
+                    <label for="upazilaSelect" class="input-group-text">উপজেলা</label>
+                    <select id="upazilaSelect" v-model="selectedUpazila" class="form-select shadow-none" :disabled="!selectedDistrict">
+                      <option value="" disabled>Select Upazila</option>
+                      <option v-for="upazila in filteredUpazilas" :value="upazila">{{ upazila.bn_name }}</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-6 col-md-3">
+                  <div class="input-group">
+                    <label for="unionSelect" class="input-group-text">ইউনিয়ন</label>
+                    <select id="unionSelect" v-model="selectedUnion" class="form-select shadow-none" :disabled="!selectedUpazila">
+                      <option value="" disabled>Select Union</option>
+                      <option v-for="union in filteredUnions" :value="union">{{ union.bn_name }}</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-12 col-md-6">
+                  <div class="input-group">
+                    <label for="village" class="input-group-text">গ্রাম/ পাড়া:</label>
+                    <input type="text" v-model="newTeacher.village" class="form-control shadow-none" required>
+                  </div>
+                </div>
+
+
+                <div class="col-8 col-md-6">
+                  <div class="input-group">
+                    <label for="nidImage" class="input-group-text">ছবি:</label>
+                    <input type="file" @change="onFileChange" accept="image/*" class="form-select shadow-none input-sm">
+                  </div>
+                </div>
+                <div class="col-4 col-md-6">
+                  <div v-if="!uploadedImage && !isloading">
+                    <img src="https://placehold.co/400" alt="" class="image-thumnail">
+                  </div>
+
+                  <div v-if="isloading">
+                    <div class="spinner-border text-primary" role="status"></div>
+                    <span class="sr-only">Loading...</span>
+                  </div>
+
+                  <img v-else :src="uploadedImage" alt="" class="image-thumnail">
+                </div>
+  
+              <div class="col-12 col-md-6">
+                <div class="input-group">
+                  <label for="emergencyPhoneNumber" class="input-group-text">ইমার্জেন্সি:</label>
+                  <input type="text" v-model="newTeacher.emergencyPhoneNumber" class="form-control">
+                </div>
               </div>
 
-              <div class="mb-3">
-                <label for="emergencyPhoneNumber">Emergency Phone Number:</label>
-                <input type="text" v-model="newTeacher.emergencyPhoneNumber" class="form-control">
+              <div class="col-12 col-md-6">
+                <div class="input-group">
+                  <label for="madrasa" class="input-group-text">মাদরাসা</label>
+                  <select v-model="newTeacher.madrasa" class="form-control shadow-none">
+                    <option v-for="madrasa in madrasas" :key="madrasa._id" :value="madrasa._id">
+                      {{ madrasa.name }}
+                    </option>
+                  </select>
+                </div>
               </div>
-              <div class="mb-3">
-                <label for="madrasa">Madrasa:</label>
-                <select v-model="newTeacher.madrasa" class="form-control shadow-none">
-                  <option v-for="madrasa in madrasas" :key="madrasa._id" :value="madrasa._id">
-                    {{ madrasa.name }}
-                  </option>
-                </select>
-              </div>
-              <button type="submit" class="btn btn-primary">Create Teacher</button>
-            </form>
           </div>
+          <div class="mb-3">
+
+          </div>
+          <button type="submit" class="btn btn-success">শিক্ষক এড করুন</button>
+          </form>
         </div>
       </div>
     </div>
+  </div>
 
 
-    <!-- delete modal -->
-    <div class="modal fade" id="deletemodal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="deleteModalLabel">Delete Confirmation</h5>
-            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            Are you sure you want to delete this item?
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-            <button type="button" class="btn btn-danger" @click="confirmDelete(selectedTeacher._id)">Delete</button>
-          </div>
+  <!-- delete modal -->
+  <div class="modal fade" id="deletemodal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteModalLabel">Delete Confirmation</h5>
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to delete this item?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-danger" @click="confirmDelete(selectedTeacher._id)">Delete</button>
         </div>
       </div>
     </div>
+  </div>
 
 
-    <!-- edit modal -->
-    <div class="modal fade" id="EditModal" tabindex="-1" aria-labelledby="EditModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <!-- Modal Header -->
-          <div class="modal-header">
-            <h5 class="modal-title" id="EditModalLabel">Edit Content</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <!-- Modal Body -->
-          <div class="modal-body">
-            <!-- Your form or content for editing -->
-            <!-- Example form -->
-            <form>
-              <label for="editInput">Edit Input:</label>
-              <input type="text" id="editInput" name="editInput">
-            </form>
-          </div>
-          <!-- Modal Footer -->
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Save changes</button>
-          </div>
+  <!-- edit modal -->
+  <div class="modal fade" id="EditModal" tabindex="-1" aria-labelledby="EditModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h5 class="modal-title" id="EditModalLabel">Edit Content</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <!-- Modal Body -->
+        <div class="modal-body">
+          <!-- Your form or content for editing -->
+          <!-- Example form -->
+          <form>
+            <label for="editInput">Edit Input:</label>
+            <input type="text" id="editInput" name="editInput">
+          </form>
+        </div>
+        <!-- Modal Footer -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Save changes</button>
         </div>
       </div>
     </div>
+  </div>
 
 
   </div>
@@ -204,6 +289,19 @@
     new Vue({
       el: '#app',
       data: {
+
+        divisions: [],
+        districts: [],
+        upazilas: [],
+        unions: [],
+        selectedDivision: null,
+        selectedDistrict: null,
+        selectedUpazila: null,
+        selectedUnion: null,
+        uploadedImage: '',
+        isloading:false,
+
+
         newTeacher: {
           name: '',
           phone: '',
@@ -230,6 +328,7 @@
       },
       methods: {
         async onFileChange(e) {
+          this.isloading=true
           this.selectedFile = e.target.files[0]; // Store the selected file in selectedFile property
 
           try {
@@ -247,10 +346,35 @@
             // Assuming you want to store the uploaded image URL somewhere, you can access it from 'data' and save it to a variable or use it directly
             this.newTeacher.nidImage = data.data.url;
             // You can use this 'imageUrl' for further operations or store it in your database
+            this.uploadedImage = data.data.url
+            this.isloading=false
           } catch (error) {
             console.error('Error uploading to ImageBB:', error);
+            this.isloading=false
             // Handle error as needed
           }
+        },
+        
+        fetchData() {
+          // Fetch data from JSON files
+          fetch('/data/divisions.json')
+            .then(response => response.json())
+            .then(data => {
+              this.divisions = data;
+              // Set isLoading to false after data is loaded
+            });
+
+          fetch('/data/districts.json')
+            .then(response => response.json())
+            .then(data => this.districts = data);
+
+          fetch('/data/upazilas.json')
+            .then(response => response.json())
+            .then(data => this.upazilas = data);
+
+          fetch('/data/unions.json')
+            .then(response => response.json())
+            .then(data => this.unions = data);
         },
 
         async createTeacher() {
@@ -260,13 +384,14 @@
               name: this.newTeacher.name,
               phone: this.newTeacher.phone,
               village: this.newTeacher.village,
-              upazila: this.newTeacher.upazila,
-              district: this.newTeacher.district,
-              division: this.newTeacher.division,
+              union: this.selectedUnion ? this.selectedUnion.bn_name : 'Not selected',
+              upazila: this.selectedUpazila ? this.selectedUpazila.bn_name : 'Not selected',
+              district: this.selectedDistrict ? this.selectedDistrict.bn_name : 'Not selected',
+              division: this.selectedDivision ? this.selectedDivision.bn_name : 'Not selected',
               emergencyPhoneNumber: this.newTeacher.emergencyPhoneNumber,
               madrasa: this.newTeacher.madrasa,
-              nidImage:this.newTeacher.nidImage
-               // Assuming you have the selected file stored in this.selectedFile
+              nidImage: this.newTeacher.nidImage
+              // Assuming you have the selected file stored in this.selectedFile
             };
 
             const response = await axios.post('http://localhost:3000/api/teacher/create', teacherData);
@@ -319,6 +444,7 @@
         async fetchMadrasas() {
           try {
             const response = await axios.get('http://localhost:3000/api/madrasa/list');
+            console.log(response)
             this.madrasas = response.data;
           } catch (error) {
             console.error('Error fetching madrasas:', error.response.data);
@@ -361,6 +487,17 @@
             // Handle error as needed
           }
         },
+        handleShowSelectedValues() {
+          const selectedValues = {
+            Division: this.selectedDivision ? this.selectedDivision.bn_name : 'Not selected',
+            District: this.selectedDistrict ? this.selectedDistrict.bn_name : 'Not selected',
+            Upazila: this.selectedUpazila ? this.selectedUpazila.bn_name : 'Not selected',
+            Union: this.selectedUnion ? this.selectedUnion.bn_name : 'Not selected',
+          };
+
+          alert(JSON.stringify(selectedValues, null, 2));
+        },
+
         selectDelete(teacher) {
           this.selectedTeacher = teacher;
         },
@@ -369,13 +506,20 @@
           try {
             const response = await axios.delete('http://localhost:3000/api/teacher/delete/' + id);
             fetchTeachers()
-
-
-
           } catch (error) {
             console.error('Error deleting teacher  ', error)
           }
-        }
+        },
+
+        handleDivisionChange() {
+          this.selectedDistrict = null;
+          this.selectedUpazila = null;
+          this.selectedUnion = null;
+        },
+        handleDistrictChange() {
+          this.selectedUpazila = null;
+          this.selectedUnion = null;
+        },
 
       },
       computed: {
@@ -388,12 +532,38 @@
             teacher.name.toLowerCase().includes(searchTerm)
           );
         },
+
+
+        filteredDistricts() {
+          if (!this.selectedDivision) {
+            return [];
+          }
+          return this.districts.filter(district => district.division_id === this.selectedDivision.id);
+        },
+        filteredUpazilas() {
+          if (!this.selectedDistrict) {
+            return [];
+          }
+          return this.upazilas.filter(upazila => upazila.district_id === this.selectedDistrict.id);
+        },
+        filteredUnions() {
+          if (!this.selectedUpazila) {
+            return [];
+          }
+          return this.unions.filter(union => union.upazilla_id === this.selectedUpazila.id);
+        },
+
+
       },
       watch: {
         searchQuery(newVal, oldVal) {
           this.filterTeachers();
         }
       },
+      created() {
+        this.fetchData();
+      }
+
     });
   </script>
 

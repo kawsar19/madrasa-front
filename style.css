@@ -62,7 +62,12 @@
       -webkit-border-radius: 6px;
       -moz-border-radius: 6px;
       border-radius: 6px;
+      
     }
+    
+   .teacher-card .card-left {
+     flex-shrink: 0;
+   }
 
     .part {
       display: flex;
@@ -77,6 +82,9 @@
 
     .part span {
       flex-basis: 50%;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
     }
 
     .card-right {

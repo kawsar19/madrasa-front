@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Payments Dashboard</title>
+  <!-- Include Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div id="app" class="container mt-5">
+  <h1>Payments Dashboard</h1>
+
+  <!-- Month and Year Filter -->
+  <div class="form-row align-items-center mb-3">
+    <div class="col-auto">
+      <label for="monthSelect" class="mr-sm-2">Select Month:</label>
+      <select v-model="selectedMonth" @change="fetchPayments" class="form-control" id="monthSelect">
+        <option v-for="month in months" :key="month" :value="month">{{ month }}</option>
+      </select>
+    </div>
+    <div class="col-auto">
+      <label for="yearInput" class="mr-sm-2">Enter Year:</label>
+      <input v-model="selectedYear" @change="fetchPayments" type="number" class="form-control" id="yearInput">
+    </div>
+  </div>
+
+  <!-- Display Payments -->
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Student Name</th>
+        <th>Month</th>
+        <th>Year</th>
+        <th>Amount</th>
+        <!-- Add more headers for other details -->
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="payment in filteredPayments" :key="payment._id">
+        <td>{{ getStudentName(payment.student) }}</td>
+        <td>{{ payment.month }}</td>
+        <td>{{ payment.year }}</td>
+        <td>{{ payment.amount }}</td>
+        <!-- Add more columns for other details -->
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Include Vue.js and Axios -->
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+new Vue({
+  el: '#app',
+  data: {
+    payments: [],
+    selectedMonth: '',
+    selectedYear: '',
+    months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+  },
+  created() {
+    this.fetchPayments();
+  },
+  methods: {
+    fetchPayments() {
+      axios.get(`http://localhost:3000/month/${this.selectedMonth}`)
+        .then(response => {
+          this.payments = response.data.payments.filter(payment => payment.year.toString() === this.selectedYear);
+        })
+        .catch(error => {
+          console.error('Error fetching payments:', error);
+        });
+    },
+    getStudentName(studentId) {
+      // Implement a function to fetch and return the student name based on the studentId
+      // You might need to make another API call or have a mapping of IDs to names
+      return "Student Name";
+    }
+    // Add more methods for additional functionalities as needed
+  },
+  computed: {
+    filteredPayments() {
+      return this.payments.filter(payment => payment.month === this.selectedMonth && payment.year.toString() === this.selectedYear);
+    }
+  }
+});
+</script>
+
+</body>
+</html>
