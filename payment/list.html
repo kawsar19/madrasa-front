@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <title>Payments Page</title>
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+   <style>
+      /* Skeleton styles */
+      .skeleton-row {
+         display: flex;
+         align-items: center;
+         margin-bottom: 10px;
+         /* Adjust as needed */
+         flex-direction: column;
+         justify-content: center;
+         gap: 10px;
+      }
+
+      .skeleton-column {
+         height: 40px;
+         /* Adjust the height */
+         width: 100%;
+         /* Adjust the width */
+         background-color: #f0f0f0;
+         /* Adjust the color */
+         margin-right: 10px;
+         /* Adjust the spacing */
+      }
+   </style>
+</head>
+
+<body>
+   <div id="app" class="container mt-5">
+      <h1>Payments</h1>
+      <div>
+         <!-- Existing code -->
+         <label for="month">Filter by Month:</label>
+         <select id="month" v-model="filterMonth" class="form-select">
+            <option value="">Select Month</option>
+            <!-- Add options for months dynamically -->
+            <option v-for="month in months" :key="month" :value="month">{{ month }}</option>
+         </select>
+         <label for="year">Filter by Year:</label>
+         <select id="year" v-model="filterYear" class="form-select">
+            <option value="">Select Year</option>
+            <!-- Add options for years dynamically -->
+            <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
+         </select>
+
+         <button @click="getPayments" class="btn btn-primary mt-2">Filter</button>
+      </div>
+      <div class="table-responsive">
+
+         <table class="table mt-3 table-striped">
+            <thead>
+               <tr>
+                  <th>Student</th>
+                  <th>Month</th>
+                  <th>Year</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                  <!-- Add other columns here -->
+               </tr>
+            </thead>
+            <!-- Before your table -->
+
+            <tbody>
+
+               <tr v-for="payment in payments" :key="payment._id">
+                  <td>{{payment.student?.fullName}}</td>
+                  <td>{{ payment.month }}</td>
+                  <td>{{ payment.year }}</td>
+                  <td>{{payment.amount}}</td>
+                  <td>{{payment.status? 'paid':'due'}}</td>
+                  <!-- Display other payment data here -->
+               </tr>
+            </tbody>
+         </table>
+         <div v-if="payments.length === 0">
+            <div class="skeleton-row">
+               <div class="skeleton-column"></div>
+               <div class="skeleton-column"></div>
+               <div class="skeleton-column"></div>
+               <div class="skeleton-column"></div>
+               <div class="skeleton-column"></div>
+               <!-- Add other skeleton columns here -->
+            </div>
+            <div class="skeleton-row">
+               <div class="skeleton-column"></div>
+               <div class="skeleton-column"></div>
+               <div class="skeleton-column"></div>
+               <div class="skeleton-column"></div>
+               <div class="skeleton-column"></div>
+               <!-- Add other skeleton columns here -->
+            </div>
+            <!-- Repeat skeleton rows based on your table row count -->
+         </div>
+
+
+      </div>
+   </div>
+
+   <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+   <script>
+      new Vue({
+               el: '#app',
+               data: {
+                  payments: [],
+                  filterMonth: '',
+                  filterYear: '',
+                  months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+                  years: [2023, 2022, 2021]
+                  },
+                  methods: {
+                     async getPayments() {
+                        try {
+                           const response = await axios.get('https://madrasa-back.vercel.app/api/payment/list', {
+                              params: {
+                                 month: this.filterMonth,
+                                 year: this.filterYear
+                              }
+                           });
+                           console.log(response)
+                           this.payments = response.data.payments;
+
+                           console.log(this.payments)
+                        } catch (error) {
+                           console.error('Error fetching payments:', error);
+                        }
+                     }
+                  },
+                  mounted() {
+                     this.getPayments();
+                  }
+               });
+   </script>
+</body>
+
+</html>

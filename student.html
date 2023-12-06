@@ -22,10 +22,10 @@
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#studentModal">Register Student</button>
 
     <div class="row">
+       {{students?.students?.length}} <br> <br>
+
       <div class="teacher-cards">
-
-
-        <div class="teacher-card" v-for="student in students" :key="student._id">
+        <div class="teacher-card " v-for="student in students.students" :key="student._id">
           <div class="card-left">
             <img v-if="student.studentImage" :src="student.studentImage" alt="">
             <img v-else src="https://placehold.co/400" alt="Placeholder Image">
@@ -351,7 +351,7 @@
         },
         async getAllStudents() {
           try {
-            const response = await axios.get('http://localhost:3000/api/student/list');
+            const response = await axios.get('https://madrasa-back.vercel.app/api/student/list');
             console.log(response)
             this.students = response.data;
           } catch (error) {
@@ -362,7 +362,7 @@
 
         async fetchClassess() {
           try {
-            const response = await axios.get('http://localhost:3000/api/class/list');
+            const response = await axios.get('https://madrasa-back.vercel.app/api/class/list');
             console.log(response)
             this.classess = response.data;
           } catch (error) {
@@ -407,7 +407,7 @@
 
             // Send studentData to your API endpoint using Axios or fetch
             // Example using Axios:
-            const response = await axios.post('http://localhost:3000/api/student/create', studentData);
+            const response = await axios.post('https://madrasa-back.vercel.app/api/student/create', studentData);
 
             console.log('Student data:', response);
 
@@ -444,7 +444,7 @@
         async confirmDelete(id) {
           alert(id)
           try {
-            const response = await axios.delete('http://localhost:3000/api/student/delete/' + id);
+            const response = await axios.delete('https://madrasa-back.vercel.app/api/student/delete/' + id);
             fetchTeachers()
           } catch (error) {
             console.error('Error deleting teacher  ', error)

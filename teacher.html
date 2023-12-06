@@ -394,9 +394,9 @@
               // Assuming you have the selected file stored in this.selectedFile
             };
 
-            const response = await axios.post('http://localhost:3000/api/teacher/create', teacherData);
+            const response = await axios.post('https://madrasa-back.vercel.app/api/teacher/create', teacherData);
 
-            console.log('Teacher created:', response.data);
+            console.log('Teacher created:', response?.data);
             // Clear the form fields after successful creation
             this.newTeacher = {
               name: '',
@@ -432,7 +432,6 @@
           if (this.selectedMadrasa) {
             console.log(this.selectedMadrasa)
             for (single of this.teachers) {
-              console.log(single.madrasa.name)
             }
             // If a Madrasa is selected, filter teachers based on Madrasa ID
             this.teachers = this.teachers.filter(teacher => teacher.madrasa.name === this.selectedMadrasa);
@@ -443,9 +442,9 @@
         },
         async fetchMadrasas() {
           try {
-            const response = await axios.get('http://localhost:3000/api/madrasa/list');
+            const response = await axios.get('https://madrasa-back.vercel.app/api/madrasa/list');
             console.log(response)
-            this.madrasas = response.data;
+            this.madrasas = response?.data;
           } catch (error) {
             console.error('Error fetching madrasas:', error.response.data);
             // Handle error as needed
@@ -454,7 +453,7 @@
         /*
         async createTeacher() {
           try {
-            const response = await axios.post('http://localhost:3000/api/teacher/create', this.newTeacher);
+            const response = await axios.post('https://madrasa-back.vercel.ap/api/teacher/create', this.newTeacher);
             console.log(response.data);
             // Clear the form fields after successful creation
             this.newTeacher = {
@@ -479,8 +478,9 @@
         },*/
         async fetchTeachers() {
           try {
-            const response = await axios.get('http://localhost:3000/api/teacher/list');
-            this.teachers = response.data;
+            const response = await axios.get('https://madrasa-back.vercel.app/api/teacher/list');
+            this.teachers = response?.data;
+            console.log(response.data)
             this.allTeachers = response.data
           } catch (error) {
             console.error('Error fetching teachers:', error.response.data);
@@ -504,7 +504,7 @@
 
         async confirmDelete(id) {
           try {
-            const response = await axios.delete('http://localhost:3000/api/teacher/delete/' + id);
+            const response = await axios.delete('https://madrasa-back.vercel.app/api/teacher/delete/' + id);
             fetchTeachers()
           } catch (error) {
             console.error('Error deleting teacher  ', error)

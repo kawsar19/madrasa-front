@@ -66,7 +66,7 @@
          <div class="modal-dialog">
             <div class="modal-content">
                <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                  <h5 class="modal-title" id="exampleModalLabel">Modal title {{selectedStudent}}</h5>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                </div>
                <div class="modal-body">
@@ -91,17 +91,18 @@
          <div class="modal-dialog">
             <div class="modal-content">
                <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                  <h5 class="modal-title" id="exampleModalLabel">Modal title {{selectedStudent._id}}</h5>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                </div>
                <div class="modal-body">
+
                   <!-- Modal content goes here -->
                   <div class="row justify-content-center">
                      <div class="col-md-6">
                         <form @submit.prevent="submitPayment">
                            <div class="form-group">
                               <label for="student">Student ID</label>
-                              <input type="text" class="form-control" id="student" v-model="payment.student">
+                              <input type="text" class="form-control" id="student" :value="selectedStudent?._id">
                            </div>
                            <div class="form-group">
                               <label for="month">Month</label>
@@ -196,7 +197,7 @@
                       'July', 'August', 'September', 'October', 'November', 'December'
                     ],
             payment: {
-               student: "656930f6ab8a5eb47afd7588",
+               student: this.selectedStudent?._id,
                month: "", // Initially empty
                year: 2023,
                amount: 100,
@@ -239,10 +240,12 @@
                this.fetchData();
             }
          },
+
+
          methods: {
             async fetchData() {
                try {
-                  let apiUrl = `http://localhost:3000/api/student/list?limit=${this.limit}&page=${this.currentPage}`;
+                  let apiUrl = `https://madrasa-back.vercel.app/api/student/list?limit=${this.limit}&page=${this.currentPage}`;
 
                   if (this.searchQuery) {
                      apiUrl += `&q=${this.searchQuery}`;
@@ -263,6 +266,34 @@
                   console.error(error);
                }
             },
+            async submitPayment() {
+               // Assign the selected student ID to the payment object here
+               this.payment.student = this.selectedStudent?._id;
+
+               try {
+                  const response = await fetch('https://madrasa-back.vercel.app/api/payment/create', {
+                     method: 'POST',
+                     headers: {
+                        'Content-Type': 'application/json',
+                        // Add any required headers (e.g., authentication tokens) here
+                     },
+                     body: JSON.stringify(this.payment),
+                  });
+                  console.log(response)
+
+                  if (response.ok) {
+                     // Handle successful payment submission
+                     console.log('Payment submitted successfully!');
+                  } else {
+                     // Handle errors if submission fails
+                     console.error('Payment submission failed.');
+                  }
+               } catch (error) {
+                  console.error('Error submitting payment:', error);
+               }
+            },
+
+
 
             setPage(page) {
                this.currentPage = page;

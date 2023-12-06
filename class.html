@@ -1,148 +1,170 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <title>Vue CRUD with Bootstrap</title>
-  
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
-    <!-- Axios (for making HTTP requests) -->
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+   <meta charset="UTF-8">
+   <title>Vue CRUD with Bootstrap</title>
+
+   <!-- Bootstrap CSS -->
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+   <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+   <!-- Axios (for making HTTP requests) -->
+   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
+
 <body>
 
-  <div id="app" class="container mt-4">
-    <h1>Class Management</h1>
+   <div id="app" class="container mt-4">
+      <h1>Class Management</h1>
 
-    <!-- Button to trigger add class modal -->
-    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addModal" @click="showAddModal">Add Class</button>
+      <!-- Button to trigger add class modal -->
+      <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addModal" @click="showAddModal">Add Class</button>
+      <!-- Sync Data Button -->
+      <button type="button" class="btn btn-info mb-3" @click="syncData">Sync Data</button>
 
-    <!-- Display classes -->
-    <ul class="list-group">
-      <li class="list-group-item" v-for="classItem in classes" :key="classItem._id">
-        {{ classItem.className }}
-        <button class="btn btn-warning btn-sm ms-2 me-1" @click="showEditModal(classItem)" data-bs-toggle="modal" data-bs-target="#editModal">Edit</button>
-        <button class="btn btn-danger btn-sm me-1" @click="deleteClass(classItem._id)">Delete</button>
-      </li>
-    </ul>
+      <!-- Display classes -->
+      <ul class="list-group">
+         <li class="list-group-item" v-for="classItem in classes" :key="classItem._id">
+            {{ classItem.className }}
+            <button class="btn btn-warning btn-sm ms-2 me-1" @click="showEditModal(classItem)" data-bs-toggle="modal" data-bs-target="#editModal">Edit</button>
+            <button class="btn btn-danger btn-sm me-1" @click="deleteClass(classItem._id)">Delete</button>
+         </li>
+      </ul>
 
-    <!-- Modal for adding class -->
-    <div class="modal fade" id="addModal" tabindex="-1" role="dialog">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Add Class</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-          </div>
-          <div class="modal-body">
-            <form @submit.prevent="addClass">
-              <div class="mb-3">
-                <label for="className" class="form-label">Class Name</label>
-                <input type="text" class="form-control shadow-none" id="className" v-model="formData.className" required>
-              </div>
-              <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Add</button>
-            </form>
-          </div>
-        </div>
+      <!-- Modal for adding class -->
+      <!-- Modal for adding class -->
+      <div class="modal fade" id="addModal" tabindex="-1" role="dialog">
+         <div class="modal-dialog" role="document">
+            <div class="modal-content">
+               <div class="modal-header">
+                  <h5 class="modal-title">Add Class</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+               </div>
+               <div class="modal-body">
+                  <form @submit.prevent="addClass">
+                     <div class="mb-3">
+                        <label for="className" class="form-label">Class Name</label>
+                        <input type="text" class="form-control shadow-none" id="className" v-model="formData.className" required>
+                     </div>
+                     <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Add</button>
+                  </form>
+               </div>
+            </div>
+         </div>
       </div>
-    </div>
 
-    <!-- Modal for editing class -->
-    <div class="modal fade" id="editModal" tabindex="-1" role="dialog">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Edit Class</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-          </div>
-          <div class="modal-body">
-            <form @submit.prevent="editClass">
-              <div class="mb-3">
-                <label for="editClassName" class="form-label">Class Name</label>
-                <input type="text" class="form-control shadow-none" id="editClassName" v-model="formData.className" required>
-              </div>
-              <button type="submit" class="btn btn-primary" data-bs-dismiss="modal"  >Save Changes</button>
-            </form>
-          </div>
-        </div>
+
+      <!-- Modal for editing class -->
+      <!-- Modal for editing class -->
+      <div class="modal fade" id="editModal" tabindex="-1" role="dialog">
+         <div class="modal-dialog" role="document">
+            <div class="modal-content">
+               <div class="modal-header">
+                  <h5 class="modal-title">Edit Class</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+               </div>
+               <div class="modal-body">
+                  <form @submit.prevent="editClass">
+                     <div class="mb-3">
+                        <label for="editClassName" class="form-label">Class Name</label>
+                        <input type="text" class="form-control shadow-none" id="editClassName" v-model="formData.className" required>
+                     </div>
+                     <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Save Changes</button>
+                  </form>
+               </div>
+            </div>
+         </div>
       </div>
-    </div>
-  </div>
 
-  <!-- Vue.js -->
+   </div>
 
-  <!-- Bootstrap JavaScript bundle -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+   <!-- Vue.js -->
 
-  <script>
-    new Vue({
-      el: '#app',
-      data: {
-        classes: [],
-        formData: {
-          className: '',
-        },
-        selectedClass: null,
-      },
-      mounted() {
-        this.fetchClasses();
-      },
-      methods: {
-        showAddModal(){
-          this.selectedClass=null;
-          this.formData.className=''
-        },
-        fetchClasses() {
-          axios.get('https://madrasa-back.vercel.app/api/class/list')
-            .then(response => {
-              this.classes = response.data;
-            })
-            .catch(error => {
-              console.error('Error fetching classes', error);
-            });
-        },
-        addClass() {
-          axios.post('https://madrasa-back.vercel.app/api/class/create', { className: this.formData.className })
-            .then(response => {
-              this.classes.push(response.data);
-              this.formData.className = '';
-            })
-            .catch(error => {
-              console.error('Error adding class', error);
-            });
-        },
-        showEditModal(classItem) {
-          this.selectedClass = classItem;
-          this.formData.className = classItem.className;
-        },
-        editClass() {
-          if (this.selectedClass) {
-            axios.put(`https://madrasa-back.vercel.app/api/class/update/${this.selectedClass._id}`, { className: this.formData.className })
-              .then(response => {
-                const index = this.classes.findIndex(classItem => classItem._id === this.selectedClass._id);
-                if (index !== -1) {
-                  this.classes[index].className = response.data.className;
-                }
-                this.formData.className = '';
-                $('#editModal').modal('hide');
-              })
-              .catch(error => {
-                console.error('Error editing class', error);
-              });
-          }
-        },
-        deleteClass(classId) {
-          axios.delete(`https://madrasa-back.vercel.app/api/class/delete/${classId}`)
-            .then(() => {
-              this.classes = this.classes.filter(classItem => classItem._id !== classId);
-            })
-            .catch(error => {
-              console.error('Error deleting class', error);
-            });
-        }
-      }
-    });
-  </script>
+   <!-- Bootstrap JavaScript bundle -->
+   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+   <script>
+      new Vue({
+         el: '#app',
+         data: {
+            classes: [],
+            formData: {
+               className: '',
+            },
+            selectedClass: null,
+         },
+         mounted() {
+            const storedClasses = localStorage.getItem('classes');
+
+            if (storedClasses) {
+               this.classes = JSON.parse(storedClasses);
+            } else {
+               this.fetchClasses();
+            }
+         },
+         methods: {
+            showAddModal() {
+               this.selectedClass = null;
+               this.formData.className = ''
+            },
+            fetchClasses() {
+               axios.get('https://madrasa-back.vercel.app/api/class/list')
+                  .then(response => {
+                     this.classes = response.data;
+                     localStorage.setItem('classes', JSON.stringify(response.data));
+                  })
+                  .catch(error => {
+                     console.error('Error fetching classes', error);
+                  });
+            },
+            addClass() {
+               axios.post('https://madrasa-back.vercel.app/api/class/create', { className: this.formData.className })
+                  .then(response => {
+                     this.classes.push(response.data);
+                     this.formData.className = '';
+                     localStorage.setItem('classes', JSON.stringify(this.classes));
+                  })
+                  .catch(error => {
+                     console.error('Error adding class', error);
+                  });
+            },
+            showEditModal(classItem) {
+               this.selectedClass = classItem;
+               this.formData.className = classItem.className;
+            },
+            editClass() {
+               if (this.selectedClass) {
+                  axios.put(`https://madrasa-back.vercel.app/api/class/update/${this.selectedClass._id}`, { className: this.formData.className })
+                     .then(response => {
+                        const index = this.classes.findIndex(classItem => classItem._id === this.selectedClass._id);
+                        if (index !== -1) {
+                           this.classes[index].className = response.data.className;
+                        }
+                        this.formData.className = '';
+                        $('#editModal').modal('hide');
+                        localStorage.setItem('classes', JSON.stringify(this.classes));
+                     })
+                     .catch(error => {
+                        console.error('Error editing class', error);
+                     });
+               }
+            },
+            deleteClass(classId) {
+               axios.delete(`https://madrasa-back.vercel.app/api/class/delete/${classId}`)
+                  .then(() => {
+                     this.classes = this.classes.filter(classItem => classItem._id !== classId);
+                     localStorage.setItem('classes', JSON.stringify(this.classes));
+                  })
+                  .catch(error => {
+                     console.error('Error deleting class', error);
+                  });
+            },
+            syncData() {
+               this.fetchClasses();
+            }
+         }
+      });
+   </script>
 </body>
+
 </html>
