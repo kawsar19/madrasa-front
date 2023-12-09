@@ -12,46 +12,45 @@
    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
    <style>
       /* Style for the skeleton loader */
-.skeleton-loader {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 0px;
-}
+      .skeleton-loader {
+         width: 100%;
+         border-collapse: collapse;
+         margin-top: 0px;
+      }
 
-.skeleton-row {
-  display: flex;
-  align-items: center;
-  padding: 10px 0;
-  background: #fff;
-  margin-bottom: 10px;
-}
+      .skeleton-row {
+         display: flex;
+         align-items: center;
+         padding: 10px 0;
+         background: #fff;
+         margin-bottom: 10px;
+      }
 
-.skeleton-thumbnail {
-  width: 80px;
-  height: 80px;
-  background-color: #ccc;
-  border-radius: 0%;
-  margin-right: 20px;
-}
+      .skeleton-thumbnail {
+         width: 80px;
+         height: 80px;
+         background-color: #ccc;
+         border-radius: 0%;
+         margin-right: 20px;
+      }
 
-.skeleton-info {
-  flex: 1;
-}
+      .skeleton-info {
+         flex: 1;
+      }
 
 
-/* Adjustments for responsiveness */
-@media (max-width: 768px) {
-  .skeleton-row {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+      /* Adjustments for responsiveness */
+      @media (max-width: 768px) {
+         .skeleton-row {
+            flex-direction: column;
+            align-items: flex-start;
+         }
 
-  .skeleton-thumbnail {
-    margin-right: 0;
-    margin-bottom: 10px;
-  }
-}
-
+         .skeleton-thumbnail {
+            margin-right: 0;
+            margin-bottom: 10px;
+         }
+      }
    </style>
 </head>
 
@@ -83,7 +82,7 @@
       <button type="button" class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#createTeacherModal">
          শিক্ষক এড
       </button> <br> <br>
-      
+
       <div v-if="teachers.length === 0">
          <div class="skeleton-loader">
             <div class="skeleton-row" v-for="n in 5" :key="n">
@@ -454,7 +453,7 @@
                   };
 
                   const response = await axios.post('https://madrasa-back.vercel.app/api/teacher/create', teacherData);
-                                window.location.reload()
+                  window.location.reload()
 
 
 
@@ -475,7 +474,7 @@
                      backdrop: false,
                      focus: true
                   });
-                  
+
                   window.location.reload()
 
                   // After successful teacher creation, hide the modal
@@ -582,8 +581,14 @@
 
             async confirmDelete(id) {
                try {
-                  const response = await axios.delete('https://madrasa-back.vercel.app/api/teacher/delete/' + id);
-                  fetchTeachers()
+                  const confirmation = confirm('are you sure you eant to delete this?');
+                  if (confirmation) {
+                     const response = await axios.delete('https://madrasa-back.vercel.app/api/teacher/delete/' + id);
+                     window.location.reload()
+                     fetchTeachers()
+
+
+                  }
                } catch (error) {
                   console.error('Error deleting teacher  ', error)
                }
