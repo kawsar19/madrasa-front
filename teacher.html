@@ -251,7 +251,7 @@
 
                            <div v-if="isloading">
                               <div class="spinner-border text-primary" role="status"></div>
-                              <span class="sr-only">Loading...</span>
+                              <span class="sr-only">.</span>
                            </div>
 
                            <img v-else :src="uploadedImage" alt="" class="image-thumnail">
@@ -457,7 +457,6 @@
                                 window.location.reload()
 
 
-                  console.log('Teacher created:', response?.data);
 
                   // Clear the form fields after successful creation
                   this.newTeacher = {
