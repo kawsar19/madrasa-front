@@ -3,6 +3,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login Page</title>
   <!-- Bootstrap CSS -->
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
@@ -54,7 +55,7 @@
           localStorage.setItem('user', JSON.stringify(user));
 
           // Redirect to dashboard after successful login
-          window.location.href = '/teacher/dashboard.html';
+          window.location.href = './teacher/dashboard.html';
         } catch (error) {
           console.error(error.response.data.error);
           // Handle login errors
