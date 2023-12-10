@@ -83,7 +83,7 @@
          শিক্ষক এড
       </button> <br> <br>
 
-      <div v-if="teachers.length === 0">
+      <div v-if="teacherLength === null">
          <div class="skeleton-loader">
             <div class="skeleton-row" v-for="n in 5" :key="n">
                <div class="skeleton-thumbnail"></div>
@@ -190,6 +190,12 @@
                            <div class="input-group">
                               <label for="phone" class="input-group-text">মোবাইল:</label>
                               <input type="number" v-model="newTeacher.phone" class="form-control shadow-none" required>
+                           </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                           <div class="input-group">
+                              <label for="phone" class="input-group-text">পাসওয়ার্ড :</label>
+                              <input type="number" v-model="newTeacher.password" class="form-control shadow-none" required>
                            </div>
                         </div>
                         <div class="col-6 col-md-3">
@@ -368,6 +374,7 @@
                nidImage: '',
                emergencyPhoneNumber: '',
                madrasa: '',
+               password:''
 
             },
             selectedFile: null,
@@ -376,7 +383,8 @@
             allTeachers: [],
             selectedMadrasa: '',
             searchQuery: '',
-            selectedTeacher: null
+            selectedTeacher: null,
+            teacherLength:null,
          },
          mounted() {
             this.fetchMadrasas();
@@ -448,7 +456,8 @@
                      division: this.selectedDivision ? this.selectedDivision.bn_name : 'Not selected',
                      emergencyPhoneNumber: this.newTeacher.emergencyPhoneNumber,
                      madrasa: this.newTeacher.madrasa,
-                     nidImage: this.newTeacher.nidImage
+                     nidImage: this.newTeacher.nidImage,
+                     password: this.newTeacher.password
                      // Assuming you have the selected file stored in this.selectedFile
                   };
 
@@ -559,6 +568,7 @@
                   this.teachers = response?.data;
                   console.log(response.data)
                   this.allTeachers = response.data
+                  this.teacherLength=response.data.length
                } catch (error) {
                   console.error('Error fetching teachers:', error.response.data);
                   // Handle error as needed
