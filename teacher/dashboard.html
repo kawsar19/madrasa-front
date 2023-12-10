@@ -83,7 +83,7 @@
             </span>
             <span>শিক্ষক</span>
          </a>
-         <a  data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample">
+         <a data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample">
             <span>
                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
                   <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0" />
@@ -110,7 +110,7 @@
       </div>
 
    </div>
-   
+
    <script src="../lib/bootstrap.bundle.min.js"></script>
    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
    <script>
@@ -120,6 +120,18 @@
             teacherName: '' // Initialize teacherName in data
          },
          mounted() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+               window.location.href = '../teacher-login.html'; // Replace 'login.html' with your actual login page
+            } else {
+               // Token exists, proceed with retrieving the teacher's name
+               const storedUser = localStorage.getItem('user');
+               if (storedUser) {
+                  const user = JSON.parse(storedUser);
+                  this.teacherName = user.name; // Assuming 'name' is the property containing the teacher's name
+               }
+            }
+
             // Retrieve teacher's name from local storage on page load
             const storedUser = localStorage.getItem('user');
             if (storedUser) {
@@ -127,6 +139,7 @@
                this.teacherName = user.name; // Assuming 'name' is the property containing the teacher's name
             }
          }
+
       });
    </script>
 
