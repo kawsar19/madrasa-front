@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <title></title>
+   <link rel="stylesheet" href="../lib/bootstrap.min.css">
+   <link rel="stylesheet" href="../style.css">
+   <style>
+      .footer {
+         height: 70px;
+         border-top: 1px solid #ddd;
+         position: fixed;
+         left: 0;
+         bottom: 0;
+         width: 100%;
+      }
+
+      .footer .footer-menu {
+         display: flex;
+         justify-content: space-around;
+         height: 100%;
+         align-items: center;
+      }
+
+      .footer .footer-menu a {
+         display: flex;
+         flex-direction: column;
+         align-items: center;
+         text-decoration: none;
+         gap: 0;
+         color: #333;
+         font-size: 14px;
+      }
+
+      .footer .footer-menu a.active {
+         color: crimson;
+      }
+   </style>
+</head>
+
+<body>
+   <div id="app" class="container mt-5">
+      <!-- Your dashboard content -->
+      <h1>Welcome <span id="teacherName">{{ teacherName }}</span></h1>
+      <!-- ... Other dashboard elements ... -->
+   </div>
+
+   <div class="footer">
+      <div class="footer-menu">
+         <a href="#" class="active">
+            <span>
+               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house-door-fill" viewBox="0 0 16 16">
+                  <path d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5" />
+               </svg>
+            </span>
+            <span>ড্যাশবোর্ড</span>
+         </a>
+         <a href="#">
+            <span>
+               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cash" viewBox="0 0 16 16">
+                  <path d="M8 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4" />
+                  <path d="M0 4a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1zm3 0a2 2 0 0 1-2 2v4a2 2 0 0 1 2 2h10a2 2 0 0 1 2-2V6a2 2 0 0 1-2-2z" />
+               </svg>
+            </span>
+            <span>বেতন</span>
+         </a>
+         <a href="#">
+            <span>
+               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-backpack2-fill" viewBox="0 0 16 16">
+                  <path d="M5 13h6v-3h-1v.5a.5.5 0 0 1-1 0V10H5z" />
+                  <path d="M6 2v.341C3.67 3.165 2 5.388 2 8v1.191l-1.17.585A1.5 1.5 0 0 0 0 11.118V13.5A1.5 1.5 0 0 0 1.5 15h1c.456.607 1.182 1 2 1h7c.818 0 1.544-.393 2-1h1a1.5 1.5 0 0 0 1.5-1.5v-2.382a1.5 1.5 0 0 0-.83-1.342L14 9.191V8a6.002 6.002 0 0 0-4-5.659V2a2 2 0 1 0-4 0m2-1a1 1 0 0 1 1 1v.083a6.04 6.04 0 0 0-2 0V2a1 1 0 0 1 1-1m0 3a4 4 0 0 1 3.96 3.43.5.5 0 1 1-.99.14 3 3 0 0 0-5.94 0 .5.5 0 1 1-.99-.14A4 4 0 0 1 8 4M4.5 9h7a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-4a.5.5 0 0 1 .5-.5" />
+               </svg>
+            </span>
+            <span>শিক্ষার্থী </span>
+         </a>
+         <a href="#">
+            <span>
+               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-people-fill" viewBox="0 0 16 16">
+                  <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5" />
+               </svg>
+            </span>
+            <span>শিক্ষক</span>
+         </a>
+         <a  data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample">
+            <span>
+               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
+                  <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0" />
+               </svg>
+            </span>
+            <span>অন্যান্য</span>
+         </a>
+      </div>
+
+      <div class="offcanvas offcanvas-start show" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+         <div class="offcanvas-header">
+            <!-- Your offcanvas header content -->
+            <h5 class="offcanvas-title" id="offcanvasExampleLabel">Menu</h5>
+            <button type="button" class="btn-close text-reset shadow-none" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+         </div>
+         <div class="offcanvas-body">
+            <!-- Your offcanvas content -->
+            <ul class="menu">
+               <li class="menu-item">
+                  <a href="#">Home</a>
+               </li>
+            </ul>
+         </div>
+      </div>
+
+   </div>
+   
+   <script src="/lib/bootstrap.bundle.min.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+   <script>
+      new Vue({
+         el: '#app',
+         data: {
+            teacherName: '' // Initialize teacherName in data
+         },
+         mounted() {
+            // Retrieve teacher's name from local storage on page load
+            const storedUser = localStorage.getItem('user');
+            if (storedUser) {
+               const user = JSON.parse(storedUser);
+               this.teacherName = user.name; // Assuming 'name' is the property containing the teacher's name
+            }
+         }
+      });
+   </script>
+
+
+</body>
+
+</html>
