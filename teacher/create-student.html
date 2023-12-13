@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <title>Create student</title>
+   <link rel="stylesheet" href="../lib/bootstrap.min.css">
+   <link rel="stylesheet" href="../style.css">
+     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+</head>
+
+<body>
+   <div id="app">
+         <div class="container">
+      <form @submit.prevent="registerStudent">
+         <!-- Form fields for student registration -->
+         <div class="row g-3">
+
+            <div class="col-12 col-md-6">
+               <div class="input-group">
+                  <label for="fullName" class="input-group-text">নাম:</label>
+                  <input type="text" class="form-control shadow-none" id="fullName" v-model="student.fullName" required>
+               </div>
+            </div>
+            <div class="col-12 col-md-6">
+               <div class="input-group">
+                  <label for="dob" class="input-group-text">জন্ম:</label>
+                  <input type="date" class="form-control shadow-none" id="dob" v-model="student.dateOfBirth" required>
+               </div>
+            </div>
+
+            <div class="col-12 col-md-6">
+               <div class="input-group">
+                  <label for="gender" class="input-group-text">লিঙ্গ:</label>
+                  <select class="form-select shadow-none" id="gender" v-model="student.gender" required>
+                     <option value="" disabled selected>Select gender</option>
+                     <option value="Male">Male</option>
+                     <option value="Female">Female</option>
+                     <option value="Other">Other</option>
+                  </select>
+               </div>
+            </div>
+
+            <div class="col-8 col-md-6">
+               <div class="input-group">
+                  <label for="studentImage" class="input-group-text">ছবি:</label>
+                  <input id="studentImage" type="file" @change="onFileChange" accept="image/*" class="form-select shadow-none input-sm">
+               </div>
+            </div>
+            <div class="col-4 col-md-6">
+               <div v-if="!uploadedImage && !isloading">
+                  <img src="https://placehold.co/400" alt="" class="image-thumnail">
+               </div>
+
+               <div v-if="isloading">
+                  <div class="spinner-border text-primary" role="status"></div>
+                  <span class="sr-only">Loading...</span>
+               </div>
+
+               <img v-else :src="uploadedImage" alt="" class="image-thumnail">
+            </div>
+
+            <div class="col-12 col-md-6">
+               <div class="input-group">
+                  <label for="dob" class="input-group-text">ফোন:</label>
+                  <input type="text" class="form-control" id="phone" v-model="student.phone" required>
+
+               </div>
+            </div>
+
+            <div class="col-12 col-md-6">
+               <div class="input-group">
+                  <label for="studentClass" class="input-group-text">শ্রেণী</label>
+                  <select class="form-select shadow-none" id="studentClass" v-model="student.studentClass" required>
+                     <option value="" disabled selected>শ্রেণী নির্বাচন করুন</option>
+                     <option v-for="classItem in classess" :key="classItem._id" :value="classItem.className">
+                        {{ classItem.className }}
+                     </option>
+                  </select>
+               </div>
+
+            </div>
+
+            <div class="col-12 col-md-6">
+               <div class="input-group">
+                  <label for="village" class="input-group-text">গ্রাম/ পাড়া:</label>
+                  <input type="text" v-model="student.address.village" class="form-control shadow-none" required>
+               </div>
+            </div>
+
+            <div class="col-6 col-md-3">
+               <div class="input-group">
+                  <label for="divisionSelect" class="input-group-text">বিভাগ</label>
+                  <select id="divisionSelect" v-model="selectedDivision" @change="handleDivisionChange" class="form-select shadow-none">
+                     <option value="" disabled>বিভাগ নির্বাচন করুন</option>
+                     <option v-for="division in divisions" :value="division" class="h1">{{ division.bn_name }}</option>
+                  </select>
+               </div>
+            </div>
+
+
+            <div class="col-6 col-md-3">
+               <div class="input-group">
+                  <label for="districtSelect" class="input-group-text">জেলা</label>
+                  <select id="districtSelect" v-model="selectedDistrict" @change="handleDistrictChange" class="form-select shadow-none" :disabled="!selectedDivision">
+                     <option value="" disabled>Select District</option>
+                     <option v-for="district in filteredDistricts" :value="district">{{ district.bn_name }}</option>
+                  </select>
+               </div>
+            </div>
+            <div class="col-6 col-md-3">
+               <div class="input-group">
+                  <label for="upazilaSelect" class="input-group-text">উপজেলা</label>
+                  <select id="upazilaSelect" v-model="selectedUpazila" class="form-select shadow-none" :disabled="!selectedDistrict">
+                     <option value="" disabled>Select Upazila</option>
+                     <option v-for="upazila in filteredUpazilas" :value="upazila">{{ upazila.bn_name }}</option>
+                  </select>
+               </div>
+            </div>
+            <div class="col-6 col-md-3">
+               <div class="input-group">
+                  <label for="unionSelect" class="input-group-text">ইউনিয়ন</label>
+                  <select id="unionSelect" v-model="selectedUnion" class="form-select shadow-none" :disabled="!selectedUpazila">
+                     <option value="" disabled>Select Union</option>
+                     <option v-for="union in filteredUnions" :value="union">{{ union.bn_name }}</option>
+                  </select>
+               </div>
+            </div>
+
+         </div>
+
+         <!-- Inside the modal form -->
+
+         <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+
+   </div>
+
+   </div>
+      <div class="footer">
+      <div class="footer-menu">
+         <a href="./dashboard.html" class="">
+            <span>
+               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house-door-fill" viewBox="0 0 16 16">
+                  <path d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5" />
+               </svg>
+            </span>
+            <span>ড্যাশবোর্ড</span>
+         </a>
+         <a href="#">
+            <span>
+               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cash" viewBox="0 0 16 16">
+                  <path d="M8 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4" />
+                  <path d="M0 4a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1zm3 0a2 2 0 0 1-2 2v4a2 2 0 0 1 2 2h10a2 2 0 0 1 2-2V6a2 2 0 0 1-2-2z" />
+               </svg>
+            </span>
+            <span>বেতন</span>
+         </a>
+         <a href="#" class="active">
+            <span>
+               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-backpack2-fill" viewBox="0 0 16 16">
+                  <path d="M5 13h6v-3h-1v.5a.5.5 0 0 1-1 0V10H5z" />
+                  <path d="M6 2v.341C3.67 3.165 2 5.388 2 8v1.191l-1.17.585A1.5 1.5 0 0 0 0 11.118V13.5A1.5 1.5 0 0 0 1.5 15h1c.456.607 1.182 1 2 1h7c.818 0 1.544-.393 2-1h1a1.5 1.5 0 0 0 1.5-1.5v-2.382a1.5 1.5 0 0 0-.83-1.342L14 9.191V8a6.002 6.002 0 0 0-4-5.659V2a2 2 0 1 0-4 0m2-1a1 1 0 0 1 1 1v.083a6.04 6.04 0 0 0-2 0V2a1 1 0 0 1 1-1m0 3a4 4 0 0 1 3.96 3.43.5.5 0 1 1-.99.14 3 3 0 0 0-5.94 0 .5.5 0 1 1-.99-.14A4 4 0 0 1 8 4M4.5 9h7a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-4a.5.5 0 0 1 .5-.5" />
+               </svg>
+            </span>
+            <span>শিক্ষার্থী </span>
+         </a>
+         <a href="#">
+            <span>
+               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-people-fill" viewBox="0 0 16 16">
+                  <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5" />
+               </svg>
+            </span>
+            <span>শিক্ষক</span>
+         </a>
+         <a data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample">
+            <span>
+               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
+                  <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0" />
+               </svg>
+            </span>
+            <span>অন্যান্য</span>
+         </a>
+      </div>
+
+      <div class="offcanvas offcanvas-start " tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+         <div class="offcanvas-header">
+            <!-- Your offcanvas header content -->
+            <h5 class="offcanvas-title" id="offcanvasExampleLabel">Menu</h5>
+            <button type="button" class="btn-close text-reset shadow-none" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+         </div>
+         <div class="offcanvas-body">
+            <!-- Your offcanvas content -->
+            <ul class="menu">
+               <li class="menu-item">
+                  <a href="#">Home</a>
+               </li>
+            </ul>
+         </div>
+      </div>
+
+   </div>
+
+      <script src="../lib/bootstrap.bundle.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+
+   <script>
+      new Vue({
+         el: '#app',
+         data() {
+            return {
+               divisions: [],
+               districts: [],
+               upazilas: [],
+               unions: [],
+               selectedDivision: null,
+               selectedDistrict: null,
+               selectedUpazila: null,
+               selectedUnion: null,
+               students: [],
+               selectedStudent: null,
+               isloading: false,
+               selectedFile: null,
+               uploadedImage: null,
+               student: {
+                  fullName: 'কাওছার',
+                  dateOfBirth: '',
+                  gender: '',
+                  phone: '0425765557',
+                  madrasa: '656ae3d634f41a559c2ba86b',
+                  studentImage: 'ok',
+                  address: {
+                     village: 'lohadi',
+                     thana: 'কাপাসিয়া',
+                     district: 'গাযিপুর',
+                     division: 'dhaka',
+                     union: 'sollarmor'
+                  },
+                  guardian: {
+                     fullName: 'ok',
+                     phoneNumber: '086456'
+                  },
+                  studentClass: '' // Add studentClass to the data object
+                  // Add other fields here
+               },
+               classess: null
+            };
+         },
+         mounted() {
+            this.fetchClassess()
+         },
+         computed: {
+            filteredDistricts() {
+               if (!this.selectedDivision) {
+                  return [];
+               }
+               return this.districts.filter(district => district.division_id === this.selectedDivision.id);
+            },
+            filteredUpazilas() {
+               if (!this.selectedDistrict) {
+                  return [];
+               }
+               return this.upazilas.filter(upazila => upazila.district_id === this.selectedDistrict.id);
+            },
+            filteredUnions() {
+               if (!this.selectedUpazila) {
+                  return [];
+               }
+               return this.unions.filter(union => union.upazilla_id === this.selectedUpazila.id);
+            },
+         },
+         methods: {
+            async onFileChange(e) {
+               this.isloading = true
+               this.selectedFile = e.target.files[0]; // Store the selected file in selectedFile property
+
+               try {
+                  const formData = new FormData();
+                  formData.append('image', this.selectedFile);
+
+                  const response = await fetch('https://api.imgbb.com/1/upload?key=6d9e72da0846d4357c13a69737f5ca97', {
+                     method: 'POST',
+                     body: formData,
+                  });
+
+                  const data = await response.json();
+                  console.log('ImageBB Upload Response:', data.data);
+
+                  // Assuming you want to store the uploaded image URL somewhere, you can access it from 'data' and save it to a variable or use it directly
+                  this.student.studentImage = data.data.url;
+                  // You can use this 'imageUrl' for further operations or store it in your database
+                  this.uploadedImage = data.data.url
+                  this.isloading = false
+               } catch (error) {
+                  console.error('Error uploading to ImageBB:', error);
+                  this.isloading = false
+                  // Handle error as needed
+               }
+            },
+
+            selectDelete(student) {
+               this.selectedStudent = student
+            },
+            fetchData() {
+               // Fetch data from JSON files
+               fetch('/data/divisions.json')
+                  .then(response => response.json())
+                  .then(data => {
+                     this.divisions = data;
+                     // Set isLoading to false after data is loaded
+                  });
+
+               fetch('/data/districts.json')
+                  .then(response => response.json())
+                  .then(data => this.districts = data);
+
+               fetch('/data/upazilas.json')
+                  .then(response => response.json())
+                  .then(data => this.upazilas = data);
+
+               fetch('/data/unions.json')
+                  .then(response => response.json())
+                  .then(data => this.unions = data);
+            },
+            async getAllStudents() {
+               try {
+                  const response = await axios.get('https://madrasa-back.vercel.app/api/student/list');
+                  console.log(response)
+                  this.students = response.data;
+               } catch (error) {
+                  console.error(error);
+                  // Handle error, show error message, etc.
+               }
+            },
+
+            async fetchClassess() {
+               try {
+                  const response = await axios.get('https://madrasa-back.vercel.app/api/class/list');
+                  console.log(response)
+                  this.classess = response.data;
+               } catch (error) {
+                  console.error('Error fetching madrasas:', error.response.data);
+                  // Handle error as needed
+               }
+            },
+            async registerStudent() {
+               try {
+                  const {
+                     fullName,
+                     dateOfBirth,
+                     gender,
+                     phone,
+                     studentClass,
+                     studentImage,
+                     madrasa,
+                     address: { village, thana, district, division, union },
+                     guardian: { fullName: guardianFullName, phoneNumber: guardianPhoneNumber }
+                  } = this.student;
+
+                  const studentData = {
+                     fullName,
+                     dateOfBirth,
+                     gender,
+                     phone,
+                     studentClass,
+                     studentImage,
+                     madrasa,
+                     address: {
+                        village,
+                        upazila: this.selectedUpazila ? this.selectedUpazila.bn_name : 'Not selected',
+                        district: this.selectedDistrict ? this.selectedDistrict.bn_name : 'Not selected',
+                        division: this.selectedDivision ? this.selectedDivision.bn_name : 'Not selected',
+                        union: this.selectedUnion ? this.selectedUnion.bn_name : 'Not selected'
+                     },
+                     guardian: {
+                        fullName: guardianFullName,
+                        phoneNumber: guardianPhoneNumber
+                     },
+
+                  };
+                  console.log(studentData)
+
+                  // Send studentData to your API endpoint using Axios or fetch
+                  // Example using Axios:
+                  const response = await axios.post('https://madrasa-back.vercel.app/api/student/create', studentData);
+
+                  console.log('Student data:', response);
+
+                  // Clear the form fields after successful submission
+                  this.student = {
+                     fullName: '',
+                     dateOfBirth: '',
+                     gender: '',
+                     phone: '',
+                     studentImage,
+                     address: {
+                        village: '',
+                        thana: '',
+                        district: '',
+                        division: '',
+                        union: ''
+                     },
+                     guardian: {
+                        fullName: '',
+                        phoneNumber: ''
+                     },
+                     studentClass: ''
+                     // Reset other fields as needed
+                  };
+
+                  // Hide the modal after successful submission
+                  const modal = new bootstrap.Modal(document.getElementById('studentModal'));
+                  modal.hide();
+               } catch (error) {
+                  console.error(error.response.data);
+                  // Handle errors accordingly
+               }
+            },
+            async confirmDelete(id) {
+               alert(id)
+               try {
+                  const response = await axios.delete('https://madrasa-back.vercel.app/api/student/delete/' + id);
+                  fetchTeachers()
+               } catch (error) {
+                  console.error('Error deleting teacher  ', error)
+               }
+            },
+
+            handleDivisionChange() {
+               this.selectedDistrict = null;
+               this.selectedUpazila = null;
+               this.selectedUnion = null;
+            },
+            handleDistrictChange() {
+               this.selectedUpazila = null;
+               this.selectedUnion = null;
+            },
+         },
+
+         created() {
+            this.fetchData();
+            this.getAllStudents()
+         }
+
+      });
+   </script>
+
+
+
+
+</body>
+
+</html>

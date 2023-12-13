@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Date Dropdowns with Vue.js</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+</head>
+<body>
+  <div id="app">
+    <select v-model="selectedMonth">
+      <option disabled value="">Month</option>
+      <option v-for="(month, index) in months" :key="index" :value="index + 1">
+        {{ month }}
+      </option>
+    </select>
+
+    <select v-model="selectedDate">
+      <option disabled value="">Date</option>
+      <option v-for="date in getDatesInMonth(selectedYear, selectedMonth)" :key="date" :value="date">
+        {{ date }}
+      </option>
+    </select>
+
+    <select v-model="selectedYear">
+      <option disabled value="">Year</option>
+      <option v-for="year in years" :key="year" :value="year">
+        {{ year }}
+      </option>
+    </select>
+
+    <button @click="setDate">Set Date</button>
+    <p v-if="selectedDate && selectedMonth && selectedYear">
+      Selected date: {{ formattedDate }}
+    </p>
+  </div>
+
+  <script>
+    new Vue({
+      el: '#app',
+      data() {
+        return {
+          selectedMonth: null,
+          selectedDate: null,
+          selectedYear: null,
+          months: [
+            'January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'
+          ],
+          years: [],
+          currentDate: new Date()
+        };
+      },
+      computed: {
+        formattedDate() {
+          if (this.selectedDate && this.selectedMonth && this.selectedYear) {
+            const date = new Date(this.selectedYear, this.selectedMonth - 1, this.selectedDate);
+            return date.toDateString();
+          }
+          return '';
+        }
+      },
+      mounted() {
+        const currentYear = this.currentDate.getFullYear();
+        for (let year = currentYear; year >= currentYear - 100; year--) {
+          this.years.push(year);
+        }
+
+        this.selectedMonth = this.currentDate.getMonth() + 1;
+        this.selectedDate = this.currentDate.getDate();
+        this.selectedYear = this.currentDate.getFullYear();
+      },
+      methods: {
+        getDatesInMonth(year, month) {
+          return new Date(year, month, 0).getDate();
+        },
+        setDate() {
+          if (this.selectedDate && this.selectedMonth && this.selectedYear) {
+            const date = new Date(this.selectedYear, this.selectedMonth - 1, this.selectedDate);
+            console.log(date.toDateString()); // Here you can use the date as needed
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>

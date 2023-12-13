@@ -255,7 +255,8 @@
             dateOfBirth: '',
             gender: '',
             phone: '0425765557',
-            studentImage:null,
+            madrasa:'656ae3d634f41a559c2ba86b',
+            studentImage:'ok',
             address: {
               village: 'lohadi',
               thana: 'কাপাসিয়া',
@@ -379,6 +380,7 @@
               phone,
               studentClass,
               studentImage,
+              madrasa,
               address: { village, thana, district, division, union },
               guardian: { fullName: guardianFullName, phoneNumber: guardianPhoneNumber }
             } = this.student;
@@ -390,6 +392,7 @@
               phone,
               studentClass,
               studentImage,
+              madrasa,
               address: {
                 village,
                 upazila: this.selectedUpazila ? this.selectedUpazila.bn_name : 'Not selected',
