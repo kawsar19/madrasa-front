@@ -347,15 +347,15 @@
                      // Set isLoading to false after data is loaded
                   });
 
-               fetch('/data/districts.json')
+               fetch('../data/districts.json')
                   .then(response => response.json())
                   .then(data => this.districts = data);
 
-               fetch('/data/upazilas.json')
+               fetch('../data/upazilas.json')
                   .then(response => response.json())
                   .then(data => this.upazilas = data);
 
-               fetch('/data/unions.json')
+               fetch('../data/unions.json')
                   .then(response => response.json())
                   .then(data => this.unions = data);
             },
