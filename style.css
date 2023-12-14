@@ -197,3 +197,46 @@
 .menu li a:hover {
    background: #eee;
 }
+
+
+.dashboard {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.info-card {
+  flex: 1;
+  height: 150px;
+  background-color: #f5f5f5;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 0 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.teachers {
+  background-color: #FF9800;
+  color: white;
+}
+
+.students {
+  background-color: #2196F3;
+  color: white;
+}
+
+.info-card h2 {
+  font-size: 20px;
+  margin-bottom: 5px;
+  text-align: center;
+}
+
+.quantity {
+  font-size: 36px;
+  margin: 0;
+}

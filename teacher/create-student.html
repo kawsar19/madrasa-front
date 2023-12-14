@@ -340,7 +340,7 @@
             },
             fetchData() {
                // Fetch data from JSON files
-               fetch('/data/divisions.json')
+               fetch('../data/divisions.json')
                   .then(response => response.json())
                   .then(data => {
                      this.divisions = data;
