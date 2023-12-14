@@ -135,9 +135,6 @@
     font-weight: 500;
     font-size: 14px;
  }
- .gap {
-   height: 70px;
- }
 
 
  .footer {
@@ -176,7 +173,7 @@
    list-style: none;
    margin: 0;
    padding: 0;
-   gap: 2px;
+   gap: 10px;
 }
 .menu li {}
 .menu li a {
@@ -188,9 +185,12 @@
    font-weight: 500;
    font-size: 18px;
    text-align: left ;
+   -webkit-border-radius: 8px;
+   -moz-border-radius: 8px;
+   border-radius: 8px;
 }
 .menu li a.active{
-   background: crimson;
+   background: #D65050;
    color: #fff;
    
 }
