@@ -8,6 +8,42 @@
 </head>
 
 <body>
+   
+   <div id="app">
+      <h4>{{message}}</h4>
+      <input type="text" name="" id="" v-model="name"> <br>
+      <input type="password" name="" id="" v-model="password"> <br>
+      <button type="submit" @click="getData">get data</button>
+   </div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+<script>
+   
+   new Vue({
+      el:'#app',
+      data:{
+         message:'hello',
+         name:'',
+         password:''
+      },
+      methods:{
+         getData(){
+           /* let data ={
+               this.name,
+               this.password
+            }*/
+            
+            let data ={
+               
+               name:this.name,
+               password:this.password
+            }
+            alert(JSON.stringify(data))
+         }
+      }
+   })
+</script>
 
 </body>
 
