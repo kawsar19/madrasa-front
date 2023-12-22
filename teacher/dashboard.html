@@ -85,7 +85,7 @@
             <!-- Your offcanvas content -->
             <ul class="menu">
                <li class="menu-item">
-                  <a href="./dashboard.html">হোম</a>
+                  <a href="./dashboard.html" class="active">হোম</a>
                </li>
                <li class="menu-item">
                   <a href="./create-student.html">
@@ -101,6 +101,9 @@
                <li class="menu-item">
                   <a href="../leaves.html">ছুটি </a>
                </li>
+<li class="menu-item">
+   <button @click="logout">লগ আউট </button>
+</li>
 
             </ul>
          </div>
@@ -121,6 +124,7 @@
          totalStudents: 0,
       },
       mounted() {
+        
          const token = localStorage.getItem('token');
          if (!token) {
             window.location.href = '../teacher-login.html';
@@ -143,6 +147,12 @@
          this.fetchTotalStudents();
       },
       methods: {
+         logout() {
+            alert(6)
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '../teacher-login.html';
+         },
          fetchTotalStudents() {
             axios.get('https://madrasa-back.vercel.app/api/student/totalStudents', {
                headers: {
@@ -157,7 +167,8 @@
             .catch(error => {
                console.error('Error fetching total students:', error);
             });
-         }
+         },
+
       }
    });
 </script>
