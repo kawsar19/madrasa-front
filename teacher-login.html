@@ -11,20 +11,35 @@
 <body>
 
 <div id="app" class="container mt-5">
-  <form @submit.prevent="login">
+  <form @submit.prevent="login" class="border p-4">
+     <h3 class="h3 text-primary">Teacher Login </h3>
     <div class="form-group">
       <label for="phone">Phone:</label>
-      <input type="text" class="form-control" id="phone" v-model="phone" required>
+      <input type="text" class="form-control shadow-none" id="phone" v-model="phone" required>
     </div>
     <div class="form-group">
       <label for="password">Password:</label>
-      <input type="password" class="form-control" id="password" v-model="password" required>
+      <input type="password" class="form-control shadow-none" id="password" v-model="password" required>
     </div>
-    <button type="submit" class="btn btn-primary" :disabled="isLoading">
+    <button type="submit" class="btn btn-primary w-100 d-block" :disabled="isLoading">
       <span v-if="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
       <span>{{ isLoading ? 'Loading' : 'Login' }}</span>
     </button>
   </form>
+  <div aria-live="polite" aria-atomic="true" style="position: relative; min-height: 200px;">
+  <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false">
+    <div class="toast-header">
+      <strong class="mr-auto">Notification</strong>
+      <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="toast-body">
+      <!-- Toast message will appear here -->
+    </div>
+  </div>
+</div>
+
 </div>
 
 <!-- Vue.js CDN -->
@@ -35,8 +50,8 @@
   new Vue({
     el: '#app',
     data: {
-      phone: '',
-      password: '',
+      phone: '0466577865',
+      password: '111111',
       isLoading: false,
     },
     methods: {
@@ -55,13 +70,31 @@
           localStorage.setItem('user', JSON.stringify(user));
 
           // Redirect to dashboard after successful login
-          window.location.href = './teacher/dashboard.html';
+          this.showToast('Login successful!', 'toast-success');
+          
+          // Redirect to dashboard after successful login
+          setTimeout(() => {
+             window.location.href = './teacher/dashboard.html';
+          }, 1500);
         } catch (error) {
           console.error(error.response.data.error);
           // Handle login errors
         } finally {
           this.isLoading = false;
         }
+      },
+      showToast(message, type) {
+         const toast = document.querySelector('.toast');
+         const toastBody = document.querySelector('.toast-body');
+      
+         // Update toast message and type
+         toastBody.textContent = message;
+         toast.classList.remove('toast-success', 'toast-error');
+         toast.classList.add(type);
+      
+         // Show toast
+         const bsToast = new bootstrap.Toast(toast);
+         bsToast.show();
       }
     }
   });
