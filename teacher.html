@@ -273,10 +273,11 @@
                            <div class="input-group">
                               <label for="madrasa" class="input-group-text">মাদরাসা</label>
                               <select v-model="newTeacher.madrasa" class="form-control shadow-none">
-                                 <option v-for="madrasa in madrasas" :key="madrasa._id" :value="madrasa._id">
+                                 <option v-for="madrasa in madrasas" :key="madrasa._id" :value="madrasa">
                                     {{ madrasa.name }}
                                  </option>
                               </select>
+                              
                            </div>
                         </div>
                      </div>
@@ -374,7 +375,8 @@
                nidImage: '',
                emergencyPhoneNumber: '',
                madrasa: '',
-               password:''
+               password:'',
+               madrasaName:''
 
             },
             selectedFile: null,
@@ -455,11 +457,13 @@
                      district: this.selectedDistrict ? this.selectedDistrict.bn_name : 'Not selected',
                      division: this.selectedDivision ? this.selectedDivision.bn_name : 'Not selected',
                      emergencyPhoneNumber: this.newTeacher.emergencyPhoneNumber,
-                     madrasa: this.newTeacher.madrasa,
+                     madrasa: this.newTeacher.madrasa?._id,
                      nidImage: this.newTeacher.nidImage,
-                     password: this.newTeacher.password
+                     password: this.newTeacher.password,
+                     madrasaName:this.newTeacher.madrasa?.name
                      // Assuming you have the selected file stored in this.selectedFile
                   };
+                  alert(teacherData)
 
                   const response = await axios.post('https://madrasa-back.vercel.app/api/teacher/create', teacherData);
                   window.location.reload()
