@@ -16,12 +16,12 @@
       <h5 class="fw-bold">স্বাগতম <span id="teacherName" class="text-danger">{{ teacherName }}</span></h5>
       <small>{{teacherMadrasa}}</small>
       <div class="dashboard">
-         <div class="info-card teachers">
-            <h2>Total Teachers</h2>
-            <p class="quantity">25</p>
+         <div class="info-card teachers" @click="window.location.href='/teacher/student-list.html'">
+            <h2>মোট শিক্ষক</h2>
+            <p class="quantity">{{totalTeachers}}</p>
          </div>
          <div class="info-card students">
-            <h2 @click="logout">Total Students</h2>
+            <h2>মোট শিক্ষার্থী</h2>
             <p class="quantity">{{totalStudents}}</p>
          </div>
       </div>
@@ -119,60 +119,69 @@
 
    <script>
       new Vue({
-         el: '#app',
-         data: {
-            teacherName: '',
-            teacherMadrasa: '',
-            totalStudents: 0,
-         },
-         mounted() {
+               el: '#app',
+               data: {
+                  teacherName: '',
+                  teacherMadrasa: '',
+                  totalStudents: 0,
+                  totalTeachers:0
+               },
+               mounted() {
 
-            const token = localStorage.getItem('token');
-            if (!token) {
-               window.location.href = '../teacher-login.html';
-            } else {
-               const storedUser = localStorage.getItem('user');
-               if (storedUser) {
-                  const user = JSON.parse(storedUser);
-                  this.teacherName = user.name;
-                  this.teacherMadrasa = user.madrasaName
-               }
-            }
-
-            const storedUser = localStorage.getItem('user');
-            if (storedUser) {
-               const user = JSON.parse(storedUser);
-               this.teacherName = user.name;
-               this.teacherMadrasa = user.madrasaName
-            }
-
-            this.fetchTotalStudents();
-         },
-         methods: {
-            logout() {
-               alert(6)
-               localStorage.removeItem('token');
-               localStorage.removeItem('user');
-               window.location.href = '../teacher-login.html';
-            },
-            fetchTotalStudents() {
-               axios.get('https://madrasa-back.vercel.app/api/student/totalStudents', {
-                     headers: {
-                        'Authorization': `${localStorage.getItem('token')}`
+                  const token = localStorage.getItem('token');
+                  if (!token) {
+                     window.location.href = '../teacher-login.html';
+                  } else {
+                     const storedUser = localStorage.getItem('user');
+                     if (storedUser) {
+                        const user = JSON.parse(storedUser);
+                        this.teacherName = user.name;
+                        this.teacherMadrasa = user.madrasaName
                      }
-                  })
-                  .then(response => {
-                     this.totalStudents = response.data.totalStudents;
+                  }
 
-                     console.log('Total Students:', this.totalStudents);
-                  })
-                  .catch(error => {
-                     console.error('Error fetching total students:', error);
-                  });
-            },
+                  const storedUser = localStorage.getItem('user');
+                  if (storedUser) {
+                     const user = JSON.parse(storedUser);
+                     this.teacherName = user.name;
+                     this.teacherMadrasa = user.madrasaName
+                  }
 
-         }
-      });
+                  this.fetchData();
+               },
+               methods: {
+                  logout() {
+                     localStorage.removeItem('token');
+                     localStorage.removeItem('user');
+                     window.location.href = '../teacher-login.html';
+                  },
+                  fetchData() {
+                     // Fetch both total students and total teachers simultaneously
+                     Promise.all([
+                     axios.get('https://madrasa-back.vercel.app/api/student/totalStudents', {
+                              headers: {
+                                 'Authorization': `${localStorage.getItem('token')}`
+                              }
+                           }),
+                     axios.get('https://madrasa-back.vercel.app/api/teacher/total-teachers', {
+                              headers: {
+                                 'Authorization': `${localStorage.getItem('token')}`
+                              }
+                           })
+      ])
+                        .then(([studentsResponse, teachersResponse]) => {
+                           
+                           this.totalStudents = studentsResponse.data.totalStudents;
+                           this.totalTeachers = teachersResponse.data.totalTeachers;
+
+                        })
+                        .catch(error => {
+                           console.log(9)
+                           console.error('Error fetching data:', error);
+                        });
+                  }
+               
+      } })
    </script>
 
 

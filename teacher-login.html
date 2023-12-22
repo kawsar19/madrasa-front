@@ -26,19 +26,6 @@
       <span>{{ isLoading ? 'Loading' : 'Login' }}</span>
     </button>
   </form>
-  <div aria-live="polite" aria-atomic="true" style="position: relative; min-height: 200px;">
-  <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false">
-    <div class="toast-header">
-      <strong class="mr-auto">Notification</strong>
-      <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-    <div class="toast-body">
-      <!-- Toast message will appear here -->
-    </div>
-  </div>
-</div>
 
 </div>
 
@@ -70,7 +57,6 @@
           localStorage.setItem('user', JSON.stringify(user));
 
           // Redirect to dashboard after successful login
-          this.showToast('Login successful!', 'toast-success');
           
           // Redirect to dashboard after successful login
           setTimeout(() => {
@@ -83,19 +69,7 @@
           this.isLoading = false;
         }
       },
-      showToast(message, type) {
-         const toast = document.querySelector('.toast');
-         const toastBody = document.querySelector('.toast-body');
       
-         // Update toast message and type
-         toastBody.textContent = message;
-         toast.classList.remove('toast-success', 'toast-error');
-         toast.classList.add(type);
-      
-         // Show toast
-         const bsToast = new bootstrap.Toast(toast);
-         bsToast.show();
-      }
     }
   });
 </script>
