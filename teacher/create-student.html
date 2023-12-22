@@ -8,13 +8,17 @@
    <link rel="stylesheet" href="../lib/bootstrap.min.css">
    <link rel="stylesheet" href="../style.css">
    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
+   <style>
+     .gap{
+        height: 40px;
+     }
+   </style>
 </head>
 
 <body>
    <div id="app">
-      
-      <div class="container">
+
+      <div class="container py-5">
          <form @submit.prevent="registerStudent">
             <!-- Form fields for student registration -->
             <div class="row g-3">
@@ -135,6 +139,10 @@
             <!-- Inside the modal form -->
 
             <button type="submit" class="btn btn-success mt-5 w-100 ">রেজিস্ট্রার </button>
+            <div class="gap"></div>
+            <div class="gap"></div>
+            <div class="gap"></div>
+
          </form>
 
       </div>
@@ -278,7 +286,7 @@
                   this.teacherName = user.name; // Assuming 'name' is the property containing the teacher's name
                }
             }
-            
+
             // Retrieve teacher's name from local storage on page load
             const storedUser = localStorage.getItem('user');
             if (storedUser) {
@@ -423,7 +431,7 @@
 
                   // Send studentData to your API endpoint using Axios or fetch
                   // Example using Axios:
-                  const response = await axios.post('https://madrasa-back.vercel.app/api/student/create', studentData,{headers});
+                  const response = await axios.post('https://madrasa-back.vercel.app/api/student/create', studentData, { headers });
 
                   console.log('Student data:', response);
 
