@@ -147,7 +147,21 @@
                      this.teacherMadrasa = user.madrasaName
                   }
 
-                  this.fetchData();
+                  
+                     // Retrieve totalStudents and totalTeachers from sessionStorage
+                     const storedTotalStudents = sessionStorage.getItem('totalStudents');
+                     const storedTotalTeachers = sessionStorage.getItem('totalTeachers');
+                  
+                     // Check if the values exist in sessionStorage
+                     if (storedTotalStudents && storedTotalTeachers) {
+                        // Assign the values to Vue data properties
+                        this.totalStudents = parseInt(storedTotalStudents); // Convert to a number if needed
+                        this.totalTeachers = parseInt(storedTotalTeachers); // Convert to a number if needed
+                     } else {
+                        // If values are not in sessionStorage, fetch the data
+                        this.fetchData();
+                     }
+                  
                },
                methods: {
                   logout() {
@@ -170,6 +184,9 @@
                            })
       ])
                         .then(([studentsResponse, teachersResponse]) => {
+                           sessionStorage.setItem('totalStudents', studentsResponse.data.totalStudents);
+                           sessionStorage.setItem('totalTeachers', teachersResponse.data.totalTeachers)
+                           
                            
                            this.totalStudents = studentsResponse.data.totalStudents;
                            this.totalTeachers = teachersResponse.data.totalTeachers;
