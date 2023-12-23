@@ -18,11 +18,11 @@
       <div class="dashboard">
          <div class="info-card teachers" @click="window.location.href='/teacher/student-list.html'">
             <h2>মোট শিক্ষক</h2>
-            <p class="quantity">{{totalTeachers}}</p>
+            <p class="quantity">{{totalTeachers||'loading'}}</p>
          </div>
          <div class="info-card students">
             <h2>মোট শিক্ষার্থী</h2>
-            <p class="quantity">{{totalStudents}}</p>
+            <p class="quantity">{{totalStudents||'loading...'}}</p>
          </div>
       </div>
 
@@ -87,6 +87,9 @@
                      <a href="./dashboard.html" class="active">হোম</a>
                   </li>
                   <li class="menu-item">
+                     <a href="./class.html">ক্লাশ</a>
+                  </li>
+                  <li class="menu-item">
                      <a href="./create-student.html">
                         স্টুডেন্ট রেজিস্ট্রার
                      </a>
@@ -119,86 +122,87 @@
 
    <script>
       new Vue({
-               el: '#app',
-               data: {
-                  teacherName: '',
-                  teacherMadrasa: '',
-                  totalStudents: 0,
-                  totalTeachers:0
-               },
-               mounted() {
+         el: '#app',
+         data: {
+            teacherName: '',
+            teacherMadrasa: '',
+            totalStudents: 0,
+            totalTeachers: 0
+         },
+         mounted() {
 
-                  const token = localStorage.getItem('token');
-                  if (!token) {
-                     window.location.href = '../teacher-login.html';
-                  } else {
-                     const storedUser = localStorage.getItem('user');
-                     if (storedUser) {
-                        const user = JSON.parse(storedUser);
-                        this.teacherName = user.name;
-                        this.teacherMadrasa = user.madrasaName
-                     }
-                  }
+            const token = localStorage.getItem('token');
+            if (!token) {
+               window.location.href = '../teacher-login.html';
+            } else {
+               const storedUser = localStorage.getItem('user');
+               if (storedUser) {
+                  const user = JSON.parse(storedUser);
+                  this.teacherName = user.name;
+                  this.teacherMadrasa = user.madrasaName
+               }
+            }
 
-                  const storedUser = localStorage.getItem('user');
-                  if (storedUser) {
-                     const user = JSON.parse(storedUser);
-                     this.teacherName = user.name;
-                     this.teacherMadrasa = user.madrasaName
-                  }
+            const storedUser = localStorage.getItem('user');
+            if (storedUser) {
+               const user = JSON.parse(storedUser);
+               this.teacherName = user.name;
+               this.teacherMadrasa = user.madrasaName
+            }
 
-                  
-                     // Retrieve totalStudents and totalTeachers from sessionStorage
-                     const storedTotalStudents = sessionStorage.getItem('totalStudents');
-                     const storedTotalTeachers = sessionStorage.getItem('totalTeachers');
-                  
-                     // Check if the values exist in sessionStorage
-                     if (storedTotalStudents && storedTotalTeachers) {
-                        // Assign the values to Vue data properties
-                        this.totalStudents = parseInt(storedTotalStudents); // Convert to a number if needed
-                        this.totalTeachers = parseInt(storedTotalTeachers); // Convert to a number if needed
-                     } else {
-                        // If values are not in sessionStorage, fetch the data
-                        this.fetchData();
-                     }
-                  
-               },
-               methods: {
-                  logout() {
-                     localStorage.removeItem('token');
-                     localStorage.removeItem('user');
-                     window.location.href = '../teacher-login.html';
-                  },
-                  fetchData() {
-                     // Fetch both total students and total teachers simultaneously
-                     Promise.all([
+
+            // Retrieve totalStudents and totalTeachers from sessionStorage
+            const storedTotalStudents = sessionStorage.getItem('totalStudents');
+            const storedTotalTeachers = sessionStorage.getItem('totalTeachers');
+
+            // Check if the values exist in sessionStorage
+            if (storedTotalStudents && storedTotalTeachers) {
+               // Assign the values to Vue data properties
+               this.totalStudents = parseInt(storedTotalStudents); // Convert to a number if needed
+               this.totalTeachers = parseInt(storedTotalTeachers); // Convert to a number if needed
+            } else {
+               // If values are not in sessionStorage, fetch the data
+               this.fetchData();
+            }
+
+         },
+         methods: {
+            logout() {
+               localStorage.removeItem('token');
+               localStorage.removeItem('user');
+               window.location.href = '../teacher-login.html';
+            },
+            fetchData() {
+               // Fetch both total students and total teachers simultaneously
+               Promise.all([
                      axios.get('https://madrasa-back.vercel.app/api/student/totalStudents', {
-                              headers: {
-                                 'Authorization': `${localStorage.getItem('token')}`
-                              }
-                           }),
+                        headers: {
+                           'Authorization': `${localStorage.getItem('token')}`
+                        }
+                     }),
                      axios.get('https://madrasa-back.vercel.app/api/teacher/total-teachers', {
-                              headers: {
-                                 'Authorization': `${localStorage.getItem('token')}`
-                              }
-                           })
+                        headers: {
+                           'Authorization': `${localStorage.getItem('token')}`
+                        }
+                     })
       ])
-                        .then(([studentsResponse, teachersResponse]) => {
-                           sessionStorage.setItem('totalStudents', studentsResponse.data.totalStudents);
-                           sessionStorage.setItem('totalTeachers', teachersResponse.data.totalTeachers)
-                           
-                           
-                           this.totalStudents = studentsResponse.data.totalStudents;
-                           this.totalTeachers = teachersResponse.data.totalTeachers;
+                  .then(([studentsResponse, teachersResponse]) => {
+                     sessionStorage.setItem('totalStudents', studentsResponse.data.totalStudents);
+                     sessionStorage.setItem('totalTeachers', teachersResponse.data.totalTeachers)
 
-                        })
-                        .catch(error => {
-                           console.log(9)
-                           console.error('Error fetching data:', error);
-                        });
-                  }
-               
-      } })
+
+                     this.totalStudents = studentsResponse.data.totalStudents;
+                     this.totalTeachers = teachersResponse.data.totalTeachers;
+
+                  })
+                  .catch(error => {
+                     console.log(9)
+                     console.error('Error fetching data:', error);
+                  });
+            }
+
+         }
+      })
    </script>
 
 
