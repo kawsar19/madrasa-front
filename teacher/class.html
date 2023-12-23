@@ -148,8 +148,9 @@
    </div>
 
    <!-- Vue.js -->
+      <script src="../lib/bootstrap.bundle.min.js"></script>
+
    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
-   <script src="../lib/bootstrap.bundle.min.js"></script>
    <script>
       new Vue({
          el: '#app',
@@ -200,9 +201,12 @@
                      .then(response => response.json())
                      .then(data => {
                         // Assuming the response returns the created class
-                        this.classes.push(data);
+                        //this.classes.push(data);
                         this.newClassName = ''; // Clear input field
                         this.getClasses()
+                        const modal = new bootstrap.Modal(document.getElementById('createClassModal'));
+                        consolr.log(modal)
+                       modal.hide();
                         // $('#createClassModal').modal('hide'); // Close modal
                      })
                      .catch(error => {

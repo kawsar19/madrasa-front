@@ -19,6 +19,8 @@
    <div id="app">
 
       <div class="container py-5">
+               <h3>স্টুডেন্ট রেজিস্টার </h3>
+
          <form @submit.prevent="registerStudent">
             <!-- Form fields for student registration -->
             <div class="row g-3">
@@ -71,7 +73,6 @@
                   <div class="input-group">
                      <label for="dob" class="input-group-text">ফোন:</label>
                      <input type="text" class="form-control shadow-none" id="phone" v-model="student.phone" required>
-
                   </div>
                </div>
 
@@ -80,7 +81,7 @@
                      <label for="studentClass" class="input-group-text">শ্রেণী</label>
                      <select class="form-select shadow-none" id="studentClass" v-model="student.studentClass" required>
                         <option value="" disabled selected>শ্রেণী নির্বাচন করুন</option>
-                        <option v-for="classItem in classess" :key="classItem._id" :value="classItem.className">
+                        <option v-for="classItem in classess" :key="classItem._id" :value="classItem._id">
                            {{ classItem.className }}
                         </option>
                      </select>
@@ -250,25 +251,25 @@
                selectedFile: null,
                uploadedImage: null,
                student: {
-                  fullName: 'কাওছার',
+                  fullName: '',
                   dateOfBirth: '',
                   gender: '',
-                  phone: '0425765557',
-                  madrasa: '656ae3d634f41a559c2ba86b',
+                  phone: '',
+                  madrasa: '',
                   studentImage: 'ok',
                   address: {
-                     village: 'lohadi',
-                     thana: 'কাপাসিয়া',
-                     district: 'গাযিপুর',
-                     division: 'dhaka',
-                     union: 'sollarmor'
+                     village: '',
+                     thana: '',
+                     district: '',
+                     division: '',
+                     union: ''
                   },
                   guardian: {
-                     fullName: 'ok',
-                     phoneNumber: '086456'
+                     fullName: '',
+                     phoneNumber: ''
                   },
                   studentClass: '' // Add studentClass to the data object
-                  // Add other fields here
+                 
                },
                classess: null
             };
@@ -460,14 +461,16 @@
                         phoneNumber: ''
                      },
                      studentClass: ''
-                     // Reset other fields as needed
+                   
                   };
+                  window.location.reload()
 
                   // Hide the modal after successful submission
-                  const modal = new bootstrap.Modal(document.getElementById('studentModal'));
-                  modal.hide();
+                  //const modal = new bootstrap.Modal(document.getElementById('studentModal'));
+                //  modal.hide();
                } catch (error) {
                   console.error(error.response.data);
+                  alert(error.response.data.error)
                   // Handle errors accordingly
                }
             },
@@ -478,6 +481,7 @@
                   fetchTeachers()
                } catch (error) {
                   console.error('Error deleting teacher  ', error)
+                  
                }
             },
 
@@ -494,7 +498,7 @@
 
          created() {
             this.fetchData();
-            this.getAllStudents()
+          //  this.getAllStudents()
          }
 
       });

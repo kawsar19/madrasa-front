@@ -101,6 +101,7 @@
             <option value="">All Classes</option>
             <option v-for="className in classNames" :key="className" :value="className._id">{{ className.className }}</option>
          </select>
+         
 
 
       </div>
@@ -433,12 +434,19 @@
             genderFilter() {
                this.currentPage = 1;
                this.fetchData();
+            },
+               
+            
+            classFilter(){
+               this.currentPage=1;
+               this.fetchData();
             }
          },
 
 
          methods: {
             async fetchData() {
+               this.isContentLoading=true
                try {
                   let apiUrl = `https://madrasa-back.vercel.app/api/student/list?limit=${this.limit}&page=${this.currentPage}`;
 
@@ -451,6 +459,7 @@
                   }
                   if (this.classFilter) {
                      apiUrl += `&className=${this.classFilter}`;
+                     
                   }
                   
 
@@ -520,9 +529,6 @@
                   // Handle error as needed
                }
             },
-
-
-
             setPage(page) {
                this.currentPage = page;
                this.fetchData();
