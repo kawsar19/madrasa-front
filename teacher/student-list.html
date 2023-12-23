@@ -96,6 +96,12 @@
             <option value="Female">Female</option>
             <option value="Other">Other</option>
          </select>
+         <!-- Inside the existing <div class="d-flex gap-3 mb-4 justify-content-between"> ... </div> -->
+         <select  v-model="classFilter" class="form-select shadow-none">
+            <option value="">All Classes</option>
+            <option v-for="className in classNames" :key="className" :value="className._id">{{ className.className }}</option>
+         </select>
+
 
       </div>
 
@@ -359,6 +365,8 @@
    </div>
 
    <script src="../lib/bootstrap.bundle.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
 
    <!-- Vue.js CDN -->
    <script>
@@ -378,6 +386,9 @@
                       'January', 'February', 'March', 'April', 'May', 'June',
                       'July', 'August', 'September', 'October', 'November', 'December'
                     ],
+            classFilter: '',
+            classNames:null,
+
             payment: {
                student: this.selectedStudent?._id,
                month: "", // Initially empty
@@ -410,7 +421,9 @@
             }
          },
          mounted() {
-            this.fetchData();
+            this.fetchClassess();
+             this.fetchData();
+
          },
          watch: {
             searchQuery() {
@@ -436,6 +449,11 @@
                   if (this.genderFilter) {
                      apiUrl += `&gender=${this.genderFilter}`;
                   }
+                  if (this.classFilter) {
+                     apiUrl += `&className=${this.classFilter}`;
+                  }
+                  
+
 
                   const token = localStorage.getItem('token'); // Replace 'your_token_key' with your actual token key
 
@@ -484,6 +502,22 @@
                   }
                } catch (error) {
                   console.error('Error submitting payment:', error);
+               }
+            },
+            async fetchClassess() {
+               try {
+                  const token = localStorage.getItem('token'); // Retrieve the token from localStorage
+
+                  const headers = {
+                     'Authorization': `${token}` // Include the token in the header
+                  };
+
+                  const response = await axios.get('https://madrasa-back.vercel.app/api/class/list', { headers });
+                  console.log(response);
+                  this.classNames = response.data;
+               } catch (error) {
+                  console.error('Error fetching classes:', error.response.data);
+                  // Handle error as needed
                }
             },
 
