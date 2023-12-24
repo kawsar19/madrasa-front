@@ -15,6 +15,7 @@
       <!-- Your dashboard content -->
       <h5 class="fw-bold">স্বাগতম <span id="teacherName" class="text-danger">{{ teacherName }}</span></h5>
       <small>{{teacherMadrasa}}</small>
+      <p>{{date}}</p>
       <div class="dashboard">
          <div class="info-card teachers" @click="window.location.href='/teacher/student-list.html'">
             <h2>মোট শিক্ষক</h2>
@@ -114,6 +115,8 @@
       </div>
 
    </div>
+   
+   <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/AhmedMRaihan/BanglaDateJS@master/src/buetDateTime.js"></script>
 
 
    <script src="../lib/bootstrap.bundle.min.js"></script>
@@ -121,15 +124,22 @@
    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
    <script>
+   // dateConverted = 'বুয়েটে এখন: রবিবার রাত ৪টা ৩০মিনিট, ১০ জ্যৈষ্ঠ, ১৪২২ (বঙ্গাব্দ)';
+   // now dateConverted is converted as a Bangla date
+  
       new Vue({
          el: '#app',
          data: {
             teacherName: '',
             teacherMadrasa: '',
             totalStudents: 0,
-            totalTeachers: 0
+            totalTeachers: 0,
+            date:''
          },
          mounted() {
+               var dateConverted = new buetDateConverter().convert("আজকের তারিখ: l A gটা iমিনিট, j F, Y (বঙ্গাব্দ)");
+               this.date=dateConverted;
+
 
             const token = localStorage.getItem('token');
             if (!token) {

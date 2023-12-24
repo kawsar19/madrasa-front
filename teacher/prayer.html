@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <title>Madrasa Prayer Times</title>
+   <link href="../lib/bootstrap.min.css" rel="stylesheet">
+   <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+   <div id="app" class="container mt-5">
+      <!-- Button to open modal -->
+      <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#prayerModal">Add/Update Prayer Times</button>
+
+      <!-- Modal for adding/updating prayer times -->
+      <div class="modal fade" id="prayerModal" tabindex="-1" aria-labelledby="prayerModalLabel" aria-hidden="true">
+         <div class="modal-dialog">
+            <div class="modal-content">
+               <div class="modal-header">
+                  <h5 class="modal-title" id="prayerModalLabel">Add/Update Prayer Times</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+               </div>
+               <!-- ... Previous HTML content ... -->
+
+               <div class="modal-body">
+                  <form @submit.prevent="submitPrayerTimes">
+                     <div class="mb-3">
+                        <label for="fajrTime" class="form-label">Fajr Time</label>
+                        <input type="time" class="form-control" id="fajrTime" v-model="prayerTimes.fajrTime">
+                     </div>
+                     <div class="mb-3">
+                        <label for="dhuhrTime" class="form-label">Dhuhr Time</label>
+                        <input type="time" class="form-control" id="dhuhrTime" v-model="prayerTimes.dhuhrTime">
+                     </div>
+                     <div class="mb-3">
+                        <label for="asrTime" class="form-label">Asr Time</label>
+                        <input type="time" class="form-control" id="asrTime" v-model="prayerTimes.asrTime">
+                     </div>
+                     <div class="mb-3">
+                        <label for="maghribTime" class="form-label">Maghrib Time</label>
+                        <input type="time" class="form-control" id="maghribTime" v-model="prayerTimes.maghribTime">
+                     </div>
+                     <div class="mb-3">
+                        <label for="ishaTime" class="form-label">Isha Time</label>
+                        <input type="time" class="form-control" id="ishaTime" v-model="prayerTimes.ishaTime">
+                     </div>
+
+                     <button type="submit" class="btn btn-primary">Submit</button>
+                  </form>
+               </div>
+
+               <!-- ... Remaining HTML content ... -->
+
+            </div>
+         </div>
+      </div>
+
+      <!-- Display prayer times -->
+      <!-- Display prayer times -->
+      <!-- Display prayer times -->
+      <div v-if="prayerTimesData">
+         <h2>নামাজের সময়সূচি </h2>
+         <ul class="list-group">
+            <li class="list-group-item display-3"><strong>ফজর:</strong> {{ convertTo12HourFormat(prayerTimesData.fajrTime) }}</li>
+            <li class="list-group-item display-3"><strong>যোহর:</strong> {{ convertTo12HourFormat(prayerTimesData.dhuhrTime) }}</li>
+            <li class="list-group-item display-3"><strong>আসর:</strong> {{ convertTo12HourFormat(prayerTimesData.asrTime) }}</li>
+            <li class="list-group-item display-3"><strong>মাগরিব:</strong> {{ convertTo12HourFormat(prayerTimesData.maghribTime) }}</li>
+            <li class="list-group-item display-3"><strong>এশা:</strong> {{ convertTo12HourFormat(prayerTimesData.ishaTime) }}</li>
+         </ul>
+      </div>
+
+      <div v-if="timeUntilNextPrayer">
+         <h2>Next Prayer</h2>
+         <p>Next Prayer: {{ nextPrayer }}</p>
+         <p>Time Until Next Prayer:</p> {{timeUntilNextPrayerb}}
+         <p>Hours: {{ timeUntilNextPrayer.hours }}</p>
+         <p>Minutes: {{ timeUntilNextPrayer.minutes }}</p>
+      </div>
+
+
+   </div>
+
+   <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js"></script>
+   <script>
+      new Vue({
+         el: '#app',
+         data: {
+            nextPrayer: '',
+            timeUntilNextPrayer: {
+               hours: 0,
+               minutes: 0
+            },
+            prayerTimes: {
+               fajrTime: '',
+               dhuhrTime: '',
+               asrTime: '',
+               maghribTime: '',
+               ishaTime: '',
+            },
+            prayerTimesData: {},
+         },
+         methods: {
+            openModal() {
+               // Code to open the modal
+               const modal = new bootstrap.Modal(document.getElementById('prayerModal'));
+               modal.show();
+            },
+            closeModal() {
+               // Code to close the modal
+               const modal = new bootstrap.Modal(document.getElementById('prayerModal'));
+               modal.hide();
+            },
+            async submitPrayerTimes() {
+               try {
+                  const madrasaId = 'YOUR_MADRASA_ID'; // Replace with the actual Madrasa ID
+                  const response = await axios.post(`http://localhost:3000/madrasa/${madrasaId}/prayer-times`, this.prayerTimes);
+                  this.prayerTimesData = response.data;
+                  this.closeModal();
+               } catch (error) {
+                  console.error('Failed to add/update prayer times', error);
+                  // Handle error scenarios
+               }
+            },
+            async fetchPrayerTimes() {
+               try {
+                  const madrasaId = '656fce7848899f3c52fad6b0'; // Replace with the actual Madrasa ID
+                  const response = await axios.get(`http://localhost:3000/api/prayer/${madrasaId}/prayer-times`);
+                  this.prayerTimesData = response.data;
+                  if (this.prayerTimesData) {
+                     // Set existing prayer times to display in the modal inputs
+                     this.prayerTimes = {
+                        fajrTime: this.prayerTimesData.fajrTime || '',
+                        dhuhrTime: this.prayerTimesData.dhuhrTime || '',
+                        asrTime: this.prayerTimesData.asrTime || '',
+                        maghribTime: this.prayerTimesData.maghribTime || '',
+                        ishaTime: this.prayerTimesData.ishaTime || '',
+                     }
+                  }
+               } catch (error) {
+                  console.error('Failed to fetch prayer times', error);
+                  // Handle error scenarios
+               }
+            },
+
+            async submitPrayerTimes() {
+               try {
+                  const madrasaId = '656fce7848899f3c52fad6b0'; // Replace with the actual Madrasa ID
+                  const response = await axios.post(`http://localhost:3000/api/prayer/${madrasaId}/prayer-times`, this.prayerTimes);
+                  this.prayerTimesData = response.data;
+                  this.closeModal();
+                  this.fetchPrayerTimes(); // Fetch updated prayer times after submission
+               } catch (error) {
+                  console.error('Failed to add/update prayer times', error.response.data);
+                  // Handle error scenarios
+               }
+            },
+            convertTo12HourFormat(time24) {
+               alert(time24)
+               const [hours, minutes] = time24.split(':');
+               const amPm = hours >= 12 ? 'PM' : 'AM';
+               const hour12 = hours % 12 || 12;
+               return `${hour12}:${minutes} ${amPm}`;
+            },
+            calculateNextPrayerTime() {
+               const currentTime = new Date().getTime();
+               const prayers = Object.entries(this.prayerTimes);
+
+               for (let i = 0; i < prayers.length; i++) {
+                  const [prayer, time] = prayers[i];
+
+                  if (currentTime < new Date(`1970-01-01T${time}:00Z`).getTime()) {
+                     this.nextPrayer = prayer;
+                     const timeUntilNextPrayer = new Date(`1970-01-01T${time}:00Z`).getTime() - currentTime;
+                     const timeDiff = new Date(timeUntilNextPrayer);
+                     this.timeUntilNextPrayer = {
+                        hours: timeDiff.getUTCHours(),
+                        minutes: timeDiff.getUTCMinutes(),
+                     };
+                     break;
+                  }
+               }
+            }
+
+         },
+         mounted() {
+            this.fetchPrayerTimes();
+         },
+         computed: {
+            timeUntilNextPrayerb() {
+               const currentTime = new Date().getTime();
+
+               if (!this.prayerTimesData) return { hours: 0, minutes: 0 };
+
+               const prayers = Object.entries(this.prayerTimesData)
+                  .filter(([key]) => key !== '_id' && key !== 'madrasa' && key !== '__v'); // Exclude non-prayer data fields
+
+               const sortedPrayers = prayers.sort((a, b) => new Date(`1970-01-01T${a[1]}:00Z`).getTime() - new Date(`1970-01-01T${b[1]}:00Z`).getTime());
+
+               for (let i = 0; i < sortedPrayers.length; i++) {
+                  const [prayer, time] = sortedPrayers[i];
+
+                  if (currentTime < new Date(`1970-01-01T${time}:00Z`).getTime()) {
+                     const timeUntilNextPrayer = new Date(`1970-01-01T${time}:00Z`).getTime() - currentTime;
+                     const timeDiff = new Date(timeUntilNextPrayer);
+
+                     return {
+                        hours: timeDiff.getUTCHours(),
+                        minutes: timeDiff.getUTCMinutes(),
+                        nextPrayer: prayer // Adding nextPrayer name to the result object
+                     };
+                  }
+               }
+               return { hours: 0, minutes: 0, nextPrayer: '' }; // Default if no future prayer is found
+            },
+
+
+         },
+
+
+      });
+   </script>
+   <script src="../lib/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
