@@ -63,7 +63,7 @@
 
                   <div v-if="isloading">
                      <div class="spinner-border text-primary" role="status"></div>
-                     <span class="sr-only">Loading...</span>
+                     <span class="sr-only"></span>
                   </div>
 
                   <img v-else :src="uploadedImage" alt="" class="image-thumnail">
@@ -75,6 +75,12 @@
                      <input type="text" class="form-control shadow-none" id="phone" v-model="student.phone" required>
                   </div>
                </div>
+                <div class="col-12 col-md-6">
+                   <div class="input-group">
+                      <label for="dob" class="input-group-text">গার্ডিয়ান :</label>
+                      <input type="text" class="form-control shadow-none" id="phone" v-model="student.guardian.fullName" required>
+                   </div>
+                </div>
 
                <div class="col-12 col-md-6">
                   <div class="input-group">
@@ -251,21 +257,21 @@
                selectedFile: null,
                uploadedImage: null,
                student: {
-                  fullName: '',
-                  dateOfBirth: '',
-                  gender: '',
-                  phone: '',
-                  madrasa: '',
+                  fullName: 'test',
+                  dateOfBirth: '2007-12-12',
+                  gender: 'Male',
+                  phone: '0176544577',
+            
                   studentImage: 'ok',
                   address: {
-                     village: '',
+                     village: 'testvil',
                      thana: '',
                      district: '',
                      division: '',
                      union: ''
                   },
                   guardian: {
-                     fullName: '',
+                     fullName: 'test girdian',
                      phoneNumber: ''
                   },
                   studentClass: '' // Add studentClass to the data object
@@ -404,9 +410,9 @@
                      phone,
                      studentClass,
                      studentImage,
-                     madrasa,
+      
                      address: { village, thana, district, division, union },
-                     guardian: { fullName: guardianFullName, phoneNumber: guardianPhoneNumber }
+                     guardian: { fullName:guardianFullName, phoneNumber:guardianPhoneNumber}
                   } = this.student;
 
                   const studentData = {
@@ -438,7 +444,7 @@
 
                   // Send studentData to your API endpoint using Axios or fetch
                   // Example using Axios:
-                  const response = await axios.post('https://madrasa-back.vercel.app/api/student/create', studentData, { headers });
+                  const response = await axios.post('http://localhost:3000/api/student/create', studentData, { headers });
 
                   console.log('Student data:', response);
 
@@ -469,6 +475,7 @@
                   //const modal = new bootstrap.Modal(document.getElementById('studentModal'));
                 //  modal.hide();
                } catch (error) {
+                  console.log(error)
                   console.error(error.response.data);
                   alert(error.response.data.error)
                   // Handle errors accordingly
