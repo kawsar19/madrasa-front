@@ -19,7 +19,7 @@
    <div id="app">
 
       <div class="container py-5">
-               <h3>স্টুডেন্ট রেজিস্টার </h3>
+         <h3>স্টুডেন্ট রেজিস্টার </h3>
 
          <form @submit.prevent="registerStudent">
             <!-- Form fields for student registration -->
@@ -28,13 +28,15 @@
                <div class="col-12 col-md-6">
                   <div class="input-group">
                      <label for="fullName" class="input-group-text">নাম:</label>
-                     <input type="text" class="form-control shadow-none" id="fullName" v-model="student.fullName" required>
+                     <input type="text" class="form-control shadow-none" id="fullName" v-model="student.fullName"
+                        required>
                   </div>
                </div>
                <div class="col-12 col-md-6">
                   <div class="input-group">
                      <label for="dob" class="input-group-text">জন্ম:</label>
-                     <input type="date" class="form-control shadow-none" id="dob" v-model="student.dateOfBirth" required>
+                     <input type="date" class="form-control shadow-none" id="dob" v-model="student.dateOfBirth"
+                        required>
                   </div>
                </div>
 
@@ -53,7 +55,8 @@
                <div class="col-8 col-md-6">
                   <div class="input-group">
                      <label for="studentImage" class="input-group-text">ছবি:</label>
-                     <input class="form-control shadow-none" id="studentImage" type="file" @change="onFileChange" accept="image/*" class="form-select shadow-none input-sm">
+                     <input class="form-control shadow-none" id="studentImage" type="file" @change="onFileChange"
+                        accept="image/*" class="form-select shadow-none input-sm">
                   </div>
                </div>
                <div class="col-4 col-md-6">
@@ -75,12 +78,13 @@
                      <input type="text" class="form-control shadow-none" id="phone" v-model="student.phone" required>
                   </div>
                </div>
-                <div class="col-12 col-md-6">
-                   <div class="input-group">
-                      <label for="dob" class="input-group-text">গার্ডিয়ান :</label>
-                      <input type="text" class="form-control shadow-none" id="phone" v-model="student.guardian.fullName" required>
-                   </div>
-                </div>
+               <div class="col-12 col-md-6">
+                  <div class="input-group">
+                     <label for="dob" class="input-group-text">গার্ডিয়ান :</label>
+                     <input type="text" class="form-control shadow-none" id="phone" v-model="student.guardian.fullName"
+                        required>
+                  </div>
+               </div>
 
                <div class="col-12 col-md-6">
                   <div class="input-group">
@@ -105,9 +109,11 @@
                <div class="col-6 col-md-3">
                   <div class="input-group">
                      <label for="divisionSelect" class="input-group-text">বিভাগ</label>
-                     <select id="divisionSelect" v-model="selectedDivision" @change="handleDivisionChange" class="form-select shadow-none">
+                     <select id="divisionSelect" v-model="selectedDivision" @change="handleDivisionChange"
+                        class="form-select shadow-none">
                         <option value="" disabled>বিভাগ নির্বাচন করুন</option>
-                        <option v-for="division in divisions" :value="division" class="h1">{{ division.bn_name }}</option>
+                        <option v-for="division in divisions" :value="division" class="h1">{{ division.bn_name }}
+                        </option>
                      </select>
                   </div>
                </div>
@@ -116,7 +122,8 @@
                <div class="col-6 col-md-3">
                   <div class="input-group">
                      <label for="districtSelect" class="input-group-text">জেলা</label>
-                     <select id="districtSelect" v-model="selectedDistrict" @change="handleDistrictChange" class="form-select shadow-none" :disabled="!selectedDivision">
+                     <select id="districtSelect" v-model="selectedDistrict" @change="handleDistrictChange"
+                        class="form-select shadow-none" :disabled="!selectedDivision">
                         <option value="" disabled>Select District</option>
                         <option v-for="district in filteredDistricts" :value="district">{{ district.bn_name }}</option>
                      </select>
@@ -125,7 +132,8 @@
                <div class="col-6 col-md-3">
                   <div class="input-group">
                      <label for="upazilaSelect" class="input-group-text">উপজেলা</label>
-                     <select id="upazilaSelect" v-model="selectedUpazila" class="form-select shadow-none" :disabled="!selectedDistrict">
+                     <select id="upazilaSelect" v-model="selectedUpazila" class="form-select shadow-none"
+                        :disabled="!selectedDistrict">
                         <option value="" disabled>Select Upazila</option>
                         <option v-for="upazila in filteredUpazilas" :value="upazila">{{ upazila.bn_name }}</option>
                      </select>
@@ -134,7 +142,8 @@
                <div class="col-6 col-md-3">
                   <div class="input-group">
                      <label for="unionSelect" class="input-group-text">ইউনিয়ন</label>
-                     <select id="unionSelect" v-model="selectedUnion" class="form-select shadow-none" :disabled="!selectedUpazila">
+                     <select id="unionSelect" v-model="selectedUnion" class="form-select shadow-none"
+                        :disabled="!selectedUpazila">
                         <option value="" disabled>Select Union</option>
                         <option v-for="union in filteredUnions" :value="union">{{ union.bn_name }}</option>
                      </select>
@@ -160,53 +169,65 @@
       <div class="footer-menu">
          <a href="./dashboard.html" class="">
             <span>
-               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house-door-fill" viewBox="0 0 16 16">
-                  <path d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5" />
+               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                  class="bi bi-house-door-fill" viewBox="0 0 16 16">
+                  <path
+                     d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5" />
                </svg>
             </span>
             <span>ড্যাশবোর্ড</span>
          </a>
          <a href="#">
             <span>
-               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cash" viewBox="0 0 16 16">
+               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cash"
+                  viewBox="0 0 16 16">
                   <path d="M8 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4" />
-                  <path d="M0 4a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1zm3 0a2 2 0 0 1-2 2v4a2 2 0 0 1 2 2h10a2 2 0 0 1 2-2V6a2 2 0 0 1-2-2z" />
+                  <path
+                     d="M0 4a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1zm3 0a2 2 0 0 1-2 2v4a2 2 0 0 1 2 2h10a2 2 0 0 1 2-2V6a2 2 0 0 1-2-2z" />
                </svg>
             </span>
             <span>বেতন</span>
          </a>
          <a href="#">
             <span>
-               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-backpack2-fill" viewBox="0 0 16 16">
+               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                  class="bi bi-backpack2-fill" viewBox="0 0 16 16">
                   <path d="M5 13h6v-3h-1v.5a.5.5 0 0 1-1 0V10H5z" />
-                  <path d="M6 2v.341C3.67 3.165 2 5.388 2 8v1.191l-1.17.585A1.5 1.5 0 0 0 0 11.118V13.5A1.5 1.5 0 0 0 1.5 15h1c.456.607 1.182 1 2 1h7c.818 0 1.544-.393 2-1h1a1.5 1.5 0 0 0 1.5-1.5v-2.382a1.5 1.5 0 0 0-.83-1.342L14 9.191V8a6.002 6.002 0 0 0-4-5.659V2a2 2 0 1 0-4 0m2-1a1 1 0 0 1 1 1v.083a6.04 6.04 0 0 0-2 0V2a1 1 0 0 1 1-1m0 3a4 4 0 0 1 3.96 3.43.5.5 0 1 1-.99.14 3 3 0 0 0-5.94 0 .5.5 0 1 1-.99-.14A4 4 0 0 1 8 4M4.5 9h7a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-4a.5.5 0 0 1 .5-.5" />
+                  <path
+                     d="M6 2v.341C3.67 3.165 2 5.388 2 8v1.191l-1.17.585A1.5 1.5 0 0 0 0 11.118V13.5A1.5 1.5 0 0 0 1.5 15h1c.456.607 1.182 1 2 1h7c.818 0 1.544-.393 2-1h1a1.5 1.5 0 0 0 1.5-1.5v-2.382a1.5 1.5 0 0 0-.83-1.342L14 9.191V8a6.002 6.002 0 0 0-4-5.659V2a2 2 0 1 0-4 0m2-1a1 1 0 0 1 1 1v.083a6.04 6.04 0 0 0-2 0V2a1 1 0 0 1 1-1m0 3a4 4 0 0 1 3.96 3.43.5.5 0 1 1-.99.14 3 3 0 0 0-5.94 0 .5.5 0 1 1-.99-.14A4 4 0 0 1 8 4M4.5 9h7a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-4a.5.5 0 0 1 .5-.5" />
                </svg>
             </span>
             <span>শিক্ষার্থী </span>
          </a>
          <a href="#">
             <span>
-               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-people-fill" viewBox="0 0 16 16">
-                  <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5" />
+               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                  class="bi bi-people-fill" viewBox="0 0 16 16">
+                  <path
+                     d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5" />
                </svg>
             </span>
             <span>শিক্ষক</span>
          </a>
          <a data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" class="active">
             <span>
-               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
-                  <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0" />
+               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                  class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
+                  <path
+                     d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0" />
                </svg>
             </span>
             <span>অন্যান্য</span>
          </a>
       </div>
 
-      <div class="offcanvas offcanvas-start  " tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+      <div class="offcanvas offcanvas-start  " tabindex="-1" id="offcanvasExample"
+         aria-labelledby="offcanvasExampleLabel">
          <div class="offcanvas-header">
             <!-- Your offcanvas header content -->
             <h5 class="offcanvas-title" id="offcanvasExampleLabel">মেনু</h5>
-            <button type="button" class="btn-close text-reset shadow-none" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            <button type="button" class="btn-close text-reset shadow-none" data-bs-dismiss="offcanvas"
+               aria-label="Close"></button>
          </div>
          <div class="offcanvas-body">
             <!-- Your offcanvas content -->
@@ -261,7 +282,7 @@
                   dateOfBirth: '2007-12-12',
                   gender: 'Male',
                   phone: '0176544577',
-            
+
                   studentImage: 'ok',
                   address: {
                      village: 'testvil',
@@ -275,7 +296,7 @@
                      phoneNumber: ''
                   },
                   studentClass: '' // Add studentClass to the data object
-                 
+
                },
                classess: null
             };
@@ -402,6 +423,7 @@
             },
 
             async registerStudent() {
+
                try {
                   const {
                      fullName,
@@ -410,10 +432,11 @@
                      phone,
                      studentClass,
                      studentImage,
-      
+
                      address: { village, thana, district, division, union },
-                     guardian: { fullName:guardianFullName, phoneNumber:guardianPhoneNumber}
+                     guardian: { fullName: guardianFullName, phoneNumber: guardianPhoneNumber }
                   } = this.student;
+                  console.log(this.student);
 
                   const studentData = {
                      fullName,
@@ -422,7 +445,6 @@
                      phone,
                      studentClass,
                      studentImage,
-                     madrasa,
                      address: {
                         village,
                         upazila: this.selectedUpazila ? this.selectedUpazila.bn_name : 'Not selected',
@@ -467,13 +489,13 @@
                         phoneNumber: ''
                      },
                      studentClass: ''
-                   
+
                   };
                   window.location.reload()
 
                   // Hide the modal after successful submission
                   //const modal = new bootstrap.Modal(document.getElementById('studentModal'));
-                //  modal.hide();
+                  //  modal.hide();
                } catch (error) {
                   console.log(error)
                   console.error(error.response.data);
@@ -488,7 +510,7 @@
                   fetchTeachers()
                } catch (error) {
                   console.error('Error deleting teacher  ', error)
-                  
+
                }
             },
 
@@ -505,7 +527,7 @@
 
          created() {
             this.fetchData();
-          //  this.getAllStudents()
+            //  this.getAllStudents()
          }
 
       });
