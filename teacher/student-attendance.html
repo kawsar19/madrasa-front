@@ -238,7 +238,7 @@
                   const payload = { attendanceRecords };
 
                   // API endpoint to submit attendance
-                  const apiUrl = 'http://localhost:3000/api/attendance/create-multiple'; // Replace with your actual API endpoint
+                  const apiUrl = 'https://madrasa-back.vercel.app/api/attendance/create-multiple'; // Replace with your actual API endpoint
                   const token = localStorage.getItem('token'); // Retrieve the token from localStorage
 
                   fetch(apiUrl, {
@@ -272,7 +272,7 @@
                async fetchAttendanceData(student) {
                   try {
                      // Make the API call using Axios with query parameters
-                     const response = await axios.get(`http://localhost:3000/api/attendance/student-attendance/${student._id}`, {
+                     const response = await axios.get(`https://madrasa-back.vercel.app/api/attendance/student-attendance/${student._id}`, {
                         params: {
                            month: this.selectedMonthForFilter,
                            year: this.year
