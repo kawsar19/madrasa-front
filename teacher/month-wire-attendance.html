@@ -10,7 +10,8 @@
 
   <div id="app">
     <!-- Your Vue.js template -->
-    <table class="table">
+   <div class="table-responsive ">
+          <table class="table">
       <thead>
         <tr>
           <th>Student Name</th>
@@ -28,6 +29,8 @@
         </tr>
       </tbody>
     </table>
+
+   </div>
   </div>
 
   <!-- Vue.js and Bootstrap JS from CDN -->
@@ -41,7 +44,7 @@
         return {
           baseUrl: 'http://localhost:3000/api', // Replace with your base URL
           studentsData: [], // Empty array to store fetched data
-          token: localStorage.getItem('token') // Retrieve token from localStorage
+          token: '' // Retrieve token from localStorage
         };
       },
       computed: {
@@ -80,7 +83,7 @@
           const endpoint = `${this.baseUrl}/attendance/class-attendance?month=12&year=2023&classId=6586987ba69cb2c14f270bb6`;
           fetch(endpoint, {
             headers: {
-              Authorization: this.token ? `Bearer ${this.token}` : '', // Include token in headers if available
+              Authorization: this.token ? `${this.token}` : '', // Include token in headers if available
             },
           })
             .then(response => response.json())
@@ -94,6 +97,10 @@
         },
       },
       mounted() {
+     this.token = localStorage.getItem('token'); // Retrieve token from localStorage
+
+     console.log(this.token)
+
         this.fetchData(); // Call fetchData method when the component is mounted
       },
     });
