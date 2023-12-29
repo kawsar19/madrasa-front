@@ -50,27 +50,53 @@
       computed: {
         // Extract unique dates from the fetched data
         dates() {
-          const uniqueDates = new Set();
-          this.studentsData.forEach(item => {
-            uniqueDates.add(item.date.split('T')[0]); // Extracting and formatting date
-          });
-          return Array.from(uniqueDates);
-        },
+  const uniqueDates = new Set();
+  const months = [
+        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      ];
+
+  this.studentsData.forEach(item => {
+    const dateParts = item.date.split('T')[0].split('-');
+    const monthIndex = parseInt(dateParts[1]) - 1;
+    const formattedDate = `${dateParts[2]} ${months[monthIndex]}`;
+    uniqueDates.add(formattedDate);
+  });
+
+  const sortedDates = Array.from(uniqueDates).sort((a, b) => {
+    const dateA = new Date(`2000 ${a}`);
+    const dateB = new Date(`2000 ${b}`);
+    return dateA - dateB;
+  });
+
+  return sortedDates;
+},
         students() {
-          // Group the data by student name
-          const groupedByStudent = {};
-          this.studentsData.forEach(item => {
-            const name = item.student.fullName;
-            if (!groupedByStudent[name]) {
-              groupedByStudent[name] = {
-                studentName: name,
-                statuses: {},
-              };
-            }
-            groupedByStudent[name].statuses[item.date.split('T')[0]] = item.status;
-          });
-          return Object.values(groupedByStudent);
-        },
+  const groupedByStudent = {};
+  const months = [
+          'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+          'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+        ];
+
+  this.studentsData.forEach(item => {
+    const name = item.student.fullName;
+
+    if (!groupedByStudent[name]) {
+      groupedByStudent[name] = {
+        studentName: name,
+        statuses: {},
+      };
+    }
+
+    const dateParts = item.date.split('T')[0].split('-');
+    const formattedDate = `${dateParts[2]} ${months[parseInt(dateParts[1]) - 1]}`;
+
+    groupedByStudent[name].statuses[formattedDate] = item.status;
+  });
+
+  return Object.values(groupedByStudent);
+},
+
       },
       methods: {
         // Get status for a specific student on a specific date
