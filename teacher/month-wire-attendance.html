@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Vue with Bootstrap 5.3</title>
+  <!-- Bootstrap CSS from CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+  <div id="app">
+    <!-- Your Vue.js template -->
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Student Name</th>
+          <!-- Add table headers dynamically for each date -->
+          <th v-for="date in dates" :key="date">{{ date }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(student, index) in students" :key="index">
+          <td>{{ student.studentName }}</td>
+          <!-- Display status for each date -->
+          <td v-for="date in dates" :key="date">
+            {{ getStatus(student.studentName, date) }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Vue.js and Bootstrap JS from CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    new Vue({
+      el: '#app',
+      data() {
+        return {
+          baseUrl: 'http://localhost:3000/api', // Replace with your base URL
+          studentsData: [], // Empty array to store fetched data
+          token: localStorage.getItem('token') // Retrieve token from localStorage
+        };
+      },
+      computed: {
+        // Extract unique dates from the fetched data
+        dates() {
+          const uniqueDates = new Set();
+          this.studentsData.forEach(item => {
+            uniqueDates.add(item.date.split('T')[0]); // Extracting and formatting date
+          });
+          return Array.from(uniqueDates);
+        },
+        students() {
+          // Group the data by student name
+          const groupedByStudent = {};
+          this.studentsData.forEach(item => {
+            const name = item.student.fullName;
+            if (!groupedByStudent[name]) {
+              groupedByStudent[name] = {
+                studentName: name,
+                statuses: {},
+              };
+            }
+            groupedByStudent[name].statuses[item.date.split('T')[0]] = item.status;
+          });
+          return Object.values(groupedByStudent);
+        },
+      },
+      methods: {
+        // Get status for a specific student on a specific date
+        getStatus(studentName, date) {
+          const student = this.students.find(s => s.studentName === studentName);
+          return student.statuses[date] || ''; // Return empty string if no status found
+        },
+        fetchData() {
+          // Fetch API data using fetch or Axios
+          const endpoint = `${this.baseUrl}/attendance/class-attendance?month=12&year=2023&classId=6586987ba69cb2c14f270bb6`;
+          fetch(endpoint, {
+            headers: {
+              Authorization: this.token ? `Bearer ${this.token}` : '', // Include token in headers if available
+            },
+          })
+            .then(response => response.json())
+            .then(data => {
+              console.log(data);
+              this.studentsData = data; // Assign fetched data to studentsData
+            })
+            .catch(error => {
+              console.error('Error fetching data:', error);
+            });
+        },
+      },
+      mounted() {
+        this.fetchData(); // Call fetchData method when the component is mounted
+      },
+    });
+  </script>
+
+</body>
+</html>
