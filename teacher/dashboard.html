@@ -18,6 +18,17 @@
     <p>{{date}}</p>
     <div class="dashboard">
       <div class="info-card teachers" @click="window.location.href='/teacher/student-list.html'">
+        <h2>মোট ক্লাশ</h2>
+
+
+        <div v-if="totalTeachers">
+          <p class="quantity">{{totalClasses}}</p>
+        </div>
+        <div v-else>
+          <div class="loader-text"></div>
+        </div>
+      </div>
+      <div class="info-card teachers" @click="window.location.href='/teacher/student-list.html'">
         <h2>মোট শিক্ষক</h2>
 
 
@@ -149,8 +160,9 @@
         teacherName: '',
         teacherMadrasa: '',
         totalStudents: null,
-        totalTeachers: 0,
-        date: ''
+        totalClasses: null, // Fixed variable name
+        totalTeachers: null,
+        date: '',
       },
       mounted() {
         var dateConverted = new buetDateConverter().convert("আজকের তারিখ: l A gটা iমিনিট, j F, Y (বঙ্গাব্দ)");
@@ -173,23 +185,25 @@
         if (storedUser) {
           const user = JSON.parse(storedUser);
           this.teacherName = user.name;
-          this.teacherMadrasa = user.madrasaName
+          this.teacherMadrasa = user.madrasaName;
         }
-
 
         // Retrieve totalStudents and totalTeachers from sessionStorage
-        const storedTotalStudents = sessionStorage.getItem('totalStudents');
-        const storedTotalTeachers = sessionStorage.getItem('totalTeachers');
+const storedTotalStudents = sessionStorage.getItem('totalStudents');
+const storedTotalTeachers = sessionStorage.getItem('totalTeachers');
+const storedTotalClasses = sessionStorage.getItem('totalClasses'); // Include this line
 
-        // Check if the values exist in sessionStorage
-        if (storedTotalStudents && storedTotalTeachers) {
-          // Assign the values to Vue data properties
-          this.totalStudents = parseInt(storedTotalStudents); // Convert to a number if needed
-          this.totalTeachers = parseInt(storedTotalTeachers); // Convert to a number if needed
-        } else {
-          // If values are not in sessionStorage, fetch the data
-          this.fetchData();
-        }
+// Check if the values exist in sessionStorage
+if (storedTotalStudents && storedTotalTeachers && storedTotalClasses) {
+  // Assign the values to Vue data properties
+  this.totalStudents = parseInt(storedTotalStudents);
+  this.totalTeachers = parseInt(storedTotalTeachers);
+  this.totalClasses = parseInt(storedTotalClasses); // Assign totalClasses
+} else {
+  // If values are not in sessionStorage, fetch the data
+  this.fetchData();
+}
+
 
       },
       methods: {
@@ -206,18 +220,25 @@
                   'Authorization': `${localStorage.getItem('token')}`
                 }
               }),
+              axios.get('https://madrasa-back.vercel.app/api/class/total-classes', {
+                headers: {
+                  'Authorization': `${localStorage.getItem('token')}`
+                }
+              }),
                      axios.get('https://madrasa-back.vercel.app/api/teacher/total-teachers', {
                 headers: {
                   'Authorization': `${localStorage.getItem('token')}`
                 }
               })
       ])
-            .then(([studentsResponse, teachersResponse]) => {
+            .then(([studentsResponse, classesResponse, teachersResponse]) => {
               sessionStorage.setItem('totalStudents', studentsResponse.data.totalStudents);
               sessionStorage.setItem('totalTeachers', teachersResponse.data.totalTeachers)
 
-
+              sessionStorage.setItem('totalClasses', classesResponse.data.totalClassName)
+              
               this.totalStudents = studentsResponse.data.totalStudents;
+              this.totalClasses = classesResponse.data.totalClassName; // Fixed variable name
               this.totalTeachers = teachersResponse.data.totalTeachers;
 
             })
