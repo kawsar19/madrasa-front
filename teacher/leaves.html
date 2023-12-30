@@ -1,50 +1,29 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-   <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1">
-   <title></title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    /* HTML: <div class="loader"></div> */
+.loader-text {
+  width: fit-content;
+  font-weight: bold;
+  font-family: monospace;
+  font-size: 30px;
+  clip-path: inset(0 3ch 0 0);
+  animation: l4 1s steps(4) infinite;
+}
+.loader-text:before {
+  content:"Loading..."
+}
+@keyframes l4 {to{clip-path: inset(0 -1ch 0 0)}}
+  </style>
 </head>
-
 <body>
-   
-   <div id="app">
-      <h4>{{message}}</h4>
-      <input type="text" name="" id="" v-model="name"> <br>
-      <input type="password" name="" id="" v-model="password"> <br>
-      <button type="submit" @click="getData">get data</button>
-   </div>
-
-
-<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
-<script>
-   
-   new Vue({
-      el:'#app',
-      data:{
-         message:'hello',
-         name:'',
-         password:''
-      },
-      methods:{
-         getData(){
-           /* let data ={
-               this.name,
-               this.password
-            }*/
-            
-            let data ={
-               
-               name:this.name,
-               password:this.password
-            }
-            alert(JSON.stringify(data))
-         }
-      }
-   })
-</script>
-
+  <div class="loader-text"></div>
+  
+  
 </body>
-
 </html>

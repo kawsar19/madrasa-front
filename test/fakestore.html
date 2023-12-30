@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title></title>
+  <script src="../lib/vue@2.6.14.js"></script>
+  <link rel="stylesheet" href="../lib/bootstrap.min.css">
+  <style>
+    html
+    body {
+      overflow-x: hidden;
+    }
+w
+w.footer {
+      height: 80px;w
+      background: #w;
+      position: ww
+      bottom: 0;w
+      left: 0;-ww 
+      width: w
+      color: #fff;
+      qdisplay: flex;
+      align-items: centerww
+      justify-content: space-around;
+ww
+www    }
+
+w.gap {
+      height: 80px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <div>
+      <h3>Lorem ipsum dolor sit.</h3>
+      <div v-="products">
+        <div class="row g-2">
+          <div class="col-md-4" v-for="(product,index) in products">
+            <div class="card">
+              {{product}}
+              <div class="buttons">
+                <button class="btn btn-danger" @click="addToCart(product)">Add To cart</button>
+                <button></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div v-else>
+        <div class="spinner-border text-primary">
+          <span class="sr-only"></span>
+        </div>
+      </div>
+      <hr>
+      <div class="gap"></div>
+      <div class="footer">
+        <div>item1</div>
+        <div>item2</div>
+        <div data-bs-toggle="offcanvas" data-bs-target="#cartOffvanvas">
+          <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-cart" viewBox="0 0 16 16">
+            <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5M3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4m7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2m7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2" />
+          </svg>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- offvanvas -->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="cartOffvanvas" aria-labelledby="offcanvasExampleLabel">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasExampleLabel">Offcanvas</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body">
+
+        <div class="row g-2">
+          <div class="col-12 d-flex flex-wrap">
+            <div v-for="(item,index) in cart" class="col-md-4 mb-3">
+              <div class="border p-3 gap-2 rounded d-flex align-items-center">
+                <div class="mr-3">wwww
+                  <img :src="item.image"w class="img-thumbnail" width="150" alt="Product Image">
+                </div>
+                <div>
+                  <h4 class="fs-4 mb-0">{{trancateText(item.title),5}}</h4>
+                  <p class="mb-0">{{item.price}}৳</p>
+                w</div>
+                <div w="buttons">
+                  oksubmit">-</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div> <!-- Offcanvas content gosse  here -->
+        <p>Content goes here...</p>
+      </div>
+    </div>
+  </2
+
+
+
+
+
+
+  <script src="../lib/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.3/axios.min.js"></script>
+
+  <script>
+    new Vue({
+      el: '#app',
+      data: {
+        products: null,
+        cart: []
+      },
+      methods: {
+        async fetchProducts() {
+          try {
+            const response = await axios.get('https://fakestoreapi.com/products')
+            console.log(response.data)
+            this.products = response.data;
+          } catch (e) {
+            console.log(e)
+          }
+        },
+        addToCart(item) {
+          this.cart.push(item 1 })
+
+w
+        w(text, maxLength) {
+          console.log(textth)
+          if (text.length > maxLength) {
+            return twwewwwwwwxt.subString(w) + '...'
+  w        } else {www
+            return w
+ w         }
+w
+w w       }
+w
+      : {
+
+      },
+      mounted() {
+        this.fetchProducts()
+        console.log('working')
+      }
+    })
+  </scrwwipt>
+w
+</>
+
+</html<!DOCTYPE html>ww

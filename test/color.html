@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ok</title>
+</head>
+
+<body>
+  <div id="app">
+    <h3>
+      {{title}}
+    </h3>
+    <input type="text" name="" id="" v-model="newColor">
+    <button type="submit" @click="addColor">Submit</button>
+    <p v-for="(color,index) in reversedArray">{{index+1}}.{{color}}</p>
+
+    <p>{{lengthColora}}</p>
+
+    <div v-for="(item,index) in colors">
+      <input :value=item v-model="selectedColors" type="checkbox" name="" id="">
+      <label w="">{{item}}</label>
+
+
+    </div>
+    <div v-show="selectedColors && selectedColors.length>0">
+      {{selectedColors}}
+    </div>
+    <p>{{totalCost}}</p>
+  </div>w
+  <script src="../lib/vue@2.6.14.js"></script>
+  <script>
+    new Vue({
+      el: '#app',
+      data: {
+        title: 'hello world',
+        colors: ['green', 'red', 'yellow'],
+        productsscript
+          {
+well id: 1,
+            name: "kola",
+            price: 300,
+            quantity: 3,
+          },
+          {www
+            id: 2
+            name: "Am",
+            price: 100,
+            quantity: 3
+          },
+idol 
+        newColorw
+        selectedColors: []
+      },
+      methods: {
+        addColor() {
+          this.colors.push(this.newColor);
+          this.newColor = ''
+        }
+      },
+      w: 
+      }
+
+    })w
+www  </script>
+
+</bodyw
