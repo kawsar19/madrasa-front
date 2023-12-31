@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Vue with Bootstrap 5.3</title>
@@ -11,41 +12,96 @@
       background: green;
       color: #fff;
     }
+
     td.absent {
       background: crimson;
       color: #fff;
     }
+
     td.leave {
       background: yellow;
-     
+
     }
+    
+    /* Define your skeleton loader styles */
+.skeleton-row {
+  height: 20px; /* Adjust the height of each loading row */
+  background-color: #f0f0f0; /* Choose a suitable background color */
+  animation: pulse 1.5s infinite alternate; /* Define an animation */
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
   </style>
 </head>
+
 <body>
 
-  <div id="app">
+  <div id="app" class="py-4">
+
+    <div class="container mb-2">
+      <label for="selectMonth">Select Month:</label>
+      <select id="selectMonth" v-model="selectedMonth" @change="fetchData">
+        <option v-for="(month, index) in months" :key="index" :value="index + 1">{{ month }}</option>
+      </select>
+
+      <label for="selectYear">Select Year:</label>
+      <select id="selectYear" v-model="selectedYear" @change="fetchData">
+        <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
+      </select>
+      
+      <label for="selectClass">Select Class:</label>
+      <select name="" id="selectClass" v-if="classNames" v-model="selectedClass" @change="handleClassChange">
+       <option value="">All</option>
+        <option :value="className._id"  v-for="className in classNames">{{className.className}}</option>
+      </select>
+    </div>
     <!-- Your Vue.js template -->
-   <div class="table-responsive ">
-          <table class="table table-bordered">
-      <thead>
-        <tr>
-          <th>Student Name</th>
-          <!-- Add table headers dynamically for each date -->
-          <th v-for="date in dates" :key="date">{{ date }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(student, index) in students" :key="index">
-          <td>{{ student.studentName }}</td>
-          <!-- Display status for each date -->
-          <td v-for="date in dates" :key="date" :class="getStatus(student.studentName, date)">
-            {{ getStatus(student.studentName, date) }}
-          </td>
-        </tr>
-      </tbody>
-    </table>
+   <div class="container">
+         <div class="table-responsive ">
+        <table class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th>Student Name</th>
+            <!-- Add table headers dynamically for each date -->
+            <th v-for="date in dates" :key="date">{{ date }}</th>
+          </tr>
+        </thead>
+        <tbody v-if="students.length>0 && !loadingData">
+          <tr v-for="(student, index) in students" :key="index">
+            <td>{{ student.studentName }}</td>
+            <!-- Display status for each date -->
+            <td v-for="date in dates" :key="date" :class="getStatus(student.studentName, date)">
+              {{ getStatus(student.studentName, date) }}
+            </td>
+          </tr>
+        </tbody>
+        <tbody v-else>
+          <tr v-if="loadingData" v-for="n in 5" :key="n"> <!-- Adjust the number of rows as per your preference -->
+            <td colspan="100">
+              <div class="skeleton-row"></div>
+            </td>
+          </tr>
+          <tr v-else>
+            <td>No record found</td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
 
    </div>
+    
+    <footer>
+      
+    </footer>
   </div>
 
   <!-- Vue.js and Bootstrap JS from CDN -->
@@ -57,60 +113,79 @@
       el: '#app',
       data() {
         return {
+          loadingData:true,
           baseUrl: 'http://localhost:3000/api', // Replace with your base URL
           studentsData: [], // Empty array to store fetched data
-          token: '' // Retrieve token from localStorage
+          token: '', // Retrieve token from localStorage
+          selectedMonth: new Date().getMonth() + 1, // Default to current month
+          selectedYear: new Date().getFullYear(),
+          classNames:null,
+          selectedClass:''
+
+
         };
       },
       computed: {
         // Extract unique dates from the fetched data
         dates() {
-  const uniqueDates = new Set();
-  const months = [
+          const uniqueDates = new Set();
+          const months = [
         'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
         'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
       ];
 
-  this.studentsData.forEach(item => {
-    const dateParts = item.date.split('T')[0].split('-');
-    const monthIndex = parseInt(dateParts[1]) - 1;
-    const formattedDate = `${dateParts[2]} ${months[monthIndex]}`;
-    uniqueDates.add(formattedDate);
-  });
+          this.studentsData.forEach(item => {
+            const dateParts = item.date.split('T')[0].split('-');
+            const monthIndex = parseInt(dateParts[1]) - 1;
+            const formattedDate = `${dateParts[2]} ${months[monthIndex]}`;
+            uniqueDates.add(formattedDate);
+          });
 
-  const sortedDates = Array.from(uniqueDates).sort((a, b) => {
-    const dateA = new Date(`2000 ${a}`);
-    const dateB = new Date(`2000 ${b}`);
-    return dateA - dateB;
-  });
+          const sortedDates = Array.from(uniqueDates).sort((a, b) => {
+            const dateA = new Date(`2000 ${a}`);
+            const dateB = new Date(`2000 ${b}`);
+            return dateA - dateB;
+          });
 
-  return sortedDates;
-},
+          return sortedDates;
+        },
+        months() {
+          return [
+              'January', 'February', 'March', 'April', 'May', 'June',
+              'July', 'August', 'September', 'October', 'November', 'December'
+            ];
+        },
+        years() {
+          const currentYear = new Date().getFullYear();
+          return [currentYear,currentYear + 1, currentYear + 2, currentYear-4]; // Adding 2024 and 2025
+        },
+        
+
         students() {
-  const groupedByStudent = {};
-  const months = [
+          const groupedByStudent = {};
+          const months = [
           'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
           'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
         ];
 
-  this.studentsData.forEach(item => {
-    const name = item.student.fullName;
+          this.studentsData.forEach(item => {
+            const name = item.student.fullName;
 
-    if (!groupedByStudent[name]) {
-      groupedByStudent[name] = {
-        studentName: name,
-        statuses: {},
-      };
-    }
+            if (!groupedByStudent[name]) {
+              groupedByStudent[name] = {
+                studentName: name,
+                statuses: {},
+              };
+            }
 
-    const dateParts = item.date.split('T')[0].split('-');
-    const formattedDate = `${dateParts[2]} ${months[parseInt(dateParts[1]) - 1]}`;
+            const dateParts = item.date.split('T')[0].split('-');
+            const formattedDate = `${dateParts[2]} ${months[parseInt(dateParts[1]) - 1]}`;
 
-    groupedByStudent[name].statuses[formattedDate] = item.status;
-  });
+            groupedByStudent[name].statuses[formattedDate] = item.status;
+          });
 
-  return Object.values(groupedByStudent);
-},
+          return Object.values(groupedByStudent);
+        },
 
       },
       methods: {
@@ -119,33 +194,75 @@
           const student = this.students.find(s => s.studentName === studentName);
           return student.statuses[date] || ''; // Return empty string if no status found
         },
+        fetchClassess(){
+         const endpoint=`${this.baseUrl}/class/list`
+         
+         fetch(endpoint,{
+           headers:{
+             Authorization:this.token?`${this.token}`:''
+           }
+         })
+        .then(response=>response.json())
+       .then(data=>{
+         console.log(data)
+         this.classNames=data
+         console.log(`${data[0]._id}`)
+         
+       //  this.selectedClass=`${data[0]._id}`
+         
+       })
+        },
         fetchData() {
+          
+          this.loadingData=true;
+          const endpoint = `${this.baseUrl}/attendance/class-attendance?month=${this.selectedMonth}&year=${this.selectedYear}&classId=${this.selectedClass}`;
+          
           // Fetch API data using fetch or Axios
-          const endpoint = `${this.baseUrl}/attendance/class-attendance?month=12&year=2023&classId=6586987ba69cb2c14f270bb6`;
+        /*  const endpoint = `${this.baseUrl}/attendance/class-attendance?month=12&year=2023&classId=6586987ba69cb2c14f270bb6`;*/
           fetch(endpoint, {
-            headers: {
-              Authorization: this.token ? `${this.token}` : '', // Include token in headers if available
-            },
-          })
+              headers: {
+                Authorization: this.token ? `${this.token}` : '', // Include token in headers if available
+              },
+            })
             .then(response => response.json())
             .then(data => {
               console.log(data);
               this.studentsData = data; // Assign fetched data to studentsData
+              this.loadingData=false;
             })
             .catch(error => {
               console.error('Error fetching data:', error);
             });
         },
+        handleClassChange(){
+          localStorage.setItem('selectedClass',this.selectedClass);
+        }
       },
       mounted() {
-     this.token = localStorage.getItem('token'); // Retrieve token from localStorage
+        this.token = localStorage.getItem('token'); // Retrieve token from localStorage
 
-     console.log(this.token)
+        const storedValue=localStorage.getItem('selectedClass');
+        if(storedValue) {
+          this.selectedClass=storedValue;
+        }
+        this.fetchClassess()
 
         this.fetchData(); // Call fetchData method when the component is mounted
+      },
+      watch: {
+        selectedMonth() {
+          this.fetchData(); // Call fetchData when selectedMonth changes
+        },
+        selectedClass() {
+          this.fetchData()
+        },
+        selectedYear() {
+          this.fetchData(); // Call fetchData when selectedYear changes
+        },
       },
     });
   </script>
 
 </body>
+
 </html>

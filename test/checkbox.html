@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Vue Checkbox Select All - E-commerce Cart</title>
+  <!-- Vue.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+</head>
+<body>
+
+<div id="app">
+  <input type="checkbox" v-model="selectAll" @change="toggleAll">
+  <label for="selectAll">Select All</label>
+
+  <div v-for="(product, index) in products" :key="index">
+    <input type="checkbox" :id="'product' + index" v-model="selectedProducts" :value="product">
+    <label :for="'product' + index">{{ product.name }} - ${{ product.price }}</label>
+  </div>
+  {{selectedProducts}}
+</div>
+
+<script>
+  new Vue({
+    el: '#app',
+    data: {
+      selectAll: false,
+      products: [
+        { id: 1, name: 'Product 1', price: 25.99 },
+        { id: 2, name: 'Product 2', price: 19.99 },
+        { id: 3, name: 'Product 3', price: 34.99 },
+        // Add more products here as needed
+      ],
+      selectedProducts: []
+    },
+    methods: {
+      toggleAll() {
+        if (this.selectAll) {
+          this.selectedProducts = this.products.slice(); // Select all products
+        } else {
+          this.selectedProducts = []; // Deselect all products
+        }
+      }
+      
+    }
+  });
+</script>
+
+</body>
+</html>
