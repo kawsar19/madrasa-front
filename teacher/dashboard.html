@@ -11,45 +11,56 @@
 </head>
 
 <body>
-  <div id="app" class="container mt-5">
+  <div id="app" class="container ">
+    <div v-if="isLoading">
+      <h2>Loading</h2>
+    </div>
     <!-- Your dashboard content -->
-    <h5 class="fw-bold">স্বাগতম <span id="teacherName" class="text-danger">{{ teacherName }}</span></h5>
-    <small>{{teacherMadrasa}}</small>
-    <p>{{date}}</p>
-    <div class="dashboard">
-      <div class="info-card teachers" @click="window.location.href='/teacher/student-list.html'">
-        <h2>মোট ক্লাশ</h2>
+    <div v-else class="position-relative mt-5">
+      <div class="d-flex align-items-end justify-content-between">
+        <h5 class="fw-bold">স্বাগতম <span id="teacherName" class="text-danger">{{ teacherName }}</span></h5>
+        <img :src="userImage" height="60" width="60" class="rounded-circle  border-6" alt="">
 
-
-        <div v-if="totalTeachers">
-          <p class="quantity">{{totalClasses}}</p>
-        </div>
-        <div v-else>
-          <div class="loader-text"></div>
-        </div>
       </div>
-      <div class="info-card teachers" @click="window.location.href='/teacher/student-list.html'">
-        <h2>মোট শিক্ষক</h2>
+
+      <small>{{teacherMadrasa}}</small>
+      <p>{{date}}</p>
+      <div class="dashboard">
+        <div class="info-card teachers" @click="window.location.href='/teacher/student-list.html'">
+          <h2>মোট ক্লাশ</h2>
 
 
-        <div v-if="totalTeachers">
-          <p class="quantity">{{totalTeachers}}</p>
+          <div v-if="totalTeachers">
+            <p class="quantity">{{totalClasses}}</p>
+          </div>
+          <div v-else>
+            <div class="loader-text"></div>
+          </div>
         </div>
-        <div v-else>
-          <div class="loader-text"></div>
-        </div>
-      </div>
-      <div class="info-card students">
-        <h2>মোট শিক্ষার্থী</h2>
-        <div v-if="totalStudents">
-          <p class="quantity">{{totalStudents}}</p>
-        </div>
-        <div v-else>
-          <div class="loader-text"></div>
-        </div>
+        <div class="info-card teachers" @click="window.location.href='/teacher/student-list.html'">
+          <h2>মোট শিক্ষক</h2>
 
+
+          <div v-if="totalTeachers">
+            <p class="quantity">{{totalTeachers}}</p>
+          </div>
+          <div v-else>
+            <div class="loader-text"></div>
+          </div>
+        </div>
+        <div class="info-card students">
+          <h2>মোট শিক্ষার্থী</h2>
+          <div v-if="totalStudents">
+            <p class="quantity">{{totalStudents}}</p>
+          </div>
+          <div v-else>
+            <div class="loader-text"></div>
+          </div>
+
+        </div>
       </div>
     </div>
+
 
     <!-- ... Other dashboard elements ... -->
 
@@ -157,17 +168,19 @@
     new Vue({
       el: '#app',
       data: {
+        isLoading: true,
         teacherName: '',
         teacherMadrasa: '',
         totalStudents: null,
         totalClasses: null, // Fixed variable name
         totalTeachers: null,
         date: '',
+        userImage: ''
       },
       mounted() {
+        this.isLoading = false;
         var dateConverted = new buetDateConverter().convert("আজকের তারিখ: l A gটা iমিনিট, j F, Y (বঙ্গাব্দ)");
         this.date = dateConverted;
-
 
         const token = localStorage.getItem('token');
         if (!token) {
@@ -176,6 +189,7 @@
           const storedUser = localStorage.getItem('user');
           if (storedUser) {
             const user = JSON.parse(storedUser);
+            console.log(user)
             this.teacherName = user.name;
             this.teacherMadrasa = user.madrasaName
           }
@@ -186,23 +200,25 @@
           const user = JSON.parse(storedUser);
           this.teacherName = user.name;
           this.teacherMadrasa = user.madrasaName;
+          this.userImage = user.image
         }
 
         // Retrieve totalStudents and totalTeachers from sessionStorage
-const storedTotalStudents = sessionStorage.getItem('totalStudents');
-const storedTotalTeachers = sessionStorage.getItem('totalTeachers');
-const storedTotalClasses = sessionStorage.getItem('totalClasses'); // Include this line
+        const storedTotalStudents = sessionStorage.getItem('totalStudents');
+        const storedTotalTeachers = sessionStorage.getItem('totalTeachers');
+        const storedTotalClasses = sessionStorage.getItem('totalClasses'); // Include this line
 
-// Check if the values exist in sessionStorage
-if (storedTotalStudents && storedTotalTeachers && storedTotalClasses) {
-  // Assign the values to Vue data properties
-  this.totalStudents = parseInt(storedTotalStudents);
-  this.totalTeachers = parseInt(storedTotalTeachers);
-  this.totalClasses = parseInt(storedTotalClasses); // Assign totalClasses
-} else {
-  // If values are not in sessionStorage, fetch the data
-  this.fetchData();
-}
+        // Check if the values exist in sessionStorage
+        if (storedTotalStudents && storedTotalTeachers && storedTotalClasses) {
+          // Assign the values to Vue data properties
+          this.totalStudents = parseInt(storedTotalStudents);
+          this.totalTeachers = parseInt(storedTotalTeachers);
+          this.totalClasses = parseInt(storedTotalClasses); // Assign totalClasses
+
+        } else {
+          // If values are not in sessionStorage, fetch the data
+          this.fetchData();
+        }
 
 
       },
@@ -236,7 +252,7 @@ if (storedTotalStudents && storedTotalTeachers && storedTotalClasses) {
               sessionStorage.setItem('totalTeachers', teachersResponse.data.totalTeachers)
 
               sessionStorage.setItem('totalClasses', classesResponse.data.totalClassName)
-              
+
               this.totalStudents = studentsResponse.data.totalStudents;
               this.totalClasses = classesResponse.data.totalClassName; // Fixed variable name
               this.totalTeachers = teachersResponse.data.totalTeachers;

@@ -12,9 +12,9 @@
 
 <body>
    <div id="app" class="container mt-4">
-      <h1>Class List</h1>
-      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createClassModal">
-         Create Class
+      <h1 class="text-success fw-bold">ক্লাশের তালিকা</h1>
+      <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createClassModal">
+         ক্লাশ তৈরি
       </button>
 
       <!-- Modal -->
@@ -42,11 +42,16 @@
       <table class="table mt-4">
          <thead>
             <tr>
-               <th scope="col">Class Name</th>
-               <th scope="col">Madrasa Name</th>
-               <th scope="col">Action</th>
+               <th scope="col">ক্লাস</th>
+               <th scope="col">মাদরাসা</th>
+               <th scope="col">একশন</th>
             </tr>
          </thead>
+         <tbody>
+           <tr>
+             <td col-span="8">Loading</td>
+           </tr>
+         </tbody>
          <tbody>
             <tr v-for="classItem in classes" :key="classItem._id">
                <td>{{ classItem?.className }}</td>
@@ -155,7 +160,7 @@
       new Vue({
          el: '#app',
          data: {
-            classes: [],
+            classes: null,
             newClassName: '' // Store the new class name
          },
          mounted() {
