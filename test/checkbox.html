@@ -9,6 +9,12 @@
 <body>
 
 <div id="app">
+ <input type="date" name="" id="" v-model="selectedDate">
+  
+  <hr>
+  <div v-if="selectedDate">
+    {{selectedDate}}
+  </div>
   <input type="checkbox" v-model="selectAll" @change="toggleAll">
   <label for="selectAll">Select All</label>
 
@@ -23,6 +29,7 @@
   new Vue({
     el: '#app',
     data: {
+      selectedDate:'2020-08-30',
       selectAll: false,
       products: [
         { id: 1, name: 'Product 1', price: 25.99 },

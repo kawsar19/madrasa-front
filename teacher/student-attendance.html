@@ -1,334 +1,353 @@
 <!DOCTYPE html>
 
 <head>
-   <meta charset="UTF-8">
-   <title>Student List</title>
-   <!-- Bootstrap CSS -->
-   <link href="../lib/bootstrap.min.css" rel="stylesheet">
-   <link rel="stylesheet" href="../style.css">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <title>Student List</title>
+  <!-- Bootstrap CSS -->
+  <link href="../lib/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-   <script src="../lib/vue@2.6.14.js"></script>
-   <style>
-      .spinner-loader {
-         margin: auto;
-         display: flex;
-         align-items: center;
-         justify-content: center;
-         min-height: 100px;
-      }
+  <script src="../lib/vue@2.6.14.js"></script>
+  <style>
+    .spinner-loader {
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100px;
+    }
 
-      .student-attendance {
-         display: flex;
-         flex-direction: column;
-         border: 1px solid #ddd;
-         padding: 20px;
-         gap: 2px;
-      }
+    .student-attendance {
+      display: flex;
+      flex-direction: column;
+      border: 1px solid #ddd;
+      padding: 20px;
+      gap: 2px;
+    }
 
-      .student-attendance .attendance-row {
-         display: flex;
-         justify-content: space-between;
-         border: 1px solid #eee;
-         padding: 20px;
-      }
+    .student-attendance .attendance-row {
+      display: flex;
+      justify-content: space-between;
+      border: 1px solid #eee;
+      padding: 20px;
+    }
 
-      .student-attendance .result {
-         color: #26773E;
-         font-weight: 800;
+    .student-attendance .result {
+      color: #26773E;
+      font-weight: 800;
 
-      }
-   </style>
+    }
+  </style>
 </head>
 
 <body>
-   <div id="app" class="container mt-5">
-     <a href="month-wire-attendance.html" class="btn btn-danger">মাসিক হাজিরা</a>
-      <h1>শিক্ষার্থীদের তালিকা</h1>
-      <div class="mb-4">
-         <label for="attendanceDate" class="form-label">Attendance Date:</label>
-         <input type="date" id="attendanceDate" v-model="selectedDate" class="form-control">
-      </div>
+  <div id="app" class="container mt-5">
+    <a href="month-wire-attendance.html" class="btn btn-danger mb-2">মাসিক হাজিরা</a>
+    <h1>শিক্ষার্থীদের তালিকা</h1>
+    <div class="mb-4">
+      <label for="attendanceDate" class="form-label">হাজিরার তারিখ:</label>
+      <input type="date" id="attendanceDate" v-model="selectedDate" class="form-control">
+    </div>
 
-      <div class="d-flex gap-3 mb-4 justify-content-between">
-         <select v-model="classFilter" @change="fetchStudents" class="form-select shadow-none">
-            <option value="">All Classes</option>
-            <option v-for="className in classNames" :key="className._id" :value="className._id">{{ className.className
+    <div class="d-flex gap-3 mb-4 justify-content-between">
+      <select v-model="classFilter" @change="fetchStudents" class="form-select shadow-none">
+        <option value="">সকল ক্লাস</option>
+        <option v-for="className in classNames" :key="className._id" :value="className._id">{{ className.className
                }}</option>
-         </select>
+      </select>
+    </div>
+
+    <div class="d-flex justify-content-end gap-2 pb-2">
+      <!-- Add these buttons in your Vue template where you handle student data -->
+      <button class="btn btn-sm btn-success" @click="toggleStatusForAll('Present')">উপস্থিত</button>
+      <button class="btn btn-sm btn-danger" @click="toggleStatusForAll('Absent')">অনুপস্থিত</button>
+      <button class="btn btn-sm btn-warning" @click="toggleStatusForAll('Leave')">ছুটি</button>
+      <button class="btn btngsm btn-secondary" @click="toggleStatusForAll('Closed')">বন্ধ</button>
+
+    </div>
+
+    <ul class="list-group mb-3" v-if="loadedContent">
+      <li class="list-group-item d-flex justify-content-between align-items-start" v-for="student in filteredStudents" :key="student._id">
+        <div style="font-size: 12px" class="d-flex flex-column align-items-start">
+          <span>{{ student.fullName }} - {{ student?.studentClass?.className }}
+          </span>
+          <button class="btn btn-success btn-sm bg-opacity-100 shadow-none" data-bs-toggle="modal" data-bs-target="#exampleModal" @click="selectStudent(student)">
+            Details</button>
+        </div>
+
+        <div style="font-size: 14px;">
+          <label>
+            <input type="radio" checked="checked" :value="'Present'" v-model="student.attendanceStatus">
+            উপ
+          </label>
+          <label>
+            <input type="radio" :value="'Absent'" v-model="student.attendanceStatus">
+            অনু
+          </label>
+          <label>
+            <input type="radio" :value="'Leave'" v-model="student.attendanceStatus">
+            ছুটি
+          </label>
+          <label>
+            <input type="radio" :value="'Closed'" v-model="student.attendanceStatus">
+            বন্ধ
+          </label>
+        </div>
+      </li>
+    </ul>
+    <div v-else class="spinner-loader">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
       </div>
+    </div>
+    <button @click="submitAttendance" class="btn btn-success">Submit Attendance</button>
 
-      <ul class="list-group mb-3" v-if="loadedContent">
-         <li class="list-group-item d-flex justify-content-between align-items-start" v-for="student in filteredStudents" :key="student._id">
-            <div style="font-size: 12px" class="d-flex flex-column align-items-start">
-               <span>{{ student.fullName }} - {{ student?.studentClass?.className }}
-               </span>
-               <button class="btn btn-success btn-sm bg-opacity-100 shadow-none" data-bs-toggle="modal" data-bs-target="#exampleModal" @click="selectStudent(student)">
-                  Details</button>
-            </div>
 
-            <div style="font-size: 14px;">
-               <label>
-                  <input type="radio" checked="checked" :value="'Present'" v-model="student.attendanceStatus">
-                  P
-               </label>
-               <label>
-                  <input type="radio" :value="'Absent'" v-model="student.attendanceStatus">
-                  A
-               </label>
-               <label>
-                  <input type="radio" :value="'Leave'" v-model="student.attendanceStatus">
-                  L
-               </label>
+
+    <!-- modal -->
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Modal Title</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form class="row g-3">
+              <!-- Select for months -->
+              <div class="col-auto">
+                <label for="monthFilter" class="form-label">Select Month:</label>
+                <select v-model="selectedMonthForFilter" id="monthFilter" class="form-select">
+                  <option value="">All Months</option>
+                  <option v-for="(month, index) in months" :key="index" :value="index + 1">{{ month }}</option>
+                </select>
+              </div>
+
+              <!-- Select for years -->
+              <div class="col-auto">
+                <label for="yearFilter" class="form-label">Select Year:</label>
+                <select v-model="year" id="yearFilter" class="form-select">
+                  <option value="">All Years</option>
+                  <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
+                </select>
+              </div>
+            </form>
+            <div class="student-attendance">
+              <div class="attendance-row" v-for="item in studentAttendances">
+                <div class="date">
+                  <h3>{{item.date?.split('T')[0].split('-').pop()}}</h3>
+                </div>
+                <div class="result">
+                  <h4 :class="getStatusClass(item.status)"> {{item.status}} </h4>
+                </div>
+              </div>
+
             </div>
-         </li>
-      </ul>
-      <div v-else class="spinner-loader">
-         <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Loading...</span>
-         </div>
+            <!-- Modal content goes here -->
+            <pre>
+            {{studentAttendances}}
+            </pre>
+            <p>Modal content goes here...</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Save changes</button>
+          </div>
+        </div>
       </div>
-      <button @click="submitAttendance">Submit Attendance</button>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
+    <script src="../lib/bootstrap.bundle.min.js"></script>
 
+    <script>
+      new Vue({
+        el: '#app',
+        data: {
+          loadedContent: true,
+          students: [],
+          filteredStudents: [],
+          classFilter: '',
+          selectedStudent: null,
 
-      <!-- modal -->
+          month: 12,
+          year: 2023,
+          classNames: null,
+          token: '', // Initialize token variable
+          selectedDate: new Date().toISOString().split('T')[0],
+          studentAttendances: '',
 
-      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-         <div class="modal-dialog">
-            <div class="modal-content">
-               <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLabel">Modal Title</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-               </div>
-               <div class="modal-body">
-                  <form class="row g-3">
-                     <!-- Select for months -->
-                     <div class="col-auto">
-                        <label for="monthFilter" class="form-label">Select Month:</label>
-                        <select v-model="selectedMonthForFilter" id="monthFilter" class="form-select">
-                           <option value="">All Months</option>
-                           <option v-for="(month, index) in months" :key="index" :value="index + 1">{{ month }}</option>
-                        </select>
-                     </div>
-
-                     <!-- Select for years -->
-                     <div class="col-auto">
-                        <label for="yearFilter" class="form-label">Select Year:</label>
-                        <select v-model="year" id="yearFilter" class="form-select">
-                           <option value="">All Years</option>
-                           <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
-                        </select>
-                     </div>
-                  </form>
-                  <div class="student-attendance">
-                     <div class="attendance-row" v-for="item in studentAttendances">
-                        <div class="date">
-                           <h3>{{item.date?.split('T')[0].split('-').pop()}}</h3>
-                        </div>
-                        <div class="result">
-                           <h4 :class="getStatusClass(item.status)"> {{item.status}} </h4>
-                        </div>
-                     </div>
-
-                  </div>
-                  <!-- Modal content goes here -->
-                  <pre>
-                  {{studentAttendances}}
-                  </pre>
-                  <p>Modal content goes here...</p>
-               </div>
-               <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <button type="button" class="btn btn-primary">Save changes</button>
-               </div>
-            </div>
-         </div>
-      </div>
-      <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
-      <script src="../lib/bootstrap.bundle.min.js"></script>
-
-      <script>
-         new Vue({
-            el: '#app',
-            data: {
-               loadedContent: true,
-               students: [],
-               filteredStudents: [],
-               classFilter: '',
-               selectedStudent: null,
-
-               month: 12,
-               year: 2023,
-               classNames: null,
-               token: '', // Initialize token variable
-               selectedDate: new Date().toISOString().split('T')[0],
-               studentAttendances: '',
-
-               months: [
+          months: [
                   'January', 'February', 'March', 'April', 'May', 'June',
                   'July', 'August', 'September', 'October', 'November', 'December'
 
                 ],
-               years: [2023, 2024],
-               selectedMonthForFilter: 5,
-            },
-            mounted() {
-               this.selectedMonthForFilter = this.defaultMonth
-               this.token = localStorage.getItem('token'); // Retrieve token from localStorage
-               if (!this.token) {
-                  // Handle case where token is not found in localStorage
-                  console.error('Token not found in localStorage');
-                  return;
-               }
+          years: [2023, 2024],
+          selectedMonthForFilter: 5,
+        },
+        mounted() {
+          this.selectedMonthForFilter = this.defaultMonth
+          this.token = localStorage.getItem('token'); // Retrieve token from localStorage
+          if (!this.token) {
+            // Handle case where token is not found in localStorage
+            console.error('Token not found in localStorage');
+            return;
+          }
 
-               this.fetchClasses();
-               this.fetchStudents();
-            },
-            methods: {
-               async fetchStudents() {
-                  this.loadedContent = false
-                  try {
-                     let url = 'https://madrasa-back.vercel.app/api/student/list';
-                     if (this.classFilter) {
-                        url += `?className=${encodeURIComponent(this.classFilter)}`;
-                     }
+          this.fetchClasses();
+          this.fetchStudents();
+        },
+        methods: {
+          async fetchStudents() {
+            this.loadedContent = false
+            try {
+              let url = 'https://madrasa-back.vercel.app/api/student/list';
+              if (this.classFilter) {
+                url += `?className=${encodeURIComponent(this.classFilter)}`;
+              }
 
-                     const response = await fetch(url, {
-                        method: 'GET',
-                        headers: {
-                           'Authorization': this.token,
-                           'Content-Type': 'application/json',
-                           // Add other headers as needed
-                        },
-                     });
-                     const data = await response.json();
-                     console.log(data)
-                     this.students = data.students.map(student => ({
-                        ...student,
-                        attendanceStatus: '' // Initialize attendance status for each student
-                     }));
-                     this.filteredStudents = this.students; // Initially set to all students
-                     this.loadedContent = true
-                  } catch (error) {
-                     console.error('Error fetching students:', error);
-                  }
-               },
-               async fetchClasses() {
-                  try {
-                     const response = await fetch('https://madrasa-back.vercel.app/api/class/list', {
-                        method: 'GET',
-                        headers: {
-                           'Authorization': this.token,
-                           'Content-Type': 'application/json',
-                           // Add other headers as needed
-                        },
-                     });
-                     const data = await response.json();
-                     this.classNames = data;
-                  } catch (error) {
-                     console.error('Error fetching classes:', error);
-                  }
-               },
-               submitAttendance() {
-                  const attendanceRecords = this.students.map(student => ({
-                     studentId: student._id,
-                     classId: student.studentClass._id, // Assuming the classId is directly available in the student object
-                     date: this.selectedDate, // Current date
-                     status: student.attendanceStatus.toLowerCase() // Ensure status is in lowercase as specified
-                  }));
-
-                  const payload = { attendanceRecords };
-
-                  // API endpoint to submit attendance
-                  const apiUrl = 'https://madrasa-back.vercel.app/api/attendance/create-multiple'; // Replace with your actual API endpoint
-                  const token = localStorage.getItem('token'); // Retrieve the token from localStorage
-
-                  fetch(apiUrl, {
-                        method: 'POST',
-                        headers: {
-                           'Authorization': `${token}`, // Include the retrieved token in the header
-                           'Content-Type': 'application/json'
-                           // Add other headers as needed
-                        },
-                        body: JSON.stringify(payload)
-                     })
-                     .then(response => {
-                        if (!response.ok) {
-                           throw new Error('Network response was not ok');
-                        }
-                        return response.json();
-                     })
-                     .then(data => {
-                        console.log('Attendance submitted successfully:', data);
-                        alert('Attendance submitted successfully!');
-                     })
-                     .catch(error => {
-                        console.error(error);
-                        alert('There was an error submitting attendance.');
-                     });
-               },
-               selectStudent(student) {
-                  this.selectedStudent = student; // Update the selected student
-                  this.fetchAttendanceData(student); // Fetch attendance data for the selected student
-               },
-               async fetchAttendanceData(student) {
-                  try {
-                     // Make the API call using Axios with query parameters
-                     const response = await axios.get(`https://madrasa-back.vercel.app/api/attendance/student-attendance/${student._id}`, {
-                        params: {
-                           month: this.selectedMonthForFilter,
-                           year: this.year
-                        },
-
-                        headers: {
-                           Authorization: `${this.token}`,
-                        },
-                     });
-                     this.studentAttendances = response.data
-                     console.log(response)
-                     // this.attendanceRecords = response.data; // Assuming the API returns an array of attendance records
-                  } catch (error) {
-                     console.error('Error fetching data:', error.response.data.message);
-                  }
-               },
-               getStatusClass(status) {
-                  // Return different classes based on status
-                  if (status === 'present') {
-                     return 'text-primary';
-                  } else if (status === 'absent') {
-                     return 'text-danger';
-                  } else if (status === 'leave') {
-                     return 'text-warning';
-                  } else {
-                     return '';
-                  }
-               }
+              const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                  'Authorization': this.token,
+                  'Content-Type': 'application/json',
+                  // Add other headers as needed
+                },
+              });
+              const data = await response.json();
+              console.log(data)
 
 
-            },
-            computed: {
-               defaultMonth() {
-                  const currentDate = new Date();
-                  return (currentDate.getMonth() + 1).toString(); // Adding 1 for 1-based month numbering
-               },
-            },
-            watch: {
-               selectedMonthForFilter(newMonth, oldMonth) {
-                  if (newMonth !== oldMonth && this.selectedStudent) {
-                     this.fetchAttendanceData(this.selectedStudent);
-                  }
-               },
-               year(newYear, oldYear) {
-                  if (newYear !== oldYear && this.selectedStudent) {
-                     this.fetchAttendanceData(this.selectedStudent);
-                  }
-               },
+              this.students = data.students.map(student => ({
+                ...student,
+                attendanceStatus: 'Present' // Set the default value to 'Present'
+              }));
+              this.filteredStudents = this.students; // Initially set to all students
+              this.loadedContent = true
+            } catch (error) {
+              console.error('Error fetching students:', error);
             }
+          },
+          async fetchClasses() {
+            try {
+              const response = await fetch('https://madrasa-back.vercel.app/api/class/list', {
+                method: 'GET',
+                headers: {
+                  'Authorization': this.token,
+                  'Content-Type': 'application/json',
+                  // Add other headers as needed
+                },
+              });
+              const data = await response.json();
+              this.classNames = data;
+            } catch (error) {
+              console.error('Error fetching classes:', error);
+            }
+          },
+          submitAttendance() {
+            const attendanceRecords = this.students.map(student => ({
+              studentId: student._id,
+              classId: student.studentClass._id, // Assuming the classId is directly available in the student object
+              date: this.selectedDate, // Current date
+              status: student.attendanceStatus.toLowerCase() // Ensure status is in lowercase as specified
+            }));
 
-         });
-      </script>
+            const payload = { attendanceRecords };
+
+            // API endpoint to submit attendance
+            const apiUrl = 'https://madrasa-back.vercel.app/api/attendance/create-multiple'; // Replace with your actual API endpoint
+            const token = localStorage.getItem('token'); // Retrieve the token from localStorage
+
+            fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                  'Authorization': `${token}`, // Include the retrieved token in the header
+                  'Content-Type': 'application/json'
+                  // Add other headers as needed
+                },
+                body: JSON.stringify(payload)
+              })
+              .then(response => {
+                if (!response.ok) {
+                  throw new Error('Network response was not ok');
+                }
+                return response.json();
+              })
+              .then(data => {
+                console.log('Attendance submitted successfully:', data);
+                alert('Attendance submitted successfully!');
+              })
+              .catch(error => {
+                console.error(error);
+                alert('There was an error submitting attendance.');
+              });
+          },
+          selectStudent(student) {
+            this.selectedStudent = student; // Update the selected student
+            this.fetchAttendanceData(student); // Fetch attendance data for the selected student
+          },
+          async fetchAttendanceData(student) {
+            try {
+              // Make the API call using Axios with query parameters
+              const response = await axios.get(`https://madrasa-back.vercel.app/api/attendance/student-attendance/${student._id}`, {
+                params: {
+                  month: this.selectedMonthForFilter,
+                  year: this.year
+                },
+
+                headers: {
+                  Authorization: `${this.token}`,
+                },
+              });
+              this.studentAttendances = response.data
+              console.log(response)
+              // this.attendanceRecords = response.data; // Assuming the API returns an array of attendance records
+            } catch (error) {
+              console.error('Error fetching data:', error.response.data.message);
+            }
+          },
+          getStatusClass(status) {
+            // Return different classes based on status
+            if (status === 'present') {
+              return 'text-primary';
+            } else if (status === 'absent') {
+              return 'text-danger';
+            } else if (status === 'leave') {
+              return 'text-warning';
+            } else {
+              return '';
+            }
+          },
+          toggleStatusForAll(status) {
+            this.students.forEach(student => {
+              student.attendanceStatus = status;
+            });
+          }
+
+        },
+        computed: {
+          defaultMonth() {
+            const currentDate = new Date();
+            return (currentDate.getMonth() + 1).toString(); // Adding 1 for 1-based month numbering
+          },
+        },
+        watch: {
+          selectedMonthForFilter(newMonth, oldMonth) {
+            if (newMonth !== oldMonth && this.selectedStudent) {
+              this.fetchAttendanceData(this.selectedStudent);
+            }
+          },
+          year(newYear, oldYear) {
+            if (newYear !== oldYear && this.selectedStudent) {
+              this.fetchAttendanceData(this.selectedStudent);
+            }
+          },
+        }
+
+      });
+    </script>
 </body>
 
 </html>
