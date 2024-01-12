@@ -143,7 +143,7 @@
       data() {
         return {
           loadingData: true,
-          baseUrl: 'http://0.0.0.0:8080/api/', // Replace with your base URL
+          baseUrl: 'http://35.154.91.28/api', // Replace with your base URL
           studentsData: [], // Empty array to store fetched data
           token: '', // Retrieve token from localStorage
           selectedMonth: new Date().getMonth() + 1, // Default to current month
@@ -249,9 +249,9 @@
             })
             .then(response => response.json())
             .then(data => {
-              console.log(data)
+   
               this.classNames = data
-              console.log(`${data[0]._id}`)
+              
 
               //  this.selectedClass=`${data[0]._id}`
 
@@ -271,7 +271,7 @@
             })
             .then(response => response.json())
             .then(data => {
-              console.log(data);
+            
               this.studentsData = data; // Assign fetched data to studentsData
               this.loadingData = false;
             })
