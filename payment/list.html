@@ -116,7 +116,7 @@
                   methods: {
                      async getPayments() {
                         try {
-                           const response = await axios.get('https://madrasa-back.vercel.app/api/payment/list', {
+                           const response = await axios.get('http://0.0.0.0:8080/api//payment/list', {
                               params: {
                                  month: this.filterMonth,
                                  year: this.filterYear

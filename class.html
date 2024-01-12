@@ -108,7 +108,7 @@
                this.formData.className = ''
             },
             fetchClasses() {
-               axios.get('https://madrasa-back.vercel.app/api/class/list')
+               axios.get('http://35.154.91.28/api/class/list')
                   .then(response => {
                      this.classes = response.data;
                      localStorage.setItem('classes', JSON.stringify(response.data));
@@ -118,7 +118,7 @@
                   });
             },
             addClass() {
-               axios.post('https://madrasa-back.vercel.app/api/class/create', { className: this.formData.className })
+               axios.post('http://0.0.0.0:8080/api//class/create', { className: this.formData.className })
                   .then(response => {
                      this.classes.push(response.data);
                      this.formData.className = '';
@@ -134,7 +134,7 @@
             },
             editClass() {
                if (this.selectedClass) {
-                  axios.put(`https://madrasa-back.vercel.app/api/class/update/${this.selectedClass._id}`, { className: this.formData.className })
+                  axios.put(`http://0.0.0.0:8080/api//class/update/${this.selectedClass._id}`, { className: this.formData.className })
                      .then(response => {
                         const index = this.classes.findIndex(classItem => classItem._id === this.selectedClass._id);
                         if (index !== -1) {
@@ -150,7 +150,7 @@
                }
             },
             deleteClass(classId) {
-               axios.delete(`https://madrasa-back.vercel.app/api/class/delete/${classId}`)
+               axios.delete(`http://0.0.0.0:8080/api//class/delete/${classId}`)
                   .then(() => {
                      this.classes = this.classes.filter(classItem => classItem._id !== classId);
                      localStorage.setItem('classes', JSON.stringify(this.classes));

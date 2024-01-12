@@ -245,7 +245,7 @@
          methods: {
             async fetchData() {
                try {
-                  let apiUrl = `https://madrasa-back.vercel.app/api/student/list?limit=${this.limit}&page=${this.currentPage}`;
+                  let apiUrl = `http://0.0.0.0:8080/api//student/list?limit=${this.limit}&page=${this.currentPage}`;
 
                   if (this.searchQuery) {
                      apiUrl += `&q=${this.searchQuery}`;
@@ -281,7 +281,7 @@
                this.payment.student = this.selectedStudent?._id;
 
                try {
-                  const response = await fetch('https://madrasa-back.vercel.app/api/payment/create', {
+                  const response = await fetch('http://0.0.0.0:8080/api//payment/create', {
                      method: 'POST',
                      headers: {
                         'Content-Type': 'application/json',

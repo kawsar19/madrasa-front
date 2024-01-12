@@ -465,7 +465,7 @@
                   };
                   alert(teacherData)
 
-                  const response = await axios.post('https://madrasa-back.vercel.app/api/teacher/create', teacherData);
+                  const response = await axios.post('http://0.0.0.0:8080/api//teacher/create', teacherData);
                   window.location.reload()
 
 
@@ -532,7 +532,7 @@
             },
             async fetchMadrasas() {
                try {
-                  const response = await axios.get('https://madrasa-back.vercel.app/api/madrasa/list');
+                  const response = await axios.get('http://0.0.0.0:8080/api//madrasa/list');
                   console.log(response)
                   this.madrasas = response?.data;
                } catch (error) {
@@ -568,7 +568,7 @@
             },*/
             async fetchTeachers() {
                try {
-                  const response = await axios.get('https://madrasa-back.vercel.app/api/teacher/list');
+                  const response = await axios.get('http://0.0.0.0:8080/api//teacher/list');
                   this.teachers = response?.data;
                   console.log(response.data)
                   this.allTeachers = response.data
@@ -597,7 +597,7 @@
                try {
                   const confirmation = confirm('are you sure you eant to delete this?');
                   if (confirmation) {
-                     const response = await axios.delete('https://madrasa-back.vercel.app/api/teacher/delete/' + id);
+                     const response = await axios.delete('http://0.0.0.0:8080/api//teacher/delete/' + id);
                      window.location.reload()
                      fetchTeachers()
 

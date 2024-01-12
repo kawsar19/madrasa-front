@@ -231,17 +231,17 @@
         fetchData() {
           // Fetch both total students and total teachers simultaneously
           Promise.all([
-                     axios.get('https://madrasa-back.vercel.app/api/student/totalStudents', {
+                     axios.get('http://35.154.91.28/api/student/totalStudents', {
                 headers: {
                   'Authorization': `${localStorage.getItem('token')}`
                 }
               }),
-              axios.get('https://madrasa-back.vercel.app/api/class/total-classes', {
+              axios.get('http://35.154.91.28/api/class/total-classes', {
                 headers: {
                   'Authorization': `${localStorage.getItem('token')}`
                 }
               }),
-                     axios.get('https://madrasa-back.vercel.app/api/teacher/total-teachers', {
+                     axios.get('http://35.154.91.28/api/teacher/total-teachers', {
                 headers: {
                   'Authorization': `${localStorage.getItem('token')}`
                 }

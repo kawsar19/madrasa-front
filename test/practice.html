@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Vue Checkbox Select All - E-commerce Cart</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue-select@latest"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vue-select@latest/dist/vue-select.css">
+  <style>
+    .parent {
+      margin: 20px;
+      border: 1px solid #000;
+      height: 80vh;
+      width: 80vw;
+      position: relative;
+    }
+
+    .add-address {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+    }
+
+    .address-form {
+      border: 1px solid #000;
+      padding: 20px;
+      margin: 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <div class="parent">
+      <v-select v-model="selectedOption" :options="options"></v-select>
+
+      <ul v-if="!showAddForm && !showEditForm">
+        <li v-for="address in addresses">
+          {{ address }}
+          <button type="button" @click="editAddress(address)">Edit</button>
+        </li>
+      </ul>
+
+      <div class="address-form" v-if="showAddForm">
+        <h2>Add Address</h2>
+        <form @submit.prevent="addAddress">
+          <input type="number" v-model="newAddress.id" placeholder="id">
+          <input type="text" v-model="newAddress.name" placeholder="address">
+          <button type="submit">Add Address</button>
+          <button type="button" @click="cancelClick">Cancel</button>
+        </form>
+      </div>
+
+      <div class="address-form" v-if="showEditForm">
+        <h2>Edit Address</h2>
+        <form @submit.prevent="saveEdit">
+          <input type="number" v-model="editingAddress.id" placeholder="id" :disabled="true">
+          <input type="text" v-model="editingAddress.name" placeholder="address">
+          <button type="submit">Save</button>
+          <button type="button" @click="cancelClick">Cancel</button>
+        </form>
+      </div>
+
+      <button @click="toggleFormVisibility" v-if="!showAddForm && !showEditForm" class="add-address">Add Address</button>
+    </div>
+  </div>
+
+  <script>
+    Vue.component('v-select', VueSelect.VueSelect);
+    new Vue({
+      el: '#app',
+      data: {
+        showAddForm: false,
+        showEditForm: false,
+        newAddress: {
+          id: null,
+          name: ''
+        },
+        editingAddress: {
+          id: null,
+          name: ''
+        },
+        options: ['foo', 'bar', 'baz'],
+        addresses: [
+          { id: 1, name: 'Address 1' },
+          { id: 2, name: 'Address 2' }
+        ],
+        selectedOption: null,
+      },
+      methods: {
+        toggleFormVisibility() {
+          this.showAddForm = true;
+          this.showEditForm = false;
+          this.newAddress = { id: null, name: '' };
+          this.editingAddress = { id: null, name: '' };
+        },
+        cancelClick() {
+          this.showAddForm = false;
+          this.showEditForm = false;
+          this.newAddress = { id: null, name: '' };
+          this.editingAddress = { id: null, name: '' };
+        },
+        editAddress(address) {
+          this.editingAddress = { ...address };
+          this.showAddForm = false;
+          this.showEditForm = true;
+        },
+        addAddress() {
+          this.addresses.push({ ...this.newAddress });
+          this.showAddForm = false;
+        },
+        saveEdit() {
+          const index = this.addresses.findIndex(address => address.id === this.editingAddress.id);
+          if (index !== -1) {
+            this.addresses[index] = { ...this.editingAddress };
+          }
+          this.showEditForm = false;
+        }
+      }
+    });
+  </script>
+</body>
+
+</html>

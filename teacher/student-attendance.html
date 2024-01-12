@@ -203,7 +203,7 @@
           async fetchStudents() {
             this.loadedContent = false
             try {
-              let url = 'https://madrasa-back.vercel.app/api/student/list';
+              let url = 'http://0.0.0.0:8080/api//student/list';
               if (this.classFilter) {
                 url += `?className=${encodeURIComponent(this.classFilter)}`;
               }
@@ -232,7 +232,7 @@
           },
           async fetchClasses() {
             try {
-              const response = await fetch('https://madrasa-back.vercel.app/api/class/list', {
+              const response = await fetch('http://0.0.0.0:8080/api//class/list', {
                 method: 'GET',
                 headers: {
                   'Authorization': this.token,
@@ -257,7 +257,7 @@
             const payload = { attendanceRecords };
 
             // API endpoint to submit attendance
-            const apiUrl = 'https://madrasa-back.vercel.app/api/attendance/create-multiple'; // Replace with your actual API endpoint
+            const apiUrl = 'http://0.0.0.0:8080/api//attendance/create-multiple'; // Replace with your actual API endpoint
             const token = localStorage.getItem('token'); // Retrieve the token from localStorage
 
             fetch(apiUrl, {
@@ -291,7 +291,7 @@
           async fetchAttendanceData(student) {
             try {
               // Make the API call using Axios with query parameters
-              const response = await axios.get(`https://madrasa-back.vercel.app/api/attendance/student-attendance/${student._id}`, {
+              const response = await axios.get(`http://0.0.0.0:8080/api//attendance/student-attendance/${student._id}`, {
                 params: {
                   month: this.selectedMonthForFilter,
                   year: this.year

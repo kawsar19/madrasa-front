@@ -94,7 +94,7 @@
          methods: {
             createMadrasa() {
                // Replace with your actual API endpoint
-               const apiUrl = 'https://madrasa-back.vercel.app/api/madrasa/create';
+               const apiUrl = 'http://0.0.0.0:8080/api//madrasa/create';
 
                fetch(apiUrl, {
                      method: 'POST',
@@ -124,7 +124,7 @@
             },
             fetchMadrasaList() {
                // Replace with your actual API endpoint for listing Madrasas
-               const apiUrl = 'https://madrasa-back.vercel.app/api/madrasa/list';
+               const apiUrl = 'http://0.0.0.0:8080/api//madrasa/list';
 
                fetch(apiUrl)
                   .then(response => response.json())
@@ -137,7 +137,7 @@
             },
             deleteMadrasa(madrasaId) {
                // Replace with your actual API endpoint for deleting a Madrasa
-               const apiUrl = `https://madrasa-back.vercel.app/api/madrasa/delete/${madrasaId}`;
+               const apiUrl = `http://0.0.0.0:8080/api//madrasa/delete/${madrasaId}`;
 
                fetch(apiUrl, {
                      method: 'DELETE',
