@@ -173,7 +173,7 @@
             getClasses() {
                const token = localStorage.getItem('token');
                if (token) {
-                  fetch('http://0.0.0.0:8080/api//class/list', {
+                  fetch('https://localhost:5000/api/class/list', {
                         headers: {
                            'Authorization': `${token}`
                         }

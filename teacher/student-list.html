@@ -2,564 +2,647 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <title>Vue Pagination Example</title>
-  <!-- Bootstrap CSS -->
-  <link href="../lib/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="../style.css">
+   <meta charset="UTF-8">
+   <title>Vue Pagination Example</title>
+   <!-- Bootstrap CSS -->
+   <link href="../lib/bootstrap.min.css" rel="stylesheet">
+   <link rel="stylesheet" href="../style.css">
 
-  <script src="../lib/vue@2.6.14.js"></script>
-  <style>
-    .img-wrapper {
-      height: 80px;
-      width: 80px;
-      -webkit-border-radius: 50px;
-      -moz-border-radius: 50px;
-      border-radius: 50px;
-      overflow: hidden;
-      margin: auto;
-    }
-
-    .img-wrapper img {
-      height: 100%;
-      width: 100%;
-      -webkit-border-radius: 50%;
-      -moz-border-radius: 50%;
-      border-radius: 50%;
-
-    }
-
-    .skeleton-item {
-      min-height: 60px;
-      /* Adjust the height as needed */
-      border: 1px solid #ddd;
-    }
-
-    .skeleton-text {
-      width: 70%;
-      /* Adjust the width as needed */
-      height: 20px;
-      /* Adjust the height as needed */
-      background-color: #e0e0e0;
-      /* Adjust the color to your preference */
-      border-radius: 4px;
-      margin-bottom: 8px;
-    }
-
-    .skeleton-icon,
-    .skeleton-currency {
-      width: 20px;
-      /* Adjust the width as needed */
-      height: 20px;
-      /* Adjust the height as needed */
-      background-color: #e0e0e0;
-      /* Adjust the color to your preference */
-      border-radius: 50%;
-    }
-
-    /* Define animation for skeleton loader */
-    @keyframes skeleton-pulse {
-      0% {
-        opacity: 0.6;
+   <script src="../lib/vue@2.6.14.js"></script>
+   <style>
+      .img-wrapper {
+         height: 80px;
+         width: 80px;
+         -webkit-border-radius: 50px;
+         -moz-border-radius: 50px;
+         border-radius: 50px;
+         overflow: hidden;
+         margin: auto;
       }
 
-      50% {
-        opacity: 0.8;
+      .img-wrapper img {
+         height: 100%;
+         width: 100%;
+         -webkit-border-radius: 50%;
+         -moz-border-radius: 50%;
+         border-radius: 50%;
+
       }
 
-      100% {
-        opacity: 0.6;
+      .skeleton-item {
+         min-height: 60px;
+         /* Adjust the height as needed */
+         border: 1px solid #ddd;
       }
-    }
 
-    .skeleton-animation {
-      animation: skeleton-pulse 1s infinite ease-in-out;
-      /* Adjust animation duration as needed */
-    }
-  </style>
+      .skeleton-text {
+         width: 70%;
+         /* Adjust the width as needed */
+         height: 20px;
+         /* Adjust the height as needed */
+         background-color: #e0e0e0;
+         /* Adjust the color to your preference */
+         border-radius: 4px;
+         margin-bottom: 8px;
+      }
+
+      .skeleton-icon,
+      .skeleton-currency {
+         width: 20px;
+         /* Adjust the width as needed */
+         height: 20px;
+         /* Adjust the height as needed */
+         background-color: #e0e0e0;
+         /* Adjust the color to your preference */
+         border-radius: 50%;
+      }
+
+      /* Define animation for skeleton loader */
+      @keyframes skeleton-pulse {
+         0% {
+            opacity: 0.6;
+         }
+
+         50% {
+            opacity: 0.8;
+         }
+
+         100% {
+            opacity: 0.6;
+         }
+      }
+
+      .skeleton-animation {
+         animation: skeleton-pulse 1s infinite ease-in-out;
+         /* Adjust animation duration as needed */
+      }
+   </style>
 
 
 </head>
 
 <body>
-  <div id="app" class="container mt-5">
-    <h1>শিক্ষার্থীদের তালিকা</h1>
-    <a href="./create-student.html" class="btn btn-danger mb-2" role="button">রেজিষ্ট্রেশন </a>
+   <div id="app" class="container mt-5">
+      <h1>শিক্ষার্থীদের তালিকা</h1>
+      <a href="./create-student.html" class="btn btn-danger mb-2" role="button">রেজিষ্ট্রেশন </a>
 
-    <h5>সর্বমোট {{ convertToBengaliNumber(totalStudents) }} জন শিক্ষার্থীর তথ্য রয়েছে</h5>
-    <div class="d-flex gap-3 mb-4 justify-content-between">
-      <input type="text" v-model="searchQuery" placeholder="Search by name..." class="form-control shadow-none">
+      <h5>সর্বমোট {{ convertToBengaliNumber(totalStudents) }} জন শিক্ষার্থীর তথ্য রয়েছে</h5>
+      <div class="d-flex gap-3 mb-4 justify-content-between">
+         <input type="text" v-model="searchQuery" placeholder="Search by name..." class="form-control shadow-none">
 
-      <select v-model="genderFilter" class="form-select shadow-none">
-        <option value="">All Genders</option>
-        <option value="Male">Male</option>
-        <option value="Female">Female</option>
-        <option value="Other">Other</option>
-      </select>
-      <!-- Inside the existing <div class="d-flex gap-3 mb-4 justify-content-between"> ... </div> -->
-      <select v-model="classFilter" class="form-select shadow-none">
-        <option value="">All Classes</option>
-        <option v-for="className in classNames" :key="className" :value="className._id">{{ className.className }}
-        </option>
-      </select>
+         <select v-model="genderFilter" class="form-select shadow-none">
+            <option value="">All Genders</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+         </select>
+         <!-- Inside the existing <div class="d-flex gap-3 mb-4 justify-content-between"> ... </div> -->
+         <select v-model="classFilter" class="form-select shadow-none">
+            <option value="">All Classes</option>
+            <option v-for="className in classNames" :key="className" :value="className._id">{{ className.className }}
+            </option>
+         </select>
 
 
 
-    </div>
-
-    <ul v-if="!isContentLoading" class="list-group mb-3">
-      <li class="list-group-item d-flex justify-content-between align-items-center" v-for="student in students" :key="student._id">
-        <span>
-          {{ student.fullName }} - {{student.studentClass.className}}
-        </span>
-        <div class="d-flex gap-4 align-items-center">
-          <span @click="showModal(student)" data-bs-toggle="modal" data-bs-target="#myModal">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle-fill" viewBox="0 0 16 16">
-              <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2" />
-            </svg>
-          </span>
-          <span class="display-5" @click="showModal(student)" data-bs-toggle="modal" data-bs-target="#paymentModal">
-            ৳
-          </span>
-        </div>
-      </li>
-    </ul>
-    <div v-else class="">
-      <div class="list-group mb-3">
-        <div class="list-group-item d-flex justify-content-between align-items-center skeleton-item" v-for="n in 5" :key="n">
-          <div class="skeleton-text skeleton-animation"></div>
-          <div class="d-flex gap-4 align-items-center">
-            <div class="skeleton-icon skeleton-animation"></div>
-            <div class="skeleton-currency skeleton-animation"></div>
-          </div>
-        </div>
       </div>
-    </div>
 
-    <nav aria-label="Page navigation">
-      <ul class="pagination">
-        <li class="page-item" :class="{ disabled: currentPage === 1 }">
-          <a class="page-link shadow-none" href="#" @click.prevent="prevPage">Previous</a>
-        </li>
-        <li class="page-item" v-for="page in displayedPages" :key="page" :class="{ active: currentPage === page }">
-          <a class="page-link shadow-none" href="#" @click.prevent="setPage(page)">{{ page }}</a>
-        </li>
-        <li class="page-item" :class="{ disabled: currentPage === totalPages }">
-          <a class="page-link shadow-none" href="#" @click.prevent="nextPage">Next</a>
-        </li>
+      <ul v-if="!isContentLoading" class="list-group mb-3">
+         <li class="list-group-item d-flex justify-content-between align-items-center" v-for="student in students" :key="student._id">
+            <span>
+               {{ student.fullName }} - {{student.studentClass.className}} -
+               <span data-bs-toggle="modal" data-bs-target="#setSalleryModal" @click="showModal(student)">
+
+
+                  <b>বেতন :</b> <span>{{student.monthlyFee}}</span>
+               </span>
+            </span>
+            <div class="d-flex gap-4 align-items-center">
+               <span @click="showModal(student)" data-bs-toggle="modal" data-bs-target="#myModal">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle-fill" viewBox="0 0 16 16">
+                     <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2" />
+                  </svg>
+               </span>
+               <span class="display-5" @click="showModal(student)" data-bs-toggle="modal" data-bs-target="#paymentModal">
+                  ৳
+               </span>
+            </div>
+         </li>
       </ul>
-    </nav>
-
-
-    <!-- student fetails -->
-    <div class="modal fade " id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel"> {{selectedStudent.fullName}} এর বিস্তারিতঃ</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <div class="img-wrapper">
-              <img :src="selectedStudent.studentImage" alt="">
-
+      <div v-else class="">
+         <div class="list-group mb-3">
+            <div class="list-group-item d-flex justify-content-between align-items-center skeleton-item" v-for="n in 5" :key="n">
+               <div class="skeleton-text skeleton-animation"></div>
+               <div class="d-flex gap-4 align-items-center">
+                  <div class="skeleton-icon skeleton-animation"></div>
+                  <div class="skeleton-currency skeleton-animation"></div>
+               </div>
             </div>
-            <ul class="list-group">
-              <li class="list-group-item d-flex justify-content-between">
-                <span>নামঃ</span>
-                <span>{{selectedStudent.fullName}}</span>
-              </li>
-              <li class="list-group-item d-flex justify-content-between">
-                <span>ক্লাসঃ</span>
-                <span>{{selectedStudent.studentClass?.className}}</span>
-              </li>
-              <li class="list-group-item d-flex justify-content-between">
-                <span>মোবাইলঃ</span>
-                <span>{{selectedStudent.phone}}</span>
-              </li>
-              <li class="list-group-item d-flex justify-content-between">
-                <span>জন্ম তারিখ</span>
-                <span>{{formatDate(selectedStudent?.dateOfBirth)}}</span>
-              </li>
-              <li class="list-group-item d-flex justify-content-between">
-                <span>গ্রাম</span>
-                <span>{{selectedStudent?.address?.village}}</span>
-              </li>
-              <li class="list-group-item d-flex justify-content-between">
-                <span>ইউনিয়ন</span>
-                <span>{{selectedStudent?.address?.union}}</span>
-              </li>
-              <li class="list-group-item d-flex justify-content-between">
-                <span>থানা</span>
-                <span>{{selectedStudent?.address?.upazila}}</span>
-              </li>
-              <li class="list-group-item d-flex justify-content-between">
-                <span>জেলা</span>
-                <span>{{selectedStudent?.address?.district}}</span>
-              </li>
-              <li class="list-group-item d-flex justify-content-between">
-                <span>লিঙ্গ</span>
-                <span>{{selectedStudent?.gender==='Male'?"পুরুষ":"মহিলা"}}</span>
-              </li>
+         </div>
+      </div>
+
+      <nav aria-label="Page navigation">
+         <ul class="pagination">
+            <li class="page-item" :class="{ disabled: currentPage === 1 }">
+               <a class="page-link shadow-none" href="#" @click.prevent="prevPage">Previous</a>
+            </li>
+            <li class="page-item" v-for="page in displayedPages" :key="page" :class="{ active: currentPage === page }">
+               <a class="page-link shadow-none" href="#" @click.prevent="setPage(page)">{{ page }}</a>
+            </li>
+            <li class="page-item" :class="{ disabled: currentPage === totalPages }">
+               <a class="page-link shadow-none" href="#" @click.prevent="nextPage">Next</a>
+            </li>
+         </ul>
+      </nav>
+
+
+      <!-- student fetails -->
+      <div class="modal fade " id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+         <div class="modal-dialog">
+            <div class="modal-content">
+               <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel"> {{selectedStudent.fullName}} এর বিস্তারিতঃ</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+               </div>
+               <div class="modal-body">
+                  <div class="img-wrapper">
+                     <img :src="selectedStudent.studentImage" alt="">
+
+                  </div>
+                  <ul class="list-group">
+                     <li class="list-group-item d-flex justify-content-between">
+                        <span>নামঃ</span>
+                        <span>{{selectedStudent.fullName}}</span>
+                     </li>
+                     <li class="list-group-item d-flex justify-content-between">
+                        <span>ক্লাসঃ</span>
+                        <span>{{selectedStudent.studentClass?.className}}</span>
+                     </li>
+                     <li class="list-group-item d-flex justify-content-between">
+                        <span>মোবাইলঃ</span>
+                        <span>{{selectedStudent.phone}}</span>
+                     </li>
+                     <li class="list-group-item d-flex justify-content-between">
+                        <span>জন্ম তারিখ</span>
+                        <span>{{formatDate(selectedStudent?.dateOfBirth)}}</span>
+                     </li>
+                     <li class="list-group-item d-flex justify-content-between">
+                        <span>গ্রাম</span>
+                        <span>{{selectedStudent?.address?.village}}</span>
+                     </li>
+                     <li class="list-group-item d-flex justify-content-between">
+                        <span>ইউনিয়ন</span>
+                        <span>{{selectedStudent?.address?.union}}</span>
+                     </li>
+                     <li class="list-group-item d-flex justify-content-between">
+                        <span>থানা</span>
+                        <span>{{selectedStudent?.address?.upazila}}</span>
+                     </li>
+                     <li class="list-group-item d-flex justify-content-between">
+                        <span>জেলা</span>
+                        <span>{{selectedStudent?.address?.district}}</span>
+                     </li>
+                     <li class="list-group-item d-flex justify-content-between">
+                        <span>লিঙ্গ</span>
+                        <span>{{selectedStudent?.gender==='Male'?"পুরুষ":"মহিলা"}}</span>
+                     </li>
+                  </ul>
+                  <!-- Modal content goes here -->
+
+               </div>
+               <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+               </div>
+            </div>
+         </div>
+      </div>
+      <!-- set payment  -->
+      <div class="modal fade" id="setSalleryModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"
+      data-bs-backdrop="static"
+      >
+         <div class="modal-dialog">
+            <div class="modal-content">
+               <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Modal title {{selectedStudent._id}}</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                  @click="clickCancel"
+                  ></button>
+               </div>
+               <div class="modal-body">
+                  <div>
+                     {{selectedStudent.monthlyFeea}}
+                     <input type="text" v-model="selectedStudent.monthlyFee" 
+                     >
+                  </div>
+
+                  <!-- Modal content goes here -->
+               </div>
+               <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                  @click="clickCancel"
+                  >Close</button>
+                  <button type="button" class="btn btn-primary" @click="saveMonthlyFee">Save</button>
+               </div>
+            </div>
+         </div>
+      </div>
+
+      <div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+         <div class="modal-dialog">
+            <div class="modal-content">
+               <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Modal title {{selectedStudent._id}}</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+               </div>
+               <div class="modal-body">
+
+                  <!-- Modal content goes here -->
+                  <div class="row justify-content-center">
+                     <div class="col-md-6">
+                        <form @submit.prevent="submitPayment">
+                           <div class="form-group">
+                              <label for="student">Student ID</label>
+                              <input type="text" class="form-control" id="student" :value="selectedStudent?._id">
+                           </div>
+                           <div class="form-group">
+                              <label for="month">Month</label>
+                              <select class="form-control" id="month" v-model="payment.month">
+                                 <option value="">Select Month</option>
+                                 <option v-for="month in months" :key="month" :value="month">{{ month }}</option>
+                              </select>
+                           </div>
+                           <div class="form-group">
+                              <label for="year">Year</label>
+                              <input type="number" class="form-control" id="year" v-model="payment.year">
+                           </div>
+                           <!-- ... Existing HTML code for the form and Vue instance ... -->
+
+                           <div class="form-group">
+                              <label for="amount">Amount</label>
+                              <input type="number" class="form-control" id="amount" v-model="payment.amount">
+                           </div>
+
+                           <div class="form-group">
+                              <label for="paid">Paid</label>
+                              <input type="checkbox" class="form-control" id="paid" v-model="payment.paid">
+                           </div>
+
+                           <div class="form-group">
+                              <label for="discount">Discount</label>
+                              <input type="number" class="form-control" id="discount" v-model="payment.discount">
+                           </div>
+
+                           <div class="form-group">
+                              <label for="paymentMethod">Payment Method</label>
+                              <select class="form-control" id="paymentMethod" v-model="payment.paymentMethod">
+                                 <option value="">Select Payment Method</option>
+                                 <option value="cash">Cash</option>
+                                 <option value="credit_card">Credit Card</option>
+                                 <!-- Add other payment methods as options -->
+                              </select>
+                           </div>
+
+                           <div class="form-group">
+                              <label for="receivedBy">Received By (Teacher ID)</label>
+                              <input type="text" class="form-control" id="receivedBy" v-model="payment.receivedBy">
+                           </div>
+
+                           <div class="form-group">
+                              <label for="paymentDate">Payment Date</label>
+                              <input type="date" class="form-control" id="paymentDate" v-model="payment.paymentDate">
+                           </div>
+
+                           <div class="form-group">
+                              <label for="transactionID">Transaction ID</label>
+                              <input type="text" class="form-control" id="transactionID" v-model="payment.transactionID">
+                           </div>
+
+                           <div class="form-group">
+                              <label for="remarks">Remarks</label>
+                              <textarea class="form-control" id="remarks" v-model="payment.remarks"></textarea>
+                           </div>
+
+                           <!-- ... Submit button and closing tags ... -->
+
+                           <button type="submit" class="btn btn-primary">Submit Payment</button>
+                        </form>
+                     </div>
+                  </div>
+               </div>
+               <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary">Save changes</button>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+   <br>
+   <br>
+   <br>
+   <br>
+
+   <div class="footer">
+      <div class="footer-menu">
+         <a href="./dashboard.html">
+            <span>
+               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house-door-fill" viewBox="0 0 16 16">
+                  <path d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5" />
+               </svg>
+            </span>
+            <span>ড্যাশবোর্ড</span>
+         </a>
+         <a href="#">
+            <span>
+               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cash" viewBox="0 0 16 16">
+                  <path d="M8 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4" />
+                  <path d="M0 4a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1zm3 0a2 2 0 0 1-2 2v4a2 2 0 0 1 2 2h10a2 2 0 0 1 2-2V6a2 2 0 0 1-2-2z" />
+               </svg>
+            </span>
+            <span>বেতন</span>
+         </a>
+         <a href="./student-list.html" class="active">
+            <span>
+               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-backpack2-fill" viewBox="0 0 16 16">
+                  <path d="M5 13h6v-3h-1v.5a.5.5 0 0 1-1 0V10H5z" />
+                  <path d="M6 2v.341C3.67 3.165 2 5.388 2 8v1.191l-1.17.585A1.5 1.5 0 0 0 0 11.118V13.5A1.5 1.5 0 0 0 1.5 15h1c.456.607 1.182 1 2 1h7c.818 0 1.544-.393 2-1h1a1.5 1.5 0 0 0 1.5-1.5v-2.382a1.5 1.5 0 0 0-.83-1.342L14 9.191V8a6.002 6.002 0 0 0-4-5.659V2a2 2 0 1 0-4 0m2-1a1 1 0 0 1 1 1v.083a6.04 6.04 0 0 0-2 0V2a1 1 0 0 1 1-1m0 3a4 4 0 0 1 3.96 3.43.5.5 0 1 1-.99.14 3 3 0 0 0-5.94 0 .5.5 0 1 1-.99-.14A4 4 0 0 1 8 4M4.5 9h7a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-4a.5.5 0 0 1 .5-.5" />
+               </svg>
+            </span>
+            <span>শিক্ষার্থী </span>
+         </a>
+         <a href="#">
+            <span>
+               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-people-fill" viewBox="0 0 16 16">
+                  <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5" />
+               </svg>
+            </span>
+            <span>শিক্ষক</span>
+         </a>
+         <a data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample">
+            <span>
+               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
+                  <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0" />
+               </svg>
+            </span>
+            <span>অন্যান্য</span>
+         </a>
+      </div>
+
+      <div class="offcanvas offcanvas-start " tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+         <div class="offcanvas-header">
+            <!-- Your offcanvas header content -->
+            <h5 class="offcanvas-title" id="offcanvasExampleLabel">Menu</h5>
+            <button type="button" class="btn-close text-reset shadow-none" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+         </div>
+         <div class="offcanvas-body">
+            <!-- Your offcanvas content -->
+            <ul class="menu">
+               <li class="menu-item">
+                  <a href="#">Home</a>
+               </li>
             </ul>
-            <!-- Modal content goes here -->
-
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          </div>
-        </div>
+         </div>
       </div>
-    </div>
-    <div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Modal title {{selectedStudent._id}}</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
 
-            <!-- Modal content goes here -->
-            <div class="row justify-content-center">
-              <div class="col-md-6">
-                <form @submit.prevent="submitPayment">
-                  <div class="form-group">
-                    <label for="student">Student ID</label>
-                    <input type="text" class="form-control" id="student" :value="selectedStudent?._id">
-                  </div>
-                  <div class="form-group">
-                    <label for="month">Month</label>
-                    <select class="form-control" id="month" v-model="payment.month">
-                      <option value="">Select Month</option>
-                      <option v-for="month in months" :key="month" :value="month">{{ month }}</option>
-                    </select>
-                  </div>
-                  <div class="form-group">
-                    <label for="year">Year</label>
-                    <input type="number" class="form-control" id="year" v-model="payment.year">
-                  </div>
-                  <!-- ... Existing HTML code for the form and Vue instance ... -->
+   </div>
 
-                  <div class="form-group">
-                    <label for="amount">Amount</label>
-                    <input type="number" class="form-control" id="amount" v-model="payment.amount">
-                  </div>
-
-                  <div class="form-group">
-                    <label for="paid">Paid</label>
-                    <input type="checkbox" class="form-control" id="paid" v-model="payment.paid">
-                  </div>
-
-                  <div class="form-group">
-                    <label for="discount">Discount</label>
-                    <input type="number" class="form-control" id="discount" v-model="payment.discount">
-                  </div>
-
-                  <div class="form-group">
-                    <label for="paymentMethod">Payment Method</label>
-                    <select class="form-control" id="paymentMethod" v-model="payment.paymentMethod">
-                      <option value="">Select Payment Method</option>
-                      <option value="cash">Cash</option>
-                      <option value="credit_card">Credit Card</option>
-                      <!-- Add other payment methods as options -->
-                    </select>
-                  </div>
-
-                  <div class="form-group">
-                    <label for="receivedBy">Received By (Teacher ID)</label>
-                    <input type="text" class="form-control" id="receivedBy" v-model="payment.receivedBy">
-                  </div>
-
-                  <div class="form-group">
-                    <label for="paymentDate">Payment Date</label>
-                    <input type="date" class="form-control" id="paymentDate" v-model="payment.paymentDate">
-                  </div>
-
-                  <div class="form-group">
-                    <label for="transactionID">Transaction ID</label>
-                    <input type="text" class="form-control" id="transactionID" v-model="payment.transactionID">
-                  </div>
-
-                  <div class="form-group">
-                    <label for="remarks">Remarks</label>
-                    <textarea class="form-control" id="remarks" v-model="payment.remarks"></textarea>
-                  </div>
-
-                  <!-- ... Submit button and closing tags ... -->
-
-                  <button type="submit" class="btn btn-primary">Submit Payment</button>
-                </form>
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Save changes</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="footer">
-    <div class="footer-menu">
-      <a href="./dashboard.html">
-        <span>
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house-door-fill" viewBox="0 0 16 16">
-            <path d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5" />
-          </svg>
-        </span>
-        <span>ড্যাশবোর্ড</span>
-      </a>
-      <a href="#">
-        <span>
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cash" viewBox="0 0 16 16">
-            <path d="M8 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4" />
-            <path d="M0 4a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1zm3 0a2 2 0 0 1-2 2v4a2 2 0 0 1 2 2h10a2 2 0 0 1 2-2V6a2 2 0 0 1-2-2z" />
-          </svg>
-        </span>
-        <span>বেতন</span>
-      </a>
-      <a href="./student-list.html" class="active">
-        <span>
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-backpack2-fill" viewBox="0 0 16 16">
-            <path d="M5 13h6v-3h-1v.5a.5.5 0 0 1-1 0V10H5z" />
-            <path d="M6 2v.341C3.67 3.165 2 5.388 2 8v1.191l-1.17.585A1.5 1.5 0 0 0 0 11.118V13.5A1.5 1.5 0 0 0 1.5 15h1c.456.607 1.182 1 2 1h7c.818 0 1.544-.393 2-1h1a1.5 1.5 0 0 0 1.5-1.5v-2.382a1.5 1.5 0 0 0-.83-1.342L14 9.191V8a6.002 6.002 0 0 0-4-5.659V2a2 2 0 1 0-4 0m2-1a1 1 0 0 1 1 1v.083a6.04 6.04 0 0 0-2 0V2a1 1 0 0 1 1-1m0 3a4 4 0 0 1 3.96 3.43.5.5 0 1 1-.99.14 3 3 0 0 0-5.94 0 .5.5 0 1 1-.99-.14A4 4 0 0 1 8 4M4.5 9h7a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-4a.5.5 0 0 1 .5-.5" />
-          </svg>
-        </span>
-        <span>শিক্ষার্থী </span>
-      </a>
-      <a href="#">
-        <span>
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-people-fill" viewBox="0 0 16 16">
-            <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5" />
-          </svg>
-        </span>
-        <span>শিক্ষক</span>
-      </a>
-      <a data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample">
-        <span>
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
-            <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0" />
-          </svg>
-        </span>
-        <span>অন্যান্য</span>
-      </a>
-    </div>
-
-    <div class="offcanvas offcanvas-start " tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
-      <div class="offcanvas-header">
-        <!-- Your offcanvas header content -->
-        <h5 class="offcanvas-title" id="offcanvasExampleLabel">Menu</h5>
-        <button type="button" class="btn-close text-reset shadow-none" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-      </div>
-      <div class="offcanvas-body">
-        <!-- Your offcanvas content -->
-        <ul class="menu">
-          <li class="menu-item">
-            <a href="#">Home</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-
-  </div>
-
-  <script src="../lib/bootstrap.bundle.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+   <script src="../lib/bootstrap.bundle.min.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 
-  <!-- Vue.js CDN -->
-  <script>
-    new Vue({
-      el: '#app',
-      data: {
-        students: [],
-        isContentLoading: true,
-        selectedStudent: {},
-        currentPage: 1,
-        totalPages: 1,
-        totalStudents: 0,
-        limit: 5, // Adjust this value based on your pagination limit
-        searchQuery: '',
-        genderFilter: '',
-        months: [ // Array of months for dropdown options
+   <!-- Vue.js CDN -->
+   <script>
+      new Vue({
+         el: '#app',
+         data: {
+            students: [],
+            isContentLoading: true,
+            selectedStudent: {},
+            currentPage: 1,
+            totalPages: 1,
+            totalStudents: 0,
+            limit: 5, // Adjust this value based on your pagination limit
+            searchQuery: '',
+            genderFilter: '',
+            months: [ // Array of months for dropdown options
                'January', 'February', 'March', 'April', 'May', 'June',
                'July', 'August', 'September', 'October', 'November', 'December'
             ],
-        classFilter: '',
-        classNames: null,
-
-        payment: {
-          student: this.selectedStudent?._id,
-          month: "", // Initially empty
-          year: 2023,
-          amount: 100,
-          paid: true,
-          discount: 10,
-          paymentMethod: "cash",
-          receivedBy: "655ab06a29081ca4fb2332c2",
-          paymentDate: "2023-01-01",
-          transactionID: "transaction_id_here",
-          remarks: "Some remarks here"
-          // Add other properties here and bind them to the respective form fields
-        },
-      },
-      computed: {
-        displayedPages() {
-          const totalVisiblePages = 5; // Adjust this value to change the number of visible pages
-          let startPage = this.currentPage - Math.floor(totalVisiblePages / 2);
-          startPage = Math.max(1, startPage);
-          let endPage = startPage + totalVisiblePages - 1;
-          endPage = Math.min(this.totalPages, endPage);
-
-          const pages = [];
-          for (let i = startPage; i <= endPage; i++) {
-            pages.push(i);
-          }
-
-          return pages;
-        }
-      },
-      mounted() {
-        this.fetchClassess();
-        this.fetchData();
-
-      },
-      watch: {
-        searchQuery() {
-          this.currentPage = 1; // Reset to the first page when search changes
-          this.fetchData();
-        },
-        genderFilter() {
-          this.currentPage = 1;
-          this.fetchData();
-        },
+            classFilter: '',
+            classNames: null,
 
 
-        classFilter() {
-          this.currentPage = 1;
-          this.fetchData();
-        }
-      },
+            payment: {
+               student: this.selectedStudent?._id,
+               month: "", // Initially empty
+               year: 2023,
+               amount: 100,
+               paid: true,
+               discount: 10,
+               paymentMethod: "cash",
+               receivedBy: "655ab06a29081ca4fb2332c2",
+               paymentDate: "2023-01-01",
+               transactionID: "transaction_id_here",
+               remarks: "Some remarks here"
+               // Add other properties here and bind them to the respective form fields
+            },
+         },
+         computed: {
+            displayedPages() {
+               const totalVisiblePages = 5; // Adjust this value to change the number of visible pages
+               let startPage = this.currentPage - Math.floor(totalVisiblePages / 2);
+               startPage = Math.max(1, startPage);
+               let endPage = startPage + totalVisiblePages - 1;
+               endPage = Math.min(this.totalPages, endPage);
 
+               const pages = [];
+               for (let i = startPage; i <= endPage; i++) {
+                  pages.push(i);
+               }
 
-      methods: {
-        async fetchData() {
-          this.isContentLoading = true
-          try {
-            let apiUrl = `http://35.154.91.28/api/student/list?limit=${this.limit}&page=${this.currentPage}`;
-
-            if (this.searchQuery) {
-              apiUrl += `&q=${this.searchQuery}`;
+               return pages;
             }
-
-            if (this.genderFilter) {
-              apiUrl += `&gender=${this.genderFilter}`;
-            }
-            if (this.classFilter) {
-              apiUrl += `&className=${this.classFilter}`;
-
-            }
-
-
-
-            const token = localStorage.getItem('token'); // Replace 'your_token_key' with your actual token key
-
-            // Make a fetch request with the token in the headers
-            const response = await fetch(apiUrl, {
-              method: 'GET', // Change the method as needed (GET, POST, etc.)
-              headers: {
-                'Authorization': `${token}`, // Attach the token in the Authorization header
-                'Content-Type': 'application/json' // Set the Content-Type header accordingly
-                // Add any other required headers here
-              },
-              // Add body and other options if needed
-            });
-            const data = await response.json();
-
-            this.totalStudents = data.totalStudents;
-            this.students = data.students;
-            this.totalPages = data.totalPages;
-          } catch (error) {
-            console.error(error);
-          } finally {
-            this.isContentLoading = false
-          }
-        },
-        async submitPayment() {
-          // Assign the selected student ID to the payment object here
-          this.payment.student = this.selectedStudent?._id;
-
-          try {
-            const response = await fetch('http://35.154.91.28/api/payment/create', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                // Add any required headers (e.g., authentication tokens) here
-              },
-              body: JSON.stringify(this.payment),
-            });
-            console.log(response)
-
-            if (response.ok) {
-              // Handle successful payment submission
-              console.log('Payment submitted successfully!');
-            } else {
-              // Handle errors if submission fails
-              console.error('Payment submission failed.');
-            }
-          } catch (error) {
-            console.error('Error submitting payment:', error);
-          }
-        },
-        async fetchClassess() {
-          try {
-            const token = localStorage.getItem('token'); // Retrieve the token from localStorage
-
-            const headers = {
-              'Authorization': `${token}` // Include the token in the header
-            };
-
-            const response = await axios.get('http://35.154.91.28/api/class/list', { headers });
-            console.log(response);
-            this.classNames = response.data;
-          } catch (error) {
-            console.error('Error fetching classes:', error.response.data);
-            // Handle error as needed
-          }
-        },
-        setPage(page) {
-          this.currentPage = page;
-          this.fetchData();
-        },
-        prevPage() {
-          if (this.currentPage > 1) {
-            this.currentPage--;
+         },
+         mounted() {
+            this.fetchClassess();
             this.fetchData();
-          }
-        },
-        nextPage() {
-          if (this.currentPage < this.totalPages) {
-            this.currentPage++;
-            this.fetchData();
-          }
-        },
-        convertToBengaliNumber(number) {
-          return number.toLocaleString('bn-IN', { useGrouping: false });
-        },
-        showModal(student) {
-          this.selectedStudent = student;
-        },
-        formatDate(dateString) {
-          const date = new Date(dateString);
-          const options = { day: 'numeric', month: 'short', year: 'numeric', };
-          return date.toLocaleDateString('en-US', options);
-        },
-      }
-    });
-  </script>
+
+         },
+         watch: {
+            searchQuery() {
+               this.currentPage = 1; // Reset to the first page when search changes
+               this.fetchData();
+            },
+            genderFilter() {
+               this.currentPage = 1;
+               this.fetchData();
+            },
+
+
+            classFilter() {
+               this.currentPage = 1;
+               this.fetchData();
+            }
+         },
+
+
+         methods: {
+            async fetchData() {
+               this.isContentLoading = true
+               try {
+                  let apiUrl = `http://localhost:5000/api/student/list?limit=${this.limit}&page=${this.currentPage}`;
+
+                  if (this.searchQuery) {
+                     apiUrl += `&q=${this.searchQuery}`;
+                  }
+
+                  if (this.genderFilter) {
+                     apiUrl += `&gender=${this.genderFilter}`;
+                  }
+                  if (this.classFilter) {
+                     apiUrl += `&className=${this.classFilter}`;
+
+                  }
+
+
+
+                  const token = localStorage.getItem('token'); // Replace 'your_token_key' with your actual token key
+
+                  // Make a fetch request with the token in the headers
+                  const response = await fetch(apiUrl, {
+                     method: 'GET', // Change the method as needed (GET, POST, etc.)
+                     headers: {
+                        'Authorization': `${token}`, // Attach the token in the Authorization header
+                        'Content-Type': 'application/json' // Set the Content-Type header accordingly
+                        // Add any other required headers here
+                     },
+                     // Add body and other options if needed
+                  });
+                  const data = await response.json();
+
+                  this.totalStudents = data.totalStudents;
+                  this.students = data.students;
+                  this.totalPages = data.totalPages;
+               } catch (error) {
+                  console.error(error);
+               } finally {
+                  this.isContentLoading = false
+               }
+            },
+            async submitPayment() {
+               // Assign the selected student ID to the payment object here
+               this.payment.student = this.selectedStudent?._id;
+
+               try {
+                  const response = await fetch('http://localhost:5000/api/payment/create', {
+                     method: 'POST',
+                     headers: {
+                        'Content-Type': 'application/json',
+                        // Add any required headers (e.g., authentication tokens) here
+                     },
+                     body: JSON.stringify(this.payment),
+                  });
+                  console.log(response)
+
+                  if (response.ok) {
+                     // Handle successful payment submission
+                     console.log('Payment submitted successfully!');
+                  } else {
+                     // Handle errors if submission fails
+                     console.error('Payment submission failed.');
+                  }
+               } catch (error) {
+                  console.error('Error submitting payment:', error);
+               }
+            },
+            async fetchClassess() {
+               try {
+                  const token = localStorage.getItem('token'); // Retrieve the token from localStorage
+
+                  const headers = {
+                     'Authorization': `${token}` // Include the token in the header
+                  };
+
+                  const response = await axios.get('http://localhost:5000/api/class/list', { headers });
+                  console.log(response);
+                  this.classNames = response.data;
+               } catch (error) {
+                  console.error('Error fetching classes:', error.response.data);
+                  // Handle error as needed
+               }
+            },
+            setPage(page) {
+               this.currentPage = page;
+               this.fetchData();
+            },
+            prevPage() {
+               if (this.currentPage > 1) {
+                  this.currentPage--;
+                  this.fetchData();
+               }
+            },
+            nextPage() {
+               if (this.currentPage < this.totalPages) {
+                  this.currentPage++;
+                  this.fetchData();
+               }
+            },
+            convertToBengaliNumber(number) {
+               return number.toLocaleString('bn-IN', { useGrouping: false });
+            },
+            showModal(student) {
+               this.selectedStudent = student;
+            },
+            formatDate(dateString) {
+               const date = new Date(dateString);
+               const options = { day: 'numeric', month: 'short', year: 'numeric', };
+               return date.toLocaleDateString('en-US', options);
+            },
+            saveMonthlyFee() {
+               // Retrieve token from localStorage
+               const token = localStorage.getItem('token');
+            
+               // Define the API endpoint URL
+               const apiUrl = `http://localhost:5000/api/student/set-monthly-fee/${this.selectedStudent._id}`;
+               
+             let monthlyFee=this.selectedStudent.monthlyFee
+           //  alert(this.selectedStudent)
+               // Prepare the data to be sent in the request body
+               const requestData = {
+                  // Include any data you need to send
+                  monthlyFee: parseInt(this.selectedStudent.monthlyFee)
+               };
+             //  alert(requestData)
+            
+               // Define the Axios configuration object
+               const config = {
+                  headers: {
+                     // Include the authorization header with the token
+                     Authorization: `${token}`
+                  }
+               };
+            
+               // Make the POST request using Axios
+               axios.post(apiUrl, requestData, config)
+                  .then(response => {
+                     // Handle success response
+                     alert('Monthly fee saved successfully!');
+                     console.log(response.data);
+                     this.fetchData()
+                  })
+                  .catch(error => {
+                     // Handle error response
+                     alert('Failed to save monthly fee. Please try again.');
+                     console.error(error);
+                  });
+            },
+            clickCancel(){
+               this.fetchData()
+               this.selectedStudent={}
+            }
+         }
+      });
+   </script>
 </body>
 
 </html>

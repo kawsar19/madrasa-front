@@ -48,8 +48,9 @@
     methods: {
       async login() {
         this.isLoading = true;
+        console.log(this.isLoading)
         try {
-          const response = await axios.post('http://35.154.91.28/api/teacher/login', {
+          const response = await axios.post('http://localhost:5000/api/teacher/login', {
             phone: this.phone,
             password: this.password
           });
