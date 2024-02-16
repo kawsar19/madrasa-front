@@ -76,6 +76,9 @@
          animation: skeleton-pulse 1s infinite ease-in-out;
          /* Adjust animation duration as needed */
       }
+      td, th {
+         white-space: nowrap;
+      }
    </style>
 
 
@@ -207,8 +210,45 @@
                         <span>{{selectedStudent?.gender==='Male'?"পুরুষ":"মহিলা"}}</span>
                      </li>
                   </ul>
-                  <!-- Modal content goes here -->
 
+
+
+                  <!-- Modal content goes here -->
+                  <div class="table-responsive">
+
+
+                     <table class="table table-striped table-bordered">
+                        <thead>
+                           <tr>
+                              <th>Month</th>
+                              <th>Year</th>
+                              <th>Amount</th>
+                              <th>Paid</th>
+                              <th>Discount</th>
+                              <th>Payment Method</th>
+                              <th>Received By</th>
+                              <th>Payment Date</th>
+                              <th>Transaction ID</th>
+                              <th>Remarks</th>
+                           </tr>
+                        </thead>
+                        <tbody>
+                           <tr v-for="payment in selectedStudent.payments" :key="payment._id">
+                              <td>{{ payment.month }}</td>
+                              <td>{{ payment.year }}</td>
+                              <td>{{ payment.amount }}</td>
+                              <td>{{ payment.paid }}</td>
+                              <td>{{ payment.discount }}</td>
+                              <td>{{ payment.paymentMethod }}</td>
+                              <td>{{ payment.receivedBy }}</td>
+                              <td>{{ payment.paymentDate }}</td>
+                              <td>{{ payment.transactionID }}</td>
+                              <td>{{ payment.remarks }}</td>
+                           </tr>
+                        </tbody>
+                     </table>
+
+                  </div>
                </div>
                <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -217,30 +257,23 @@
          </div>
       </div>
       <!-- set payment  -->
-      <div class="modal fade" id="setSalleryModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"
-      data-bs-backdrop="static"
-      >
+      <div class="modal fade" id="setSalleryModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static">
          <div class="modal-dialog">
             <div class="modal-content">
                <div class="modal-header">
                   <h5 class="modal-title" id="exampleModalLabel">Modal title {{selectedStudent._id}}</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
-                  @click="clickCancel"
-                  ></button>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="clickCancel"></button>
                </div>
                <div class="modal-body">
                   <div>
                      {{selectedStudent.monthlyFeea}}
-                     <input type="text" v-model="selectedStudent.monthlyFee" 
-                     >
+                     <input type="text" v-model="selectedStudent.monthlyFee">
                   </div>
 
                   <!-- Modal content goes here -->
                </div>
                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                  @click="clickCancel"
-                  >Close</button>
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="clickCancel">Close</button>
                   <button type="button" class="btn btn-primary" @click="saveMonthlyFee">Save</button>
                </div>
             </div>
@@ -519,6 +552,7 @@
                      // Add body and other options if needed
                   });
                   const data = await response.json();
+                  console.log(data)
 
                   this.totalStudents = data.totalStudents;
                   this.students = data.students;
@@ -534,17 +568,16 @@
                this.payment.student = this.selectedStudent?._id;
 
                try {
-                  const response = await fetch('http://localhost:5000/api/payment/create', {
-                     method: 'POST',
+                  const token = localStorage.getItem('token'); // Retrieve the token from localStorage
+
+                  const response = await axios.post(`http://localhost:5000/api/student/create-payment/${this.payment.student}`, this.payment, {
                      headers: {
                         'Content-Type': 'application/json',
-                        // Add any required headers (e.g., authentication tokens) here
+                        'Authorization': `${token}`, // Include the token in the Authorization header
                      },
-                     body: JSON.stringify(this.payment),
                   });
-                  console.log(response)
 
-                  if (response.ok) {
+                  if (response.status === 201) {
                      // Handle successful payment submission
                      console.log('Payment submitted successfully!');
                   } else {
@@ -564,7 +597,7 @@
                   };
 
                   const response = await axios.get('http://localhost:5000/api/class/list', { headers });
-                  console.log(response);
+
                   this.classNames = response.data;
                } catch (error) {
                   console.error('Error fetching classes:', error.response.data);
@@ -601,19 +634,19 @@
             saveMonthlyFee() {
                // Retrieve token from localStorage
                const token = localStorage.getItem('token');
-            
+
                // Define the API endpoint URL
                const apiUrl = `http://localhost:5000/api/student/set-monthly-fee/${this.selectedStudent._id}`;
-               
-             let monthlyFee=this.selectedStudent.monthlyFee
-           //  alert(this.selectedStudent)
+
+               let monthlyFee = this.selectedStudent.monthlyFee
+               //  alert(this.selectedStudent)
                // Prepare the data to be sent in the request body
                const requestData = {
                   // Include any data you need to send
                   monthlyFee: parseInt(this.selectedStudent.monthlyFee)
                };
-             //  alert(requestData)
-            
+               //  alert(requestData)
+
                // Define the Axios configuration object
                const config = {
                   headers: {
@@ -621,13 +654,15 @@
                      Authorization: `${token}`
                   }
                };
-            
+
                // Make the POST request using Axios
                axios.post(apiUrl, requestData, config)
                   .then(response => {
                      // Handle success response
                      alert('Monthly fee saved successfully!');
                      console.log(response.data);
+                     window.location.reload()
+
                      this.fetchData()
                   })
                   .catch(error => {
@@ -636,9 +671,9 @@
                      console.error(error);
                   });
             },
-            clickCancel(){
+            clickCancel() {
                this.fetchData()
-               this.selectedStudent={}
+               this.selectedStudent = {}
             }
          }
       });
