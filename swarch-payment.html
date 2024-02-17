@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Payment Search</title>
+   <!-- Bootstrap CSS -->
+   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+   <style>
+      .table th {
+         background-color: #f8f9fa;
+         border-color: #dee2e6;
+      }
+   </style>
+</head>
+
+<body>
+
+   <div id="app" class="container mt-5">
+      <h1>Payment Search</h1>
+      <div class="form-group">
+         <input type="text" class="form-control mb-2" v-model="phoneNumber" placeholder="Enter phone number">
+      </div>
+      <button class="btn btn-primary" @click="searchPayments">Search</button>
+
+      <div v-if="payments.length > 0" class="mt-4">
+         <h2>Payments</h2>
+         <ul class="list-group mb-4">
+            <li class="list-group-item">
+               <b>নামঃ</b> <span>{{student.fullName}}</span>
+            </li>
+            <li class="list-group-item">
+                              <b>শ্রেণী</b> <span>{{student.studentClass.className}}</span>
+
+            </li>
+         </ul>
+         <table class="table table-striped">
+            <thead>
+               <tr>
+
+                  <th>মাস</th>
+                  <th>বছর</th>
+                  <th>টাকার পরিমাণ</th>
+                  <th>পরিশোধ</th>
+                  <th>জমা নিয়েছেন</th>
+
+               </tr>
+            </thead>
+            <tbody>
+               <tr v-for="payment in payments" :key="payment._id">
+                  <td>{{ payment.month }}</td>
+                  <td>{{ payment.year }}</td>
+                  <td>{{ payment.amount }}</td>
+                  <td>{{ payment.paid }}</td>
+                  <td>{{payment.receivedBy?.name}}</td>
+               </tr>
+            </tbody>
+         </table>
+      </div>
+
+      <div v-else-if="searched && !loading" class="alert alert-warning mt-4">
+         No payments found for the provided phone number and year.
+      </div>
+
+      <div v-if="loading" class="mt-4">
+         Loading...
+      </div>
+   </div>
+
+   <!-- Bootstrap JS (optional) -->
+   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+   <!-- Vue.js -->
+   <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+   <!-- Axios -->
+   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+   <script>
+      new Vue({
+         el: '#app',
+         data() {
+            return {
+               phoneNumber: '',
+               payments: [],
+               student:{},
+               searched: false,
+               loading: false
+            };
+         },
+         methods: {
+            async searchPayments() {
+               this.loading = true;
+               this.searched = true;
+               try {
+                  const response = await axios.get(`http://localhost:5000/api/payment/single-payment?phoneNumber=${this.phoneNumber}`);
+                  this.payments = response.data.payments;
+                  this.student=response.data.student
+               } catch (error) {
+                  console.error('Error fetching payments:', error);
+               } finally {
+                  this.loading = false;
+               }
+            }
+         }
+      });
+   </script>
+
+</body>
+
+</html>

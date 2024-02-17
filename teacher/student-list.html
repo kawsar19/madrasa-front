@@ -76,7 +76,9 @@
          animation: skeleton-pulse 1s infinite ease-in-out;
          /* Adjust animation duration as needed */
       }
-      td, th {
+
+      td,
+      th {
          white-space: nowrap;
       }
    </style>
@@ -292,7 +294,7 @@
                   <!-- Modal content goes here -->
                   <div class="row justify-content-center">
                      <div class="col-md-6">
-                        <form @submit.prevent="submitPayment">
+                        <form @submit.prevent="createPayment">
                            <div class="form-group">
                               <label for="student">Student ID</label>
                               <input type="text" class="form-control" id="student" :value="selectedStudent?._id">
@@ -563,6 +565,31 @@
                   this.isContentLoading = false
                }
             },
+
+            async createPayment() {
+
+               try {
+                  this.payment.student = this.selectedStudent?._id;
+                  const token = localStorage.getItem('token'); // Retrieve the token from localStorage
+
+                  
+                  const studentId = 'replace-with-student-id'; // Replace with the actual student ID
+                  
+                  
+                  const response = await axios.post(`http://localhost:5000/api/payment/create/${this.payment.student}`, this.payment, {
+                     headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `${token}`, // Include the token in the Authorization header
+                     },
+                  });
+                  console.log(response)
+                //  this.message = response.data.message;
+               } catch (error) {
+                  console.log(error)
+                 // this.error = error.response.data.message || 'Failed to create payment';
+               }
+            },
+
             async submitPayment() {
                // Assign the selected student ID to the payment object here
                this.payment.student = this.selectedStudent?._id;
