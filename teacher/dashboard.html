@@ -234,7 +234,7 @@
             fetchData(madrasa) {
               
                console.log(this.user)
-               axios.get(`http://localhost:5000/api/madrasa/totalcount/${madrasa}`, {
+               axios.get(`http://44.202.120.95/api/madrasa/totalcount/${madrasa}`, {
                      headers: {
                         'Authorization': `${localStorage.getItem('token')}`
                      }

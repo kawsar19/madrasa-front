@@ -108,7 +108,7 @@
                this.formData.className = ''
             },
             fetchClasses() {
-               axios.get('http://localhost:5000/api/class/list')
+               axios.get('http://44.202.120.95/api/class/list')
                   .then(response => {
                      this.classes = response.data;
                      localStorage.setItem('classes', JSON.stringify(response.data));

@@ -525,7 +525,7 @@
             async fetchData() {
                this.isContentLoading = true
                try {
-                  let apiUrl = `http://localhost:5000/api/student/list?limit=${this.limit}&page=${this.currentPage}`;
+                  let apiUrl = `http://44.202.120.95/api/student/list?limit=${this.limit}&page=${this.currentPage}`;
 
                   if (this.searchQuery) {
                      apiUrl += `&q=${this.searchQuery}`;
@@ -576,7 +576,7 @@
                   const studentId = 'replace-with-student-id'; // Replace with the actual student ID
                   
                   
-                  const response = await axios.post(`http://localhost:5000/api/payment/create/${this.payment.student}`, this.payment, {
+                  const response = await axios.post(`http://44.202.120.95/api/payment/create/${this.payment.student}`, this.payment, {
                      headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `${token}`, // Include the token in the Authorization header
@@ -597,7 +597,7 @@
                try {
                   const token = localStorage.getItem('token'); // Retrieve the token from localStorage
 
-                  const response = await axios.post(`http://localhost:5000/api/student/create-payment/${this.payment.student}`, this.payment, {
+                  const response = await axios.post(`http://44.202.120.95/api/student/create-payment/${this.payment.student}`, this.payment, {
                      headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `${token}`, // Include the token in the Authorization header
@@ -623,7 +623,7 @@
                      'Authorization': `${token}` // Include the token in the header
                   };
 
-                  const response = await axios.get('http://localhost:5000/api/class/list', { headers });
+                  const response = await axios.get('http://44.202.120.95/api/class/list', { headers });
 
                   this.classNames = response.data;
                } catch (error) {
@@ -663,7 +663,7 @@
                const token = localStorage.getItem('token');
 
                // Define the API endpoint URL
-               const apiUrl = `http://localhost:5000/api/student/set-monthly-fee/${this.selectedStudent._id}`;
+               const apiUrl = `http://44.202.120.95/api/student/set-monthly-fee/${this.selectedStudent._id}`;
 
                let monthlyFee = this.selectedStudent.monthlyFee
                //  alert(this.selectedStudent)
