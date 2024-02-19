@@ -50,7 +50,7 @@
         this.isLoading = true;
         console.log(this.isLoading)
         try {
-          const response = await axios.post('http://localhost:5000/api/teacher/login', {
+          const response = await axios.post('http://44.202.120.95/api/teacher/login', {
             phone: this.phone,
             password: this.password
           });
