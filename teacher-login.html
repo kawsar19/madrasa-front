@@ -70,6 +70,7 @@
              window.location.href = './teacher/dashboard.html';
           }, 1500);
         } catch (error) {
+           console.log(error)
           console.error(error.response.data.error);
           // Handle login errors
          this.$toasted.error('Login failed')
